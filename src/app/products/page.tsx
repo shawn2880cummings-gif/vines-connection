@@ -1,0 +1,129 @@
+import type { Metadata } from "next";
+import ProductCard from "@/components/ProductCard";
+
+export const metadata: Metadata = {
+  title: "Books & Products | Vines Connection",
+  description:
+    "Browse books and digital products by Shawn Cummings. Collapse Recursion, guides, and more.",
+};
+
+const products = [
+  {
+    title: "Collapse Recursion: The Logic of Coherence",
+    author: "Shawn Cummings",
+    description:
+      "A systematic framework for identifying and dismantling incoherence at its root. Integrates neuromelanin biology, sacred geometry, and the Enneagram. 531 pages — part research, part philosophy, part operational manual.",
+    price: "$36.72",
+    image:
+      "https://assets.lulu.com/cover_thumbs/g/j/gjpe5ee-front-shortedge-384.jpg",
+    buyLink:
+      "https://www.lulu.com/shop/shawn-cummings/collapse-recursion-the-logic-of-coherence/paperback/product-gjpe5ee.html",
+    storeName: "Lulu",
+    tags: [
+      "Paperback",
+      "531 Pages",
+      "Philosophy",
+      "Sacred Geometry",
+      "Enneagram",
+    ],
+  },
+];
+
+export default function ProductsPage() {
+  return (
+    <>
+      {/* Header */}
+      <section className="gradient-hero relative overflow-hidden py-24">
+        <div className="orb left-[5%] top-[20%] h-48 w-48 bg-psyche-violet/20" />
+        <div
+          className="orb right-[10%] bottom-[10%] h-56 w-56 bg-psyche-gold/15"
+          style={{ animationDelay: "4s" }}
+        />
+
+        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
+          <span className="mb-4 inline-block text-sm tracking-widest text-psyche-teal uppercase">
+            Catalog
+          </span>
+          <h1
+            className="mb-6 text-5xl font-bold text-text-primary"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Books & Digital Products
+          </h1>
+          <p className="text-lg text-text-secondary">
+            Frameworks for coherence. Tools for recursive self-discovery.
+          </p>
+        </div>
+      </section>
+
+      {/* Products Grid */}
+      <section className="py-20">
+        <div className="mx-auto max-w-7xl px-6">
+          {/* Books section */}
+          <div className="mb-6">
+            <h2
+              className="mb-2 text-2xl font-bold text-text-primary"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Books
+            </h2>
+            <div className="mb-8 h-1 w-20 rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal" />
+          </div>
+
+          <div className="mb-20 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {products.map((product) => (
+              <ProductCard key={product.title} {...product} />
+            ))}
+          </div>
+
+          {/* Digital Products section */}
+          <div className="mb-6">
+            <h2
+              className="mb-2 text-2xl font-bold text-text-primary"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Digital Products
+            </h2>
+            <div className="mb-8 h-1 w-20 rounded-full bg-gradient-to-r from-psyche-teal to-psyche-magenta" />
+          </div>
+
+          <div className="gradient-card flex flex-col items-center rounded-2xl p-12 text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-celestial-700/50">
+              <svg
+                className="h-8 w-8 text-psyche-teal"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                />
+              </svg>
+            </div>
+            <h3
+              className="mb-3 text-xl font-bold text-text-primary"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              More Coming Soon
+            </h3>
+            <p className="mb-6 max-w-md text-text-secondary">
+              Digital editions, guides, worksheets, and companion materials are
+              being prepared. Visit the Payhip store for the latest releases.
+            </p>
+            <a
+              href="https://payhip.com/VinesConnection"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-gradient-to-r from-psyche-teal to-psyche-gold px-6 py-3 font-semibold text-celestial-900 transition-transform hover:scale-105"
+            >
+              Visit Payhip Store
+            </a>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

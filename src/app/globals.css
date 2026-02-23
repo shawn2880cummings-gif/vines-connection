@@ -1,0 +1,164 @@
+@import "tailwindcss";
+
+@theme {
+  /* Earthy base tones */
+  --color-earth-900: #1a0e0a;
+  --color-earth-800: #2d1810;
+  --color-earth-700: #4a2c1a;
+  --color-earth-600: #6b3d22;
+  --color-earth-500: #8b5e3c;
+  --color-earth-400: #b07d5a;
+  --color-earth-300: #c9a07a;
+  --color-earth-200: #e0c4a0;
+  --color-earth-100: #f0e0cc;
+  --color-earth-50: #faf3ea;
+
+  /* Celestial purples & deep blues */
+  --color-celestial-900: #0d0628;
+  --color-celestial-800: #1a0e4a;
+  --color-celestial-700: #2a1870;
+  --color-celestial-600: #3d2496;
+  --color-celestial-500: #5a3cb8;
+  --color-celestial-400: #7b5cd4;
+  --color-celestial-300: #9d80e8;
+  --color-celestial-200: #c4adf5;
+  --color-celestial-100: #e4d8fc;
+  --color-celestial-50: #f5f0ff;
+
+  /* Psychedelic accents */
+  --color-psyche-magenta: #e83e8c;
+  --color-psyche-teal: #20c9b0;
+  --color-psyche-gold: #f0a830;
+  --color-psyche-coral: #ff6b6b;
+  --color-psyche-lime: #a8e06c;
+  --color-psyche-violet: #9b59b6;
+
+  /* Semantic tokens */
+  --color-bg-primary: #0d0628;
+  --color-bg-secondary: #1a0e4a;
+  --color-bg-card: rgba(42, 24, 112, 0.5);
+  --color-text-primary: #f0e0cc;
+  --color-text-secondary: #c9a07a;
+  --color-text-accent: #f0a830;
+  --color-border: rgba(93, 60, 184, 0.3);
+
+  /* Fonts */
+  --font-heading: "Georgia", "Times New Roman", serif;
+  --font-body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Base styles */
+body {
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+}
+
+/* Psychedelic gradient backgrounds */
+.gradient-hero {
+  background: linear-gradient(
+    135deg,
+    var(--color-celestial-900) 0%,
+    var(--color-celestial-700) 25%,
+    #3d1070 50%,
+    var(--color-earth-700) 75%,
+    var(--color-earth-900) 100%
+  );
+}
+
+.gradient-card {
+  background: linear-gradient(
+    160deg,
+    rgba(42, 24, 112, 0.6) 0%,
+    rgba(61, 16, 112, 0.4) 50%,
+    rgba(107, 61, 34, 0.3) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-border);
+}
+
+.gradient-accent {
+  background: linear-gradient(
+    90deg,
+    var(--color-psyche-teal),
+    var(--color-psyche-gold),
+    var(--color-psyche-magenta)
+  );
+}
+
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    var(--color-psyche-gold),
+    var(--color-psyche-teal),
+    var(--color-psyche-magenta)
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glow effects */
+.glow-gold {
+  box-shadow: 0 0 20px rgba(240, 168, 48, 0.3),
+    0 0 60px rgba(240, 168, 48, 0.1);
+}
+
+.glow-teal {
+  box-shadow: 0 0 20px rgba(32, 201, 176, 0.3),
+    0 0 60px rgba(32, 201, 176, 0.1);
+}
+
+.glow-purple {
+  box-shadow: 0 0 20px rgba(155, 89, 182, 0.3),
+    0 0 60px rgba(155, 89, 182, 0.1);
+}
+
+/* Animated background orbs */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-20px) scale(1.05);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  animation: float 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-celestial-900);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-celestial-600);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-celestial-500);
+}
