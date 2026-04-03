@@ -67,7 +67,7 @@ export default function ContactPage() {
             </a>
 
             <a
-              href="https://www.lulu.com/shop/shawn-cummings/collapse-recursion-the-logic-of-coherence/paperback/product-gjpe5ee.html"
+              href="https://www.barnesandnoble.com/w/collapse-recursion-shawn-cummings/1149520866"
               target="_blank"
               rel="noopener noreferrer"
               className="gradient-card flex flex-col items-center rounded-2xl p-8 text-center transition-transform hover:scale-[1.03]"

@@ -143,7 +143,7 @@ export default function Home() {
                   $36.72
                 </span>
                 <a
-                  href="https://www.lulu.com/shop/shawn-cummings/collapse-recursion-the-logic-of-coherence/paperback/product-gjpe5ee.html"
+                  href="https://www.barnesandnoble.com/w/collapse-recursion-shawn-cummings/1149520866"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="glow-gold rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-6 py-3 font-semibold text-celestial-900 transition-transform hover:scale-105"
@@ -222,6 +222,77 @@ export default function Home() {
                 />
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Research Section */}
+      <section id="research" className="border-t border-border py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-4 text-center">
+            <span className="text-sm tracking-widest text-psyche-teal uppercase">
+              Peer-Reviewed Work
+            </span>
+          </div>
+          <h2
+            className="mb-16 text-center text-4xl font-bold text-text-primary md:text-5xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Published Research
+          </h2>
+
+          <div className="mx-auto max-w-3xl">
+            <div className="gradient-card glow-teal rounded-2xl p-8 md:p-10">
+              <p className="mb-6 text-lg leading-relaxed text-text-secondary">
+                Research spanning MC1R genetics, melanin biochemistry,
+                neuromelanin function, and Collapse Recursion Theory &mdash;
+                published and archived through CERN&apos;s Zenodo repository.
+              </p>
+
+              <div className="mb-8 flex items-center gap-3 rounded-xl bg-celestial-800/40 px-5 py-4">
+                <Image
+                  src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg"
+                  alt="ORCID"
+                  width={24}
+                  height={24}
+                  unoptimized
+                />
+                <div>
+                  <p className="text-xs tracking-wider text-psyche-teal uppercase">
+                    ORCID
+                  </p>
+                  <p className="font-mono text-sm text-text-primary">
+                    0009-0006-4312-526X
+                  </p>
+                </div>
+              </div>
+
+              <div className="mb-8 grid grid-cols-2 gap-4">
+                {[
+                  "MC1R Genetics & Biological Classification",
+                  "Melanin Biochemistry & Carbon Substrates",
+                  "Neuromelanin & Neurological Coherence",
+                  "Collapse Recursion Theory",
+                ].map((area) => (
+                  <div
+                    key={area}
+                    className="flex items-start gap-2 text-sm text-text-secondary"
+                  >
+                    <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-psyche-gold" />
+                    <span>{area}</span>
+                  </div>
+                ))}
+              </div>
+
+              <a
+                href="https://orcid.org/0009-0006-4312-526X"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-6 py-3 font-semibold text-celestial-900 transition-transform hover:scale-105"
+              >
+                View Research Papers
+              </a>
+            </div>
           </div>
         </div>
       </section>

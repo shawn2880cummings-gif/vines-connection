@@ -73,12 +73,12 @@ export default function Footer() {
                 Payhip Store &rarr;
               </a>
               <a
-                href="https://www.lulu.com/shop/shawn-cummings/collapse-recursion-the-logic-of-coherence/paperback/product-gjpe5ee.html"
+                href="https://www.barnesandnoble.com/w/collapse-recursion-shawn-cummings/1149520866"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-text-secondary hover:text-psyche-teal"
               >
-                Lulu Bookshop &rarr;
+                Barnes &amp; Noble &rarr;
               </a>
             </div>
           </div>
