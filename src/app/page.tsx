@@ -111,7 +111,7 @@ export default function Home() {
 
               <p className="mb-8 leading-relaxed text-text-secondary">
                 Part research, part philosophy, part operational manual &mdash;
-                it provides methodology rather than demanding belief. 531 pages
+                it provides methodology rather than demanding belief. 482 pages
                 of rigorous exploration across quantum mechanics, geometry,
                 self-improvement, religion, philosophy, and science.
               </p>
@@ -119,7 +119,7 @@ export default function Home() {
               {/* Book details grid */}
               <div className="mb-8 grid grid-cols-2 gap-4">
                 {[
-                  { label: "Pages", value: "531" },
+                  { label: "Pages", value: "482" },
                   { label: "Format", value: "Paperback" },
                   { label: "ISBN", value: "9798994854402" },
                   { label: "Category", value: "Personal Growth" },

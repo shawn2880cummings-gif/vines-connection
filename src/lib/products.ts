@@ -21,12 +21,12 @@ export const products: Product[] = [
     name: "Collapse Recursion: The Logic of Coherence",
     author: "Shawn Cummings",
     description:
-      "A systematic framework for identifying and dismantling incoherence at its root. Integrates neuromelanin biology, sacred geometry, and the Enneagram. 531 pages — part research, part philosophy, part operational manual.",
+      "A systematic framework for identifying and dismantling incoherence at its root. Integrates neuromelanin biology, sacred geometry, and the Enneagram. 482 pages — part research, part philosophy, part operational manual.",
     price: 0, // external link, no Stripe checkout
     displayPrice: "$36.00",
     image:
       "https://assets.lulu.com/cover_thumbs/g/j/gjpe5ee-front-shortedge-384.jpg",
-    tags: ["Paperback", "531 Pages", "Philosophy", "Sacred Geometry"],
+    tags: ["Paperback", "482 Pages", "Philosophy", "Sacred Geometry"],
     type: "paperback",
     externalLink:
       "https://www.barnesandnoble.com/w/collapse-recursion-shawn-cummings/1149520866",

@@ -57,7 +57,7 @@ export default function AboutPage() {
               </p>
               <p>
                 &ldquo;Collapse Recursion: The Logic of Coherence&rdquo; is the
-                flagship work — a 531-page framework that maps the architecture
+                flagship work — a 482-page framework that maps the architecture
                 of incoherence and provides tools for dismantling it at the
                 root.
               </p>
