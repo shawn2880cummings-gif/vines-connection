@@ -33,23 +33,36 @@ export const products: Product[] = [
     storeName: "Barnes & Noble",
   },
 
-  // ============================================================
-  // ADD YOUR DIGITAL PRODUCTS BELOW
-  // Copy this template and fill in your details:
-  // ============================================================
-  //
-  // {
-  //   id: "your-product-slug",
-  //   name: "Product Title",
-  //   author: "Shawn Cummings",
-  //   description: "Product description here.",
-  //   price: 1999, // $19.99 in cents
-  //   displayPrice: "$19.99",
-  //   image: "/images/your-cover.jpg", // put image in public/images/
-  //   tags: ["Ebook", "PDF"],
-  //   type: "digital",
-  //   fileName: "your-file.pdf", // put file in digital-products/
-  // },
+  {
+    id: "tao-of-the-observer",
+    name: "The Tao of the Observer: The Nine Fold Path",
+    author: "Shawn Cummings",
+    description:
+      "A manual for conscious observation and sovereign governance. Most people move through the world reacting — absorbing every signal, responding to every provocation, governed by every emotion. This work provides a different path.",
+    price: 0,
+    displayPrice: "$18.00",
+    image:
+      "https://pe56d.s3.amazonaws.com/o_1jhdf1ck9sr9hik15r81b141fsp1a.png",
+    tags: ["Digital", "Enneagram", "Self-Mastery"],
+    type: "digital",
+    externalLink: "https://payhip.com/b/sH2un",
+    storeName: "Payhip",
+  },
+  {
+    id: "collapse-recursion-of-conversation",
+    name: "The Collapse Recursion of Conversation",
+    author: "Shawn Cummings",
+    description:
+      "Why everything you were taught about communication is wrong. The conversation you just had today — someone satisfying was controlling its outcome. This free e-book shows you how.",
+    price: 0,
+    displayPrice: "Free",
+    image:
+      "https://pe56d.s3.amazonaws.com/o_1jhhgc4g81ee31991itg1vr7aaa1a.png",
+    tags: ["Free", "Digital", "Communication"],
+    type: "digital",
+    externalLink: "https://payhip.com/b/wGaB4",
+    storeName: "Payhip",
+  },
 ];
 
 export function getProduct(id: string): Product | undefined {

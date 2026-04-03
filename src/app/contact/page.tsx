@@ -88,7 +88,7 @@ export default function ContactPage() {
                 </svg>
               </div>
               <h3 className="mb-2 font-bold text-text-primary">
-                Lulu Bookshop
+                Barnes &amp; Noble
               </h3>
               <p className="text-sm text-text-secondary">
                 Order the paperback edition
