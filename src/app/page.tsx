@@ -297,6 +297,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Etheric University Section */}
+      <section id="university" className="border-t border-border py-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-4 text-center">
+            <span className="text-sm tracking-widest text-psyche-violet uppercase">
+              Learning Platform
+            </span>
+          </div>
+          <h2
+            className="mb-16 text-center text-4xl font-bold text-text-primary md:text-5xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Etheric University
+          </h2>
+
+          <div className="mx-auto max-w-3xl">
+            <div className="gradient-card glow-purple rounded-2xl p-8 md:p-10 text-center">
+              <p className="mb-8 text-lg leading-relaxed text-text-secondary">
+                An interactive learning environment built around the principles
+                of Collapse Recursion Theory. Explore structured coursework on
+                neuromelanin biology, sacred geometry, the Enneagram, and
+                recursive intelligence.
+              </p>
+
+              <a
+                href="https://collapse-recursion.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-violet to-psyche-teal px-8 py-4 text-lg font-semibold text-celestial-900 transition-transform hover:scale-105"
+              >
+                Enter Etheric University
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="gradient-hero relative overflow-hidden py-24">
         <div className="orb left-[20%] top-[10%] h-48 w-48 bg-psyche-gold/20" />
