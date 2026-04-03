@@ -140,7 +140,7 @@ export default function Home() {
 
               <div className="flex flex-wrap items-center gap-4">
                 <span className="text-3xl font-bold text-psyche-gold">
-                  $36.72
+                  $36.00
                 </span>
                 <a
                   href="https://www.barnesandnoble.com/w/collapse-recursion-shawn-cummings/1149520866"
