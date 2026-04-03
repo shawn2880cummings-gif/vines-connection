@@ -18,6 +18,18 @@ export default function Home() {
         />
 
         <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-32 text-center">
+          {/* Logo */}
+          <div className="mb-6 flex justify-center">
+            <Image
+              src="/vines-logo.jpg"
+              alt="Vines Connection"
+              width={80}
+              height={80}
+              className="rounded-full"
+              priority
+            />
+          </div>
+
           {/* Brand badge */}
           <div className="mb-8 rounded-full border border-psyche-gold/30 bg-celestial-800/50 px-6 py-2 backdrop-blur-sm">
             <span className="text-sm tracking-widest text-psyche-gold uppercase">
@@ -315,10 +327,10 @@ export default function Home() {
           <div className="mx-auto max-w-3xl">
             <div className="gradient-card glow-purple rounded-2xl p-8 md:p-10 text-center">
               <p className="mb-8 text-lg leading-relaxed text-text-secondary">
-                An interactive learning environment built around the principles
-                of Collapse Recursion Theory. Explore structured coursework on
-                neuromelanin biology, sacred geometry, the Enneagram, and
-                recursive intelligence.
+                A learning platform built on a new paradigm. Explore history,
+                mathematics, and science through a lens that expands knowledge
+                infinitely &mdash; no ceilings, no boundaries, just recursive
+                understanding.
               </p>
 
               <a

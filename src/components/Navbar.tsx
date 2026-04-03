@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -20,9 +21,14 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-psyche-teal to-psyche-gold">
-            <span className="text-lg font-bold text-celestial-900">V</span>
-          </div>
+          <Image
+            src="/vines-logo.jpg"
+            alt="Vines Connection"
+            width={40}
+            height={40}
+            className="rounded-full"
+            priority
+          />
           <div>
             <h1
               className="text-lg font-bold tracking-wide text-text-primary"

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -8,9 +9,13 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="mb-4 flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-psyche-teal to-psyche-gold">
-                <span className="text-sm font-bold text-celestial-900">V</span>
-              </div>
+              <Image
+                src="/vines-logo.jpg"
+                alt="Vines Connection"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
               <span
                 className="text-lg font-bold text-text-primary"
                 style={{ fontFamily: "var(--font-heading)" }}
