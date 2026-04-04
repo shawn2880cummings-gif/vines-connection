@@ -6,7 +6,7 @@ const AUDIO_URL = "https://cdn.pixabay.com/audio/2023/11/10/audio_738c053fc9.mp3
 
 const BackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isMuted, setIsMuted] = useState(false); // Start as "Unmuted" in UI
+  const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
     const savedMute = localStorage.getItem("background-music-muted-vines");
@@ -34,18 +34,27 @@ const BackgroundMusic = () => {
     };
 
     if (audioRef.current) {
-      // Always start the element as physically muted to bypass autoplay blocks
-      audioRef.current.muted = true; 
+      // 1. Try playing with sound (unmuted)
+      audioRef.current.muted = isMuted;
       audioRef.current.play().then(() => {
-        // If it starts playing muted, we wait for a gesture to unmute
-        window.addEventListener("click", handleInteraction);
-        window.addEventListener("touchstart", handleInteraction);
-        window.addEventListener("scroll", handleInteraction);
+        // Success! (Browser allowed it)
+        removeListeners();
       }).catch(() => {
-        // If even muted autoplay is blocked, we still wait for a gesture
-        window.addEventListener("click", handleInteraction);
-        window.addEventListener("touchstart", handleInteraction);
-        window.addEventListener("scroll", handleInteraction);
+        // 2. Failed (Blocked). Try playing muted as a fallback
+        if (audioRef.current && !isMuted) {
+          audioRef.current.muted = true;
+          audioRef.current.play().then(() => {
+            // Muted autoplay succeeded. Wait for gesture to unmute.
+            window.addEventListener("click", handleInteraction);
+            window.addEventListener("touchstart", handleInteraction);
+            window.addEventListener("scroll", handleInteraction);
+          }).catch(() => {
+            // Even muted autoplay blocked. Wait for gesture.
+            window.addEventListener("click", handleInteraction);
+            window.addEventListener("touchstart", handleInteraction);
+            window.addEventListener("scroll", handleInteraction);
+          });
+        }
       });
     }
 
