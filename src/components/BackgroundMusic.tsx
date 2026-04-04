@@ -6,7 +6,7 @@ const AUDIO_URL = "https://cdn.pixabay.com/audio/2023/11/10/audio_738c053fc9.mp3
 
 const BackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(false); // Start as "Unmuted" in UI
 
   useEffect(() => {
     const savedMute = localStorage.getItem("background-music-muted-vines");
@@ -16,40 +16,40 @@ const BackgroundMusic = () => {
   }, []);
 
   useEffect(() => {
-    const playAudio = () => {
-      if (audioRef.current && !isMuted) {
-        audioRef.current.play().then(() => {
-          // Success! Remove listeners
-          removeListeners();
-        }).catch((err) => {
-          console.warn("Playback still blocked:", err);
-        });
+    let interactionhappened = false;
+    
+    const handleInteraction = () => {
+      if (audioRef.current && !isMuted && !interactionhappened) {
+        audioRef.current.muted = false;
+        audioRef.current.play().catch(console.error);
+        interactionhappened = true;
+        removeListeners();
       }
     };
 
     const removeListeners = () => {
-      window.removeEventListener("click", playAudio);
-      window.removeEventListener("keydown", playAudio);
-      window.removeEventListener("touchstart", playAudio);
-      window.removeEventListener("scroll", playAudio);
+      window.removeEventListener("click", handleInteraction);
+      window.removeEventListener("touchstart", handleInteraction);
+      window.removeEventListener("scroll", handleInteraction);
     };
 
     if (audioRef.current) {
-      audioRef.current.muted = isMuted;
-      if (!isMuted) {
-        // Try playing immediately
-        audioRef.current.play().catch(() => {
-          // If blocked, add listeners to play on first interaction
-          window.addEventListener("click", playAudio);
-          window.addEventListener("keydown", playAudio);
-          window.addEventListener("touchstart", playAudio);
-          window.addEventListener("scroll", playAudio);
-        });
-      }
+      // Always start the element as physically muted to bypass autoplay blocks
+      audioRef.current.muted = true; 
+      audioRef.current.play().then(() => {
+        // If it starts playing muted, we wait for a gesture to unmute
+        window.addEventListener("click", handleInteraction);
+        window.addEventListener("touchstart", handleInteraction);
+        window.addEventListener("scroll", handleInteraction);
+      }).catch(() => {
+        // If even muted autoplay is blocked, we still wait for a gesture
+        window.addEventListener("click", handleInteraction);
+        window.addEventListener("touchstart", handleInteraction);
+        window.addEventListener("scroll", handleInteraction);
+      });
     }
 
     localStorage.setItem("background-music-muted-vines", String(isMuted));
-
     return () => removeListeners();
   }, [isMuted]);
 
