@@ -60,6 +60,12 @@ export default function Footer() {
               >
                 Contact
               </Link>
+              <Link
+                href="/university"
+                className="text-sm text-text-secondary hover:text-text-primary"
+              >
+                Etheric University
+              </Link>
             </div>
           </div>
 

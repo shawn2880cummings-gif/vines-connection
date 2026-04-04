@@ -410,14 +410,12 @@ export default function Home() {
                 understanding.
               </p>
 
-              <a
-                href="https://collapse-recursion.vercel.app/"
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                href="/university"
                 className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-violet to-psyche-teal px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl"
               >
-                Enter University
-              </a>
+                Explore University
+              </Link>
             </div>
           </motion.div>
         </div>
