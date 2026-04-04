@@ -6,7 +6,7 @@ const AUDIO_URL = "https://cdn.pixabay.com/audio/2023/11/10/audio_738c053fc9.mp3
 
 const BackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
     const savedMute = localStorage.getItem("background-music-muted-vines");
@@ -34,7 +34,7 @@ const BackgroundMusic = () => {
 
   return (
     <div className="fixed bottom-6 right-6 z-[9999] flex items-center gap-2">
-      <audio ref={audioRef} src={AUDIO_URL} loop />
+      <audio ref={audioRef} src={AUDIO_URL} loop autoPlay />
       <button
         onClick={toggleMute}
         title={isMuted ? "Unmute Background Music" : "Mute Background Music"}
