@@ -16,16 +16,41 @@ const BackgroundMusic = () => {
   }, []);
 
   useEffect(() => {
+    const playAudio = () => {
+      if (audioRef.current && !isMuted) {
+        audioRef.current.play().then(() => {
+          // Success! Remove listeners
+          removeListeners();
+        }).catch((err) => {
+          console.warn("Playback still blocked:", err);
+        });
+      }
+    };
+
+    const removeListeners = () => {
+      window.removeEventListener("click", playAudio);
+      window.removeEventListener("keydown", playAudio);
+      window.removeEventListener("touchstart", playAudio);
+      window.removeEventListener("scroll", playAudio);
+    };
+
     if (audioRef.current) {
       audioRef.current.muted = isMuted;
       if (!isMuted) {
-        audioRef.current.play().catch((err) => {
-          console.warn("Autoplay blocked by browser. User interaction required.", err);
-          setIsMuted(true);
+        // Try playing immediately
+        audioRef.current.play().catch(() => {
+          // If blocked, add listeners to play on first interaction
+          window.addEventListener("click", playAudio);
+          window.addEventListener("keydown", playAudio);
+          window.addEventListener("touchstart", playAudio);
+          window.addEventListener("scroll", playAudio);
         });
       }
     }
+
     localStorage.setItem("background-music-muted-vines", String(isMuted));
+
+    return () => removeListeners();
   }, [isMuted]);
 
   const toggleMute = () => {
