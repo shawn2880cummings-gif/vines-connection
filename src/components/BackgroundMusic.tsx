@@ -21,16 +21,17 @@ const BackgroundMusic = () => {
     const handleInteraction = () => {
       if (audioRef.current && !isMuted && !interactionhappened) {
         audioRef.current.muted = false;
-        audioRef.current.play().catch(console.error);
-        interactionhappened = true;
-        removeListeners();
+        audioRef.current.play().then(() => {
+          interactionhappened = true;
+          removeListeners();
+        }).catch(console.error);
       }
     };
 
     const removeListeners = () => {
-      window.removeEventListener("click", handleInteraction);
-      window.removeEventListener("touchstart", handleInteraction);
-      window.removeEventListener("scroll", handleInteraction);
+      document.removeEventListener("click", handleInteraction, true);
+      document.removeEventListener("touchstart", handleInteraction, true);
+      document.removeEventListener("scroll", handleInteraction, true);
     };
 
     if (audioRef.current) {
@@ -45,14 +46,14 @@ const BackgroundMusic = () => {
           audioRef.current.muted = true;
           audioRef.current.play().then(() => {
             // Muted autoplay succeeded. Wait for gesture to unmute.
-            window.addEventListener("click", handleInteraction);
-            window.addEventListener("touchstart", handleInteraction);
-            window.addEventListener("scroll", handleInteraction);
+            document.addEventListener("click", handleInteraction, true);
+            document.addEventListener("touchstart", handleInteraction, true);
+            document.addEventListener("scroll", handleInteraction, true);
           }).catch(() => {
             // Even muted autoplay blocked. Wait for gesture.
-            window.addEventListener("click", handleInteraction);
-            window.addEventListener("touchstart", handleInteraction);
-            window.addEventListener("scroll", handleInteraction);
+            document.addEventListener("click", handleInteraction, true);
+            document.addEventListener("touchstart", handleInteraction, true);
+            document.addEventListener("scroll", handleInteraction, true);
           });
         }
       });
