@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import BackgroundMusic from "@/components/BackgroundMusic";
 import "./globals.css";
+import ClientLayout from "@/components/ClientLayout";
 
 export const metadata: Metadata = {
   title: "Vines Connection | Books & Digital Products by Shawn Cummings",
@@ -35,10 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen antialiased">
-        <Navbar />
-        <main className="pt-[72px]">{children}</main>
-        <Footer />
-        <BackgroundMusic />
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );
