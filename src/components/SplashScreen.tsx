@@ -37,17 +37,27 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
           className="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-[#0a0a0b] text-white"
         >
           <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
+            animate={{ 
+              y: [0, -15, 0],
+              filter: [
+                "drop-shadow(0 0 10px rgba(255,215,0,0.2))",
+                "drop-shadow(0 0 25px rgba(255,215,0,0.5))",
+                "drop-shadow(0 0 10px rgba(255,215,0,0.2))"
+              ]
+            }}
+            transition={{ 
+              duration: 4, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
             className="relative mb-12 h-48 w-48 md:h-64 md:w-64"
           >
-            <div className="absolute inset-0 rounded-full bg-white/5 blur-3xl" />
+            <div className="absolute inset-0 rounded-full bg-psyche-gold/10 blur-3xl opacity-50" />
             <Image
               src="/vines-logo.jpg"
               alt="VINE Logo"
               fill
-              className="rounded-full object-cover shadow-2xl"
+              className="rounded-full object-cover shadow-2xl border border-white/10"
               priority
             />
           </motion.div>

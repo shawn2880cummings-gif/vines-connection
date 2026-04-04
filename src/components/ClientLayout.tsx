@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BackgroundMusic from "@/components/BackgroundMusic";
 import SplashScreen from "@/components/SplashScreen";
+import BackgroundParticles from "@/components/BackgroundParticles";
 
 export default function ClientLayout({
   children,
@@ -19,6 +20,7 @@ export default function ClientLayout({
 
   return (
     <>
+      <BackgroundParticles />
       <SplashScreen onEnter={handleEnter} />
       <Navbar />
       <main className="pt-[72px]">{children}</main>
