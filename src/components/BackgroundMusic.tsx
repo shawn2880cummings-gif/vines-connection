@@ -9,22 +9,20 @@ const BackgroundMusic = () => {
   const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
+    // We only load the saved preference if it's "true" (muted).
+    // Otherwise, we default to "false" (unmuted) as requested.
     const savedMute = localStorage.getItem("background-music-muted-vines");
-    if (savedMute !== null) {
-      setIsMuted(savedMute === "true");
+    if (savedMute === "true") {
+      setIsMuted(true);
     }
   }, []);
 
   useEffect(() => {
-    let interactionhappened = false;
-    
     const handleInteraction = () => {
-      if (audioRef.current && !isMuted && !interactionhappened) {
+      if (audioRef.current && !isMuted) {
         audioRef.current.muted = false;
-        audioRef.current.play().then(() => {
-          interactionhappened = true;
-          removeListeners();
-        }).catch(console.error);
+        audioRef.current.play().catch(console.error);
+        removeListeners();
       }
     };
 
@@ -35,28 +33,17 @@ const BackgroundMusic = () => {
     };
 
     if (audioRef.current) {
-      // 1. Try playing with sound (unmuted)
       audioRef.current.muted = isMuted;
-      audioRef.current.play().then(() => {
-        // Success! (Browser allowed it)
-        removeListeners();
-      }).catch(() => {
-        // 2. Failed (Blocked). Try playing muted as a fallback
-        if (audioRef.current && !isMuted) {
-          audioRef.current.muted = true;
-          audioRef.current.play().then(() => {
-            // Muted autoplay succeeded. Wait for gesture to unmute.
-            document.addEventListener("click", handleInteraction, true);
-            document.addEventListener("touchstart", handleInteraction, true);
-            document.addEventListener("scroll", handleInteraction, true);
-          }).catch(() => {
-            // Even muted autoplay blocked. Wait for gesture.
-            document.addEventListener("click", handleInteraction, true);
-            document.addEventListener("touchstart", handleInteraction, true);
-            document.addEventListener("scroll", handleInteraction, true);
-          });
-        }
-      });
+      if (!isMuted) {
+        // Try playing with sound. 
+        // If it fails, we don't show the 'X' in UI, we just wait for interaction.
+        audioRef.current.play().catch(() => {
+          // Add listeners to play on first interaction if blocked.
+          document.addEventListener("click", handleInteraction, true);
+          document.addEventListener("touchstart", handleInteraction, true);
+          document.addEventListener("scroll", handleInteraction, true);
+        });
+      }
     }
 
     localStorage.setItem("background-music-muted-vines", String(isMuted));
