@@ -10,7 +10,6 @@ const navLinks = [
   { href: "/#research", label: "Research" },
   { href: "/university", label: "Etheric University" },
   { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
 ];
 
 export default function Navbar() {

@@ -55,12 +55,6 @@ export default function Footer() {
                 About
               </Link>
               <Link
-                href="/contact"
-                className="text-sm text-text-secondary hover:text-text-primary"
-              >
-                Contact
-              </Link>
-              <Link
                 href="/university"
                 className="text-sm text-text-secondary hover:text-text-primary"
               >

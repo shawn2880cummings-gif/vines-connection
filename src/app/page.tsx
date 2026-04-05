@@ -455,12 +455,6 @@ export default function Home() {
               >
                 Browse All Products
               </a>
-              <Link
-                href="/contact"
-                className="rounded-full border border-white/20 bg-white/5 px-10 py-4 text-xl text-white transition-all hover:bg-white/10 hover:border-white/40 active:scale-95"
-              >
-                Get in Touch
-              </Link>
             </div>
           </motion.div>
         </div>
