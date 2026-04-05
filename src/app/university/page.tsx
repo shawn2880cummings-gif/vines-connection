@@ -10,7 +10,7 @@ export default function UniversityPage() {
       title: "Melanin Intelligence",
       description: "A comprehensive 18-module journey into neuromelanin biology, the electromagnetic architecture of existence, and the biological substrate of recursive awareness.",
       link: "https://melanin-intelligence-course.vercel.app",
-      image: "/vines-logo.jpg", // Using the logo as a placeholder/brand image
+      image: "/images/melanin-intel.png", // Updated custom image
       badge: "New Release",
       color: "from-psyche-gold to-psyche-teal"
     },
@@ -18,7 +18,7 @@ export default function UniversityPage() {
       title: "Collapse Recursion",
       description: "Master the logic of coherence. A deep dive into the foundational principles of recursion, vortex math, and the dismantling of institutional distortions.",
       link: "https://melanin-intelligence-course.vercel.app/course/collapse-recursion", // Assuming it's a route in the same platform
-      image: "https://assets.lulu.com/cover_thumbs/g/j/gjpe5ee-front-shortedge-384.jpg",
+      image: "/images/collapse-recursion.png", // Updated custom image
       badge: "Foundational",
       color: "from-psyche-violet to-psyche-magenta"
     }
