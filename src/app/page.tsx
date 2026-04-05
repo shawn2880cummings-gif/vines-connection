@@ -383,107 +383,40 @@ export default function Home() {
       {/* Etheric University Section */}
       <section id="university" className="border-t border-border py-24 bg-celestial-900/20">
         <div className="mx-auto max-w-7xl px-6">
-          <motion.div {...fadeInUp} className="text-center mb-16">
+          <motion.div {...fadeInUp} className="text-center">
             <span className="text-sm tracking-widest text-psyche-violet uppercase">
               Learning Platform
             </span>
             <h2
-              className="mt-4 mb-6 text-4xl font-bold text-text-primary md:text-5xl"
+              className="mt-4 mb-16 text-4xl font-bold text-text-primary md:text-5xl"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Etheric University
             </h2>
-            <p className="mb-10 text-xl leading-relaxed text-text-secondary max-w-3xl mx-auto">
-              A learning platform built on a new paradigm. Explore history,
-              mathematics, and science through a lens of recursive understanding.
-            </p>
           </motion.div>
 
-          <div className="grid gap-10 lg:grid-cols-2">
-            {[
-              {
-                title: "Melanin Intelligence",
-                description: "A comprehensive 18-module journey into neuromelanin biology, the electromagnetic architecture of existence, and the biological substrate of recursive awareness.",
-                link: "https://melanin-intelligence-course.vercel.app",
-                image: "/images/melanin-intel.png",
-                badge: "New Release",
-                color: "from-psyche-gold to-psyche-teal",
-                glow: "glow-gold"
-              },
-              {
-                title: "Collapse Recursion",
-                description: "Master the logic of coherence. A deep dive into the foundational principles of recursion, vortex math, and the dismantling of institutional distortions.",
-                link: "https://melanin-intelligence-course.vercel.app/course/collapse-recursion",
-                image: "/images/collapse-recursion.png",
-                badge: "Foundational",
-                color: "from-psyche-violet to-psyche-magenta",
-                glow: "glow-purple"
-              }
-            ].map((course, idx) => (
-              <motion.div
-                key={course.title}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: idx * 0.2 }}
-                whileHover={{ y: -10 }}
-                className={`gradient-card rounded-3xl p-1 overflow-hidden group shadow-2xl ${course.glow}`}
-              >
-                <div className="bg-celestial-900/80 rounded-[22px] p-8 h-full flex flex-col">
-                  <div className="relative h-48 w-full mb-6 rounded-xl overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
-                    <Image
-                      src={course.image}
-                      alt={course.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute top-4 right-4">
-                      <span className="bg-black/60 backdrop-blur-md border border-white/10 px-3 py-1 rounded-full text-[10px] font-semibold text-psyche-gold uppercase tracking-widest">
-                        {course.badge}
-                      </span>
-                    </div>
-                  </div>
-
-                  <h3 
-                    className="text-2xl font-bold mb-3 group-hover:text-psyche-gold transition-colors"
-                    style={{ fontFamily: "var(--font-heading)" }}
-                  >
-                    {course.title}
-                  </h3>
-                  <p className="text-text-secondary text-base mb-8 flex-1 leading-relaxed">
-                    {course.description}
-                  </p>
-
-                  <div className="flex items-center justify-between">
-                    <a
-                      href={course.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${course.color} px-6 py-3 text-sm font-bold text-celestial-900 transition-all hover:scale-105 active:scale-95`}
-                    >
-                      Enter Course
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
           <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.6 }}
-            className="mt-16 text-center"
+            transition={{ duration: 0.8 }}
+            className="mx-auto max-w-3xl"
           >
-            <Link
-              href="/university"
-              className="text-text-secondary hover:text-psyche-gold transition-colors inline-flex items-center gap-2 font-medium"
-            >
-              Explore Full Curriculum
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-            </Link>
+            <div className="gradient-card glow-purple rounded-3xl p-10 md:p-12 text-center border border-white/5">
+              <p className="mb-10 text-xl leading-relaxed text-text-secondary">
+                A learning platform built on a new paradigm. Explore history,
+                mathematics, and science through a lens that expands knowledge
+                infinitely &mdash; no ceilings, no boundaries, just recursive
+                understanding.
+              </p>
+
+              <Link
+                href="/university"
+                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-violet to-psyche-teal px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl"
+              >
+                Begin Your Spiral
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
