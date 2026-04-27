@@ -66,7 +66,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
                 : {}
             }
             className="relative mb-12 flex items-center justify-center"
-            style={{ width: "500px", height: "500px" }}
+            style={{ width: "620px", height: "620px" }}
           >
             <div className="absolute inset-0 rounded-full bg-psyche-gold/10 blur-3xl opacity-50" />
             <div className="relative z-10 w-full h-full rounded-full overflow-hidden border border-white/10 shadow-2xl">
@@ -77,7 +77,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
                 playsInline
                 preload="auto"
                 onEnded={handleVideoEnd}
-                className="w-full h-full object-contain"
+                className="w-full h-full object-cover"
               />
             </div>
           </motion.div>
