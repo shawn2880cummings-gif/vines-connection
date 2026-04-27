@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 
 const AUDIO_URL = "https://cdn.pixabay.com/audio/2023/11/10/audio_738c053fc9.mp3";
 
 const BackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isMuted, setIsMuted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
 
   useEffect(() => {
     const savedMute = localStorage.getItem("background-music-muted-vines");
@@ -15,57 +16,70 @@ const BackgroundMusic = () => {
     }
   }, []);
 
+  const startPlayback = useCallback(() => {
+    const audio = audioRef.current;
+    if (!audio || hasStarted) return;
+
+    audio.volume = 1;
+    audio.muted = false;
+    audio.currentTime = 0;
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setHasStarted(true);
+        })
+        .catch((err) => {
+          console.warn("Audio play blocked:", err);
+        });
+    }
+  }, [hasStarted]);
+
   useEffect(() => {
-    const playWithSound = () => {
-      if (audioRef.current && !isMuted) {
-        audioRef.current.muted = false;
-        audioRef.current.play().catch(console.error);
-        removeListeners();
-      }
+    const handleVinesPlay = () => {
+      startPlayback();
     };
 
     const handleInteraction = () => {
-      playWithSound();
+      if (!hasStarted) {
+        startPlayback();
+      }
     };
 
-    const removeListeners = () => {
+    window.addEventListener("vines-play-music", handleVinesPlay);
+    document.addEventListener("click", handleInteraction, true);
+    document.addEventListener("touchstart", handleInteraction, true);
+
+    return () => {
+      window.removeEventListener("vines-play-music", handleVinesPlay);
       document.removeEventListener("click", handleInteraction, true);
       document.removeEventListener("touchstart", handleInteraction, true);
-      document.removeEventListener("scroll", handleInteraction, true);
-      window.removeEventListener("vines-play-music", playWithSound as any);
     };
+  }, [startPlayback, hasStarted]);
 
-    window.addEventListener("vines-play-music", playWithSound as any);
-
-    if (audioRef.current) {
+  useEffect(() => {
+    if (audioRef.current && hasStarted) {
       audioRef.current.muted = isMuted;
-      if (!isMuted) {
-        audioRef.current.play().catch(() => {
-          document.addEventListener("click", handleInteraction, true);
-          document.addEventListener("touchstart", handleInteraction, true);
-          document.addEventListener("scroll", handleInteraction, true);
-        });
-      }
+      audioRef.current.volume = 1;
     }
-
     localStorage.setItem("background-music-muted-vines", String(isMuted));
-    return () => removeListeners();
-  }, [isMuted]);
+  }, [isMuted, hasStarted]);
 
   const toggleMute = () => {
     const newMuted = !isMuted;
     setIsMuted(newMuted);
     if (audioRef.current) {
-      audioRef.current.muted = newMuted;
-      if (!newMuted) {
-        audioRef.current.play().catch(console.error);
+      if (!hasStarted) {
+        startPlayback();
       }
+      audioRef.current.muted = newMuted;
     }
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-[9999] flex items-center gap-2">
-      <audio ref={audioRef} src={AUDIO_URL} loop autoPlay />
+      <audio ref={audioRef} src={AUDIO_URL} loop preload="auto" />
       <button
         onClick={toggleMute}
         title={isMuted ? "Unmute Background Music" : "Mute Background Music"}
