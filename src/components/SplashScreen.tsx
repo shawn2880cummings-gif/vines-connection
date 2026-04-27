@@ -66,19 +66,20 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
                 : {}
             }
             className="relative mb-12 flex items-center justify-center"
-            style={{ width: "280px", height: "420px" }}
+            style={{ width: "320px", height: "320px" }}
           >
-            <div className="absolute inset-0 rounded-3xl bg-psyche-gold/10 blur-3xl opacity-50" />
-            <video
-              ref={videoRef}
-              src="/vines-logo-animation.mp4"
-              muted
-              playsInline
-              preload="auto"
-              onEnded={handleVideoEnd}
-              className="relative z-10 w-full h-full object-contain rounded-3xl"
-              style={{ maxWidth: "280px", maxHeight: "420px" }}
-            />
+            <div className="absolute inset-0 rounded-full bg-psyche-gold/10 blur-3xl opacity-50" />
+            <div className="relative z-10 w-full h-full rounded-full overflow-hidden border border-white/10 shadow-2xl">
+              <video
+                ref={videoRef}
+                src="/vines-logo-animation.mp4"
+                muted
+                playsInline
+                preload="auto"
+                onEnded={handleVideoEnd}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </motion.div>
 
           {/* Title + Button - only shown before video plays */}
