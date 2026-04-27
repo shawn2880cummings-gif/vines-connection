@@ -77,7 +77,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
                 playsInline
                 preload="auto"
                 onEnded={handleVideoEnd}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
           </motion.div>
