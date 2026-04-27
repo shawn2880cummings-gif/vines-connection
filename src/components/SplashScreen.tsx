@@ -78,6 +78,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
                 preload="auto"
                 onEnded={handleVideoEnd}
                 className="w-full h-full object-cover"
+                style={{ objectPosition: "center 35%" }}
               />
             </div>
           </motion.div>
