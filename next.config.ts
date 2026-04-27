@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "pe56d.s3.amazonaws.com" },
     ],
   },
+  output: "standalone",
 };
 
 export default nextConfig;
