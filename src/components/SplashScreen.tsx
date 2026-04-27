@@ -66,7 +66,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
                 : {}
             }
             className="relative mb-12 flex items-center justify-center"
-            style={{ width: "320px", height: "320px" }}
+            style={{ width: "400px", height: "400px" }}
           >
             <div className="absolute inset-0 rounded-full bg-psyche-gold/10 blur-3xl opacity-50" />
             <div className="relative z-10 w-full h-full rounded-full overflow-hidden border border-white/10 shadow-2xl">
