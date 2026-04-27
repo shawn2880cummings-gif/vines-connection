@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 
-const AUDIO_URL = "https://cdn.pixabay.com/audio/2023/11/10/audio_738c053fc9.mp3";
+const AUDIO_URL = "https://cdn.pixabay.com/audio/2023/11/04/audio_f98ed9fd95.mp3";
 
 const BackgroundMusic = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
