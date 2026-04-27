@@ -17,7 +17,7 @@ export default function UniversityPage() {
     {
       title: "Collapse Recursion",
       description: "Master the logic of coherence. A deep dive into the foundational principles of recursion, vortex math, and the dismantling of institutional distortions.",
-      link: "https://melanin-intelligence-course.vercel.app/course/collapse-recursion", // Assuming it's a route in the same platform
+      link: "https://collapse-recursion.vercel.app",
       image: "/images/collapse-recursion.png", // Updated custom image
       badge: "Foundational",
       color: "from-psyche-violet to-psyche-magenta"
