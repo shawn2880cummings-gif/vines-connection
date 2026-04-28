@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-
+import { LeadMagnet } from "@/components/LeadMagnet";
 export default function Home() {
   const fadeInUp = {
     initial: { opacity: 0, y: 30 },
@@ -223,6 +223,8 @@ export default function Home() {
           </div>
         </motion.div>
       </section>
+
+      <LeadMagnet />
 
       {/* Topics / Pillars Section */}
       <section className="border-t border-border py-24 bg-celestial-900/30">

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-
+import { LeadMagnet } from "@/components/LeadMagnet";
 export default function UniversityPage() {
   const courses = [
     {
@@ -104,6 +104,10 @@ export default function UniversityPage() {
               </div>
             </motion.div>
           ))}
+        </div>
+
+        <div className="mt-2 text-center md:-mt-8 relative z-20">
+          <LeadMagnet />
         </div>
 
         <motion.div 
