@@ -72,6 +72,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
               <video
                 ref={videoRef}
                 src="/vines-logo-animation.mp4"
+                poster="/vines-logo.jpg"
                 muted
                 playsInline
                 preload="auto"
