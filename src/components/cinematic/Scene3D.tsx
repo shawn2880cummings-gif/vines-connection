@@ -126,10 +126,12 @@ type PlanetSpec = {
 };
 
 const PLANETS: PlanetSpec[] = [
-  { texture: "marsmap1k.jpg", z: -22, x: -7, y: 3, r: 1.3, spin: 0.12 },
-  { texture: "jupitermap.jpg", z: -40, x: 8.5, y: -3.5, r: 2.8, spin: 0.18 },
-  { texture: "saturnmap.jpg", z: -58, x: -9, y: 4, r: 2.2, ring: true, spin: 0.16 },
-  { texture: "neptunemap.jpg", z: -76, x: 7.5, y: -2.5, r: 1.9, spin: 0.1 },
+  // Flying inward toward Earth: outermost planet first, Mars last.
+  { texture: "neptunemap.jpg", z: -20, x: -6, y: 3, r: 1.5, spin: 0.1 },
+  { texture: "uranusmap.jpg", z: -36, x: 7, y: -3, r: 1.7, spin: 0.12 },
+  { texture: "saturnmap.jpg", z: -52, x: -8.5, y: 3.5, r: 2.2, ring: true, spin: 0.16 },
+  { texture: "jupitermap.jpg", z: -68, x: 8.5, y: -3, r: 2.9, spin: 0.18 },
+  { texture: "marsmap1k.jpg", z: -85, x: -5.5, y: 2.5, r: 1.1, spin: 0.12 },
 ];
 
 function SaturnRings({ radius }: { radius: number }) {
