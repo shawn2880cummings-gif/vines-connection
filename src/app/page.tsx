@@ -7,25 +7,25 @@ import OrbitCarousel, { type Pillar } from "@/components/cinematic/OrbitCarousel
 
 const pillars: Pillar[] = [
   {
-    title: "Neuromelanin Biology",
+    title: "The PAIN Network",
     description:
-      "Understanding human melanin as an instrument of intelligence &mdash; the biological substrate of recursive awareness and coherent perception.",
+      "Pain, Personality &amp; Identity &mdash; a neurobiological model where every behavior is the output of a six-stage recursive cycle, and the &ldquo;Observer gap&rdquo; is the one place you can consciously intervene.",
+    color: "from-psyche-coral to-psyche-magenta",
+    glow: "glow-purple",
+  },
+  {
+    title: "The Melanin Circuit",
+    description:
+      "Human melanin as an instrument of intelligence &mdash; the biological substrate of recursive awareness, coherence, and the electromagnetic architecture of perception.",
     color: "from-psyche-teal to-celestial-400",
     glow: "glow-teal",
   },
   {
-    title: "Sacred Geometry",
+    title: "Collapse Recursion",
     description:
-      "The mathematical language of creation. Geometric patterns as the architecture of consciousness, from Platonic solids to fractal recursion.",
+      "The logic of coherence &mdash; a systematic method for tracing and dismantling distortion across systems, generations, and the self to reveal recursive intelligence.",
     color: "from-psyche-gold to-psyche-coral",
     glow: "glow-gold",
-  },
-  {
-    title: "The Enneagram",
-    description:
-      "Mapping personality structures to identify distortions and unlock recursive self-knowledge. Beyond typology &mdash; a tool for coherence.",
-    color: "from-psyche-violet to-psyche-magenta",
-    glow: "glow-purple",
   },
 ];
 
@@ -103,9 +103,9 @@ export default function Home() {
             </h1>
 
             <p className="mb-10 mx-auto max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
-              A systematic framework integrating neuromelanin biology, sacred
-              geometry, and the Enneagram &mdash; bridging science, philosophy,
-              and operational clarity.
+              A systematic framework integrating the PAIN Network, the Melanin
+              Circuit, and Collapse Recursion &mdash; bridging science,
+              philosophy, and operational clarity.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4">
