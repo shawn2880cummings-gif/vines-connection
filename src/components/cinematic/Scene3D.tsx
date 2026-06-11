@@ -6,188 +6,93 @@ import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { scrollState } from "./scrollStore";
 
-// Brand palette (mirrors globals.css @theme tokens)
-const GOLD = "#f0a830";
+// Brand-tinted galaxy palette
+const CORE = "#ffd9a0"; // warm golden core
+const MID = "#f0a830"; // gold
+const ARM = "#5a3cb8"; // celestial violet arms
 const TEAL = "#20c9b0";
-const MAGENTA = "#e83e8c";
-const VIOLET = "#7b5cd4";
-const INDIGO = "#000209";
+const VOID = "#000209"; // abyssal background
 
 /* ------------------------------------------------------------------ *
- *  Double golden vine helix — the brand's "Vines Connection" centrepiece
+ *  Spiral galaxy — thousands of stars in rotating arms
  * ------------------------------------------------------------------ */
-function makeHelixCurve(offset: number, turns = 5, height = 14, radius = 1.6) {
-  const pts: THREE.Vector3[] = [];
-  const steps = 240;
-  for (let i = 0; i <= steps; i++) {
-    const t = i / steps;
-    const angle = t * Math.PI * 2 * turns + offset;
-    // Vine tapers and breathes outward toward the middle
-    const r = radius * (0.55 + 0.45 * Math.sin(t * Math.PI));
-    pts.push(
-      new THREE.Vector3(
-        Math.cos(angle) * r,
-        (t - 0.5) * height,
-        Math.sin(angle) * r
-      )
-    );
-  }
-  return new THREE.CatmullRomCurve3(pts);
-}
-
-function VineHelix() {
-  const group = useRef<THREE.Group>(null);
-
-  const { tubeA, tubeB, nodes } = useMemo(() => {
-    const curveA = makeHelixCurve(0);
-    const curveB = makeHelixCurve(Math.PI);
-    const tubeA = new THREE.TubeGeometry(curveA, 240, 0.05, 12, false);
-    const tubeB = new THREE.TubeGeometry(curveB, 240, 0.05, 12, false);
-
-    // Leaf / light nodes scattered along both strands
-    const nodes: { pos: THREE.Vector3; scale: number; color: string }[] = [];
-    const palette = [GOLD, TEAL, MAGENTA];
-    for (let i = 0; i <= 40; i++) {
-      const t = i / 40;
-      [curveA, curveB].forEach((c, idx) => {
-        const p = c.getPoint(t);
-        nodes.push({
-          pos: p,
-          scale: 0.05 + Math.random() * 0.07,
-          color: palette[(i + idx) % palette.length],
-        });
-      });
-    }
-    return { tubeA, tubeB, nodes };
-  }, []);
-
-  useFrame((_, delta) => {
-    if (group.current) group.current.rotation.y += delta * 0.12;
-  });
-
-  return (
-    <group ref={group}>
-      <mesh geometry={tubeA}>
-        <meshStandardMaterial
-          color={GOLD}
-          emissive={GOLD}
-          emissiveIntensity={1.6}
-          roughness={0.25}
-          metalness={0.8}
-        />
-      </mesh>
-      <mesh geometry={tubeB}>
-        <meshStandardMaterial
-          color={"#ffd27a"}
-          emissive={GOLD}
-          emissiveIntensity={1.2}
-          roughness={0.3}
-          metalness={0.7}
-        />
-      </mesh>
-      {nodes.map((n, i) => (
-        <mesh key={i} position={n.pos} scale={n.scale}>
-          <sphereGeometry args={[1, 16, 16]} />
-          <meshStandardMaterial
-            color={n.color}
-            emissive={n.color}
-            emissiveIntensity={2.2}
-            toneMapped={false}
-          />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- *  Sacred geometry — nested wireframe polyhedra
- * ------------------------------------------------------------------ */
-function SacredGeometry() {
-  const ico = useRef<THREE.LineSegments>(null);
-  const dodec = useRef<THREE.LineSegments>(null);
-
-  const icoGeo = useMemo(
-    () => new THREE.EdgesGeometry(new THREE.IcosahedronGeometry(3.4, 0)),
-    []
-  );
-  const dodecGeo = useMemo(
-    () => new THREE.EdgesGeometry(new THREE.DodecahedronGeometry(4.6, 0)),
-    []
-  );
-
-  useFrame((_, delta) => {
-    if (ico.current) {
-      ico.current.rotation.x += delta * 0.05;
-      ico.current.rotation.y -= delta * 0.07;
-    }
-    if (dodec.current) {
-      dodec.current.rotation.y += delta * 0.04;
-      dodec.current.rotation.z += delta * 0.03;
-    }
-  });
-
-  return (
-    <group>
-      <lineSegments ref={ico} geometry={icoGeo}>
-        <lineBasicMaterial color={VIOLET} transparent opacity={0.5} />
-      </lineSegments>
-      <lineSegments ref={dodec} geometry={dodecGeo}>
-        <lineBasicMaterial color={TEAL} transparent opacity={0.28} />
-      </lineSegments>
-    </group>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- *  Particle nebula
- * ------------------------------------------------------------------ */
-function Nebula({ count = 2600 }: { count?: number }) {
+function Galaxy() {
   const ref = useRef<THREE.Points>(null);
 
   const { positions, colors } = useMemo(() => {
+    const count = 24000;
+    const radius = 11;
+    const branches = 4;
+    const spin = 1.15;
+    const randomness = 0.3;
+    const randomnessPower = 2.6;
+
+    const core = new THREE.Color(CORE);
+    const mid = new THREE.Color(MID);
+    const arm = new THREE.Color(ARM);
+    const teal = new THREE.Color(TEAL);
+
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
-    const palette = [
-      new THREE.Color(GOLD),
-      new THREE.Color(TEAL),
-      new THREE.Color(MAGENTA),
-      new THREE.Color(VIOLET),
-      new THREE.Color("#ffffff"),
-    ];
+
     for (let i = 0; i < count; i++) {
-      const r = 6 + Math.random() * 22;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 30;
-      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
-      const c = palette[Math.floor(Math.random() * palette.length)];
-      colors[i * 3] = c.r;
-      colors[i * 3 + 1] = c.g;
-      colors[i * 3 + 2] = c.b;
+      const r = Math.pow(Math.random(), 1.4) * radius; // denser toward center
+      const branchAngle = ((i % branches) / branches) * Math.PI * 2;
+      const spinAngle = r * spin;
+
+      const sign = () => (Math.random() < 0.5 ? 1 : -1);
+      const rx = Math.pow(Math.random(), randomnessPower) * sign() * randomness * r;
+      const ry =
+        Math.pow(Math.random(), randomnessPower) * sign() * randomness * r * 0.4;
+      const rz = Math.pow(Math.random(), randomnessPower) * sign() * randomness * r;
+
+      const a = branchAngle + spinAngle;
+      positions[i * 3] = Math.cos(a) * r + rx;
+      positions[i * 3 + 1] = ry; // thin disk
+      positions[i * 3 + 2] = Math.sin(a) * r + rz;
+
+      // Color: warm core -> gold -> violet arms, with teal sparkle outside
+      const t = r / radius;
+      const col = core.clone().lerp(mid, Math.min(1, t * 1.6));
+      col.lerp(arm, t);
+      if (Math.random() < 0.08) col.lerp(teal, 0.6); // occasional teal stars
+      colors[i * 3] = col.r;
+      colors[i * 3 + 1] = col.g;
+      colors[i * 3 + 2] = col.b;
     }
     return { positions, colors };
-  }, [count]);
+  }, []);
 
-  useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.015;
+  useFrame((st, delta) => {
+    if (!ref.current) return;
+    // Smooth the scroll progress
+    scrollState.smooth = THREE.MathUtils.damp(
+      scrollState.smooth,
+      scrollState.progress,
+      3,
+      delta
+    );
+    const p = scrollState.smooth;
+    const t = st.clock.elapsedTime;
+
+    // Constant slow spin + extra spin driven by scroll
+    ref.current.rotation.y = t * 0.06 + p * Math.PI * 1.6;
+    // Tilt the disk from near face-on to edge-on as you scroll (the 3D spin)
+    ref.current.rotation.x = 0.35 + p * 1.05;
+    ref.current.rotation.z = p * 0.35;
   });
 
   return (
     <points ref={ref}>
       <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.06}
+        size={0.045}
         vertexColors
         transparent
-        opacity={0.9}
+        opacity={0.95}
         sizeAttenuation
         depthWrite={false}
         blending={THREE.AdditiveBlending}
@@ -197,184 +102,55 @@ function Nebula({ count = 2600 }: { count?: number }) {
 }
 
 /* ------------------------------------------------------------------ *
- *  Connected node-network ("hashgraph" style living web)
+ *  Distant starfield for depth
  * ------------------------------------------------------------------ */
-function NodeNetwork({ count = 90 }: { count?: number }) {
-  const pointsGeo = useRef<THREE.BufferGeometry>(null);
-  const lineGeo = useRef<THREE.BufferGeometry>(null);
+function Starfield({ count = 1800 }: { count?: number }) {
+  const ref = useRef<THREE.Points>(null);
 
-  const BOX = useMemo(() => ({ x: 16, y: 26, z: 16 }), []);
-  const baseThreshold = 3.6;
-
-  // Node positions (shared as the points attribute buffer) + velocities
-  const { positions, velocities, nodeColors } = useMemo(() => {
-    const positions = new Float32Array(count * 3);
-    const velocities = new Float32Array(count * 3);
-    const nodeColors = new Float32Array(count * 3);
-    const teal = new THREE.Color(TEAL);
-    const gold = new THREE.Color(GOLD);
+  const positions = useMemo(() => {
+    const arr = new Float32Array(count * 3);
     for (let i = 0; i < count; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * BOX.x;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * BOX.y;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * BOX.z;
-      velocities[i * 3] = (Math.random() - 0.5) * 0.5;
-      velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
-      const col = Math.random() < 0.25 ? gold : teal;
-      nodeColors[i * 3] = col.r;
-      nodeColors[i * 3 + 1] = col.g;
-      nodeColors[i * 3 + 2] = col.b;
+      // Distant shell around the scene
+      const r = 35 + Math.random() * 45;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      arr[i * 3 + 2] = r * Math.cos(phi);
     }
-    return { positions, velocities, nodeColors };
-  }, [count, BOX]);
+    return arr;
+  }, [count]);
 
-  const maxSeg = count * 8;
-  const linePositions = useMemo(() => new Float32Array(maxSeg * 6), [maxSeg]);
-  const lineColors = useMemo(() => new Float32Array(maxSeg * 6), [maxSeg]);
-  const base = useMemo(() => new THREE.Color(TEAL), []);
-
-  useFrame((st, delta) => {
-    const d = Math.min(delta, 0.05);
-    // Web reshapes as you scroll — more links form on the descent
-    const thr = baseThreshold * (1 + scrollState.smooth * 0.45);
-    // Pointer target mapped into scene space (web follows the mouse)
-    const px = st.pointer.x * BOX.x * 0.5;
-    const py = st.pointer.y * BOX.y * 0.5;
-
-    for (let i = 0; i < count; i++) {
-      const ix = i * 3,
-        iy = i * 3 + 1,
-        iz = i * 3 + 2;
-      const dxp = px - positions[ix];
-      const dyp = py - positions[iy];
-      const distP = Math.hypot(dxp, dyp) + 0.001;
-      if (distP < 6) {
-        velocities[ix] += (dxp / distP) * 0.025;
-        velocities[iy] += (dyp / distP) * 0.025;
-      }
-      positions[ix] += velocities[ix] * d;
-      positions[iy] += velocities[iy] * d;
-      positions[iz] += velocities[iz] * d;
-      velocities[ix] *= 0.985;
-      velocities[iy] *= 0.985;
-      velocities[iz] *= 0.985;
-      // wrap within the box
-      if (positions[ix] > BOX.x / 2) positions[ix] = -BOX.x / 2;
-      else if (positions[ix] < -BOX.x / 2) positions[ix] = BOX.x / 2;
-      if (positions[iy] > BOX.y / 2) positions[iy] = -BOX.y / 2;
-      else if (positions[iy] < -BOX.y / 2) positions[iy] = BOX.y / 2;
-      if (positions[iz] > BOX.z / 2) positions[iz] = -BOX.z / 2;
-      else if (positions[iz] < -BOX.z / 2) positions[iz] = BOX.z / 2;
-    }
-
-    // Build connections between nearby nodes
-    let seg = 0;
-    for (let i = 0; i < count && seg < maxSeg; i++) {
-      const ax = positions[i * 3],
-        ay = positions[i * 3 + 1],
-        az = positions[i * 3 + 2];
-      for (let j = i + 1; j < count && seg < maxSeg; j++) {
-        const bx = positions[j * 3],
-          by = positions[j * 3 + 1],
-          bz = positions[j * 3 + 2];
-        const dx = ax - bx,
-          dy = ay - by,
-          dz = az - bz;
-        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-        if (dist < thr) {
-          const a = 1 - dist / thr; // brighter when closer
-          const o = seg * 6;
-          linePositions[o] = ax;
-          linePositions[o + 1] = ay;
-          linePositions[o + 2] = az;
-          linePositions[o + 3] = bx;
-          linePositions[o + 4] = by;
-          linePositions[o + 5] = bz;
-          const r = base.r * a,
-            g = base.g * a,
-            b = base.b * a;
-          lineColors[o] = r;
-          lineColors[o + 1] = g;
-          lineColors[o + 2] = b;
-          lineColors[o + 3] = r;
-          lineColors[o + 4] = g;
-          lineColors[o + 5] = b;
-          seg++;
-        }
-      }
-    }
-
-    if (pointsGeo.current) {
-      pointsGeo.current.attributes.position.needsUpdate = true;
-    }
-    if (lineGeo.current) {
-      lineGeo.current.attributes.position.needsUpdate = true;
-      lineGeo.current.attributes.color.needsUpdate = true;
-      lineGeo.current.setDrawRange(0, seg * 2);
-    }
+  useFrame((_, delta) => {
+    if (ref.current) ref.current.rotation.y += delta * 0.005;
   });
 
   return (
-    <group>
-      <lineSegments>
-        <bufferGeometry ref={lineGeo}>
-          <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
-          <bufferAttribute attach="attributes-color" args={[lineColors, 3]} />
-        </bufferGeometry>
-        <lineBasicMaterial
-          vertexColors
-          transparent
-          opacity={0.7}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </lineSegments>
-      <points>
-        <bufferGeometry ref={pointsGeo}>
-          <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-          <bufferAttribute attach="attributes-color" args={[nodeColors, 3]} />
-        </bufferGeometry>
-        <pointsMaterial
-          size={0.14}
-          vertexColors
-          transparent
-          opacity={0.95}
-          sizeAttenuation
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
-    </group>
+    <points ref={ref}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.09}
+        color="#cdd6ff"
+        transparent
+        opacity={0.7}
+        sizeAttenuation
+        depthWrite={false}
+      />
+    </points>
   );
 }
 
 /* ------------------------------------------------------------------ *
- *  Scroll-driven cinematic camera rig
+ *  Camera: gentle pointer parallax
  * ------------------------------------------------------------------ */
 function CameraRig() {
-  useFrame((state, delta) => {
-    // Damp the raw scroll progress for buttery motion
-    scrollState.smooth = THREE.MathUtils.damp(
-      scrollState.smooth,
-      scrollState.progress,
-      3,
-      delta
-    );
-    const p = scrollState.smooth;
-    const cam = state.camera;
-
-    // Dolly down the helix and orbit gently as the user scrolls
-    const angle = p * Math.PI * 1.4;
-    const radius = 8 - p * 2.5;
-    cam.position.x = Math.sin(angle) * radius;
-    cam.position.z = Math.cos(angle) * radius;
-    cam.position.y = 6 - p * 12; // travel from top of helix to bottom
-
-    // Subtle parallax from pointer
-    cam.position.x += state.pointer.x * 0.6;
-    cam.position.y += state.pointer.y * 0.4;
-
-    cam.lookAt(0, 2 - p * 10, 0);
+  useFrame((st) => {
+    const cam = st.camera;
+    cam.position.x += (st.pointer.x * 1.4 - cam.position.x) * 0.03;
+    cam.position.y += (2 + st.pointer.y * 0.8 - cam.position.y) * 0.03;
+    cam.lookAt(0, 0, 0);
   });
   return null;
 }
@@ -382,33 +158,29 @@ function CameraRig() {
 export default function Scene3D() {
   return (
     <Canvas
-      camera={{ position: [0, 6, 8], fov: 60 }}
+      camera={{ position: [0, 2, 13], fov: 60 }}
       gl={{ antialias: true, powerPreference: "high-performance" }}
       dpr={[1, 1.75]}
     >
-      <color attach="background" args={[INDIGO]} />
-      <fog attach="fog" args={[INDIGO, 10, 30]} />
+      <color attach="background" args={[VOID]} />
+      <fog attach="fog" args={[VOID, 22, 60]} />
 
-      <ambientLight intensity={0.4} />
-      <pointLight position={[0, 6, 4]} intensity={40} color={GOLD} distance={30} />
-      <pointLight position={[-6, -4, 2]} intensity={30} color={TEAL} distance={30} />
-      <pointLight position={[6, 0, -4]} intensity={25} color={MAGENTA} distance={30} />
+      {/* Glowing galactic core light */}
+      <pointLight position={[0, 0, 0]} intensity={6} color={CORE} distance={20} />
 
-      <Nebula count={1700} />
-      <NodeNetwork />
-      <SacredGeometry />
-      <VineHelix />
+      <Starfield />
+      <Galaxy />
 
       <CameraRig />
 
       <EffectComposer>
         <Bloom
-          intensity={1.15}
-          luminanceThreshold={0.2}
+          intensity={1.3}
+          luminanceThreshold={0.15}
           luminanceSmoothing={0.9}
           mipmapBlur
         />
-        <Vignette eskil={false} offset={0.25} darkness={0.85} />
+        <Vignette eskil={false} offset={0.2} darkness={0.9} />
       </EffectComposer>
     </Canvas>
   );
