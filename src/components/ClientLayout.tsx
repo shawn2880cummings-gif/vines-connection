@@ -6,7 +6,7 @@ import Footer from "@/components/Footer";
 import BackgroundMusic from "@/components/BackgroundMusic";
 import SplashScreen from "@/components/SplashScreen";
 import CinematicBackground from "@/components/cinematic/CinematicBackground";
-import WarpTransition from "@/components/cinematic/WarpTransition";
+import RouteTransition from "@/components/cinematic/RouteTransition";
 
 export default function ClientLayout({
   children,
@@ -25,7 +25,7 @@ export default function ClientLayout({
       <SplashScreen onEnter={handleEnter} />
       <Navbar />
       <main className="pt-[72px]">{children}</main>
-      <WarpTransition />
+      <RouteTransition />
       <Footer />
       <BackgroundMusic />
     </>
