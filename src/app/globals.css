@@ -33,14 +33,14 @@
   --color-psyche-lime: #a8e06c;
   --color-psyche-violet: #9b59b6;
 
-  /* Semantic tokens */
-  --color-bg-primary: #0d0628;
-  --color-bg-secondary: #1a0e4a;
-  --color-bg-card: rgba(42, 24, 112, 0.5);
-  --color-text-primary: #f0e0cc;
-  --color-text-secondary: #c9a07a;
+  /* Semantic tokens — abyssal premium palette */
+  --color-bg-primary: #000209;
+  --color-bg-secondary: #05070f;
+  --color-bg-card: rgba(255, 255, 255, 0.04);
+  --color-text-primary: #eeeeee;
+  --color-text-secondary: #aab2c5;
   --color-text-accent: #f0a830;
-  --color-border: rgba(93, 60, 184, 0.3);
+  --color-border: rgba(255, 255, 255, 0.08);
 
   /* Fonts */
   --font-heading: "Georgia", "Times New Roman", serif;
@@ -66,15 +66,38 @@ body {
   );
 }
 
-.gradient-card {
+/* Translucent hero backdrop — lets the cinematic 3D scene show through */
+.gradient-hero-veil {
   background: linear-gradient(
-    160deg,
-    rgba(42, 24, 112, 0.6) 0%,
-    rgba(61, 16, 112, 0.4) 50%,
-    rgba(107, 61, 34, 0.3) 100%
+    135deg,
+    rgba(0, 2, 9, 0.6) 0%,
+    rgba(5, 7, 15, 0.3) 50%,
+    rgba(0, 2, 9, 0.55) 100%
   );
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--color-border);
+  backdrop-filter: blur(2px);
+}
+
+/* Floating content — no box. Text reads directly over the 3D scene,
+   with a soft shadow for legibility over bright areas (planets/stars). */
+.gradient-card {
+  background: transparent;
+  border: none;
+  text-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.9),
+    0 0 6px rgba(0, 0, 0, 0.7);
+}
+/* Buttons have their own background — keep their text crisp (no shadow) */
+.gradient-card a,
+.gradient-card button {
+  text-shadow: none;
+}
+
+/* Editorial numbered section marker */
+.section-index {
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
+  color: rgba(32, 201, 176, 0.75);
 }
 
 .gradient-accent {
@@ -87,15 +110,12 @@ body {
 }
 
 .gradient-text {
-  background: linear-gradient(
-    90deg,
-    var(--color-psyche-gold),
-    var(--color-psyche-teal),
-    var(--color-psyche-magenta)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none;
+  color: var(--color-psyche-teal);
+  -webkit-text-fill-color: var(--color-psyche-teal);
+  text-shadow:
+    0 0 18px rgba(32, 201, 176, 0.5),
+    0 0 42px rgba(32, 201, 176, 0.25);
 }
 
 /* Glow effects */

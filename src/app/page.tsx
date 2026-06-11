@@ -3,26 +3,44 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import OrbitCarousel, { type Pillar } from "@/components/cinematic/OrbitCarousel";
+
+const pillars: Pillar[] = [
+  {
+    title: "The PAIN Network",
+    description:
+      "Pain, Personality &amp; Identity &mdash; a neurobiological model where every behavior is the output of a six-stage recursive cycle, and the &ldquo;Observer gap&rdquo; is the one place you can consciously intervene.",
+    color: "from-psyche-coral to-psyche-magenta",
+    glow: "glow-purple",
+  },
+  {
+    title: "The Melanin Circuit",
+    description:
+      "Human melanin as an instrument of intelligence &mdash; the biological substrate of recursive awareness, coherence, and the electromagnetic architecture of perception.",
+    color: "from-psyche-teal to-celestial-400",
+    glow: "glow-teal",
+  },
+  {
+    title: "Collapse Recursion",
+    description:
+      "The logic of coherence &mdash; a systematic method for tracing and dismantling distortion across systems, generations, and the self to reveal recursive intelligence.",
+    color: "from-psyche-gold to-psyche-coral",
+    glow: "glow-gold",
+  },
+];
 
 export default function Home() {
   const fadeInUp = {
-    initial: { opacity: 0, y: 30 },
-    whileInView: { opacity: 1, y: 0 },
+    initial: { opacity: 0, y: 44, filter: "blur(10px)" },
+    whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
     viewport: { once: true, margin: "-100px" },
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as any }
-  };
-
-  const staggerContainer = {
-    initial: { opacity: 0 },
-    whileInView: { opacity: 1 },
-    viewport: { once: true },
-    transition: { staggerChildren: 0.2 }
+    transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] as any }
   };
 
   return (
     <>
       {/* Hero Section */}
-      <section className="gradient-hero relative min-h-[90vh] overflow-hidden">
+      <section className="relative min-h-[90vh] overflow-hidden">
         {/* Floating orbs */}
         <div className="orb left-[10%] top-[20%] h-64 w-64 bg-psyche-teal/20" />
         <div
@@ -77,7 +95,7 @@ export default function Home() {
             </div>
 
             <h1
-              className="mb-6 max-w-4xl text-5xl leading-tight font-bold md:text-7xl"
+              className="mb-8 max-w-5xl text-6xl leading-[1.05] font-bold md:text-8xl"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Dismantle Incoherence.{" "}
@@ -85,9 +103,9 @@ export default function Home() {
             </h1>
 
             <p className="mb-10 mx-auto max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
-              A systematic framework integrating neuromelanin biology, sacred
-              geometry, and the Enneagram &mdash; bridging science, philosophy,
-              and operational clarity.
+              A systematic framework integrating the PAIN Network, the Melanin
+              Circuit, and Collapse Recursion &mdash; bridging science,
+              philosophy, and operational clarity.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4">
@@ -108,21 +126,16 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-
-        {/* Bottom gradient fade */}
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
       </section>
 
       {/* Featured Book Section */}
-      <section className="relative py-24 overflow-hidden">
+      <section className="relative py-32 overflow-hidden">
         <motion.div 
           {...fadeInUp}
           className="mx-auto max-w-7xl px-6"
         >
           <div className="mb-4 text-center">
-            <span className="text-sm tracking-widest text-psyche-teal uppercase">
-              Featured Release
-            </span>
+            <span className="section-index">// 01 &mdash; The Work</span>
           </div>
           <h2
             className="mb-16 text-center text-4xl font-bold text-text-primary md:text-5xl"
@@ -227,85 +240,27 @@ export default function Home() {
 
 
       {/* Topics / Pillars Section */}
-      <section className="border-t border-border py-24 bg-celestial-900/30">
+      <section className="border-t border-border py-32">
         <div className="mx-auto max-w-7xl px-6">
-          <motion.div {...fadeInUp} className="mb-4 text-center">
-            <span className="text-sm tracking-widest text-psyche-gold uppercase">
-              Core Pillars
-            </span>
+          <motion.div {...fadeInUp} className="mb-16 text-center">
+            <span className="section-index">// 02 &mdash; The Framework</span>
             <h2
-              className="mt-4 mb-16 text-4xl font-bold text-text-primary"
+              className="mt-4 text-4xl font-bold text-text-primary"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               What We Explore
             </h2>
           </motion.div>
 
-          <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-            className="grid gap-8 md:grid-cols-3"
-          >
-            {[
-              {
-                title: "Neuromelanin Biology",
-                description:
-                  "Understanding human melanin as an instrument of intelligence &mdash; the biological substrate of recursive awareness and coherent perception.",
-                color: "from-psyche-teal to-celestial-400",
-                glow: "glow-teal",
-              },
-              {
-                title: "Sacred Geometry",
-                description:
-                  "The mathematical language of creation. Geometric patterns as the architecture of consciousness, from Platonic solids to fractal recursion.",
-                color: "from-psyche-gold to-psyche-coral",
-                glow: "glow-gold",
-              },
-              {
-                title: "The Enneagram",
-                description:
-                  "Mapping personality structures to identify distortions and unlock recursive self-knowledge. Beyond typology &mdash; a tool for coherence.",
-                color: "from-psyche-violet to-psyche-magenta",
-                glow: "glow-purple",
-              },
-            ].map((pillar) => (
-              <motion.div
-                key={pillar.title}
-                variants={{
-                  initial: { opacity: 0, y: 20 },
-                  whileInView: { opacity: 1, y: 0 }
-                }}
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
-                className={`gradient-card rounded-2xl p-8 transition-shadow duration-300 ${pillar.glow} cursor-default`}
-              >
-                <div
-                  className={`mb-4 h-1 w-16 rounded-full bg-gradient-to-r ${pillar.color}`}
-                />
-                <h3
-                  className="mb-3 text-xl font-bold text-text-primary"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  {pillar.title}
-                </h3>
-                <p
-                  className="leading-relaxed text-text-secondary"
-                  dangerouslySetInnerHTML={{ __html: pillar.description }}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
+          <OrbitCarousel pillars={pillars} />
         </div>
       </section>
 
       {/* Research Section */}
-      <section id="research" className="border-t border-border py-24 relative overflow-hidden">
+      <section id="research" className="border-t border-border py-32 relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div {...fadeInUp} className="text-center">
-            <span className="text-sm tracking-widest text-psyche-teal uppercase">
-              Peer-Reviewed Work
-            </span>
+            <span className="section-index">// 03 &mdash; The Research</span>
             <h2
               className="mt-4 mb-16 text-4xl font-bold text-text-primary md:text-5xl"
               style={{ fontFamily: "var(--font-heading)" }}
@@ -321,7 +276,7 @@ export default function Home() {
             transition={{ duration: 1 }}
             className="mx-auto max-w-3xl"
           >
-            <div className="gradient-card glow-teal rounded-2xl p-8 md:p-10 border border-white/5 relative overflow-hidden">
+            <div className="gradient-card rounded-2xl p-8 md:p-10 relative overflow-hidden">
               <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-psyche-teal/5 blur-3xl animate-pulse" />
               
               <p className="relative z-10 mb-8 text-lg leading-relaxed text-text-secondary">
@@ -330,7 +285,7 @@ export default function Home() {
                 published and archived through CERN&apos;s Zenodo repository.
               </p>
 
-              <div className="mb-8 flex items-center gap-4 rounded-xl bg-celestial-800/40 px-6 py-5 border border-white/5">
+              <div className="mb-8 flex items-center gap-4">
                 <Image
                   src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg"
                   alt="ORCID"
@@ -342,9 +297,14 @@ export default function Home() {
                   <p className="text-xs tracking-wider text-psyche-teal uppercase font-semibold">
                     ORCID Profile
                   </p>
-                  <p className="font-mono text-sm text-text-primary mt-1">
-                    0009-0006-4312-526X
-                  </p>
+                  <a
+                    href="https://orcid.org/0009-0006-4312-526X"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-block break-all font-mono text-sm text-psyche-teal underline decoration-dotted underline-offset-4 transition-colors hover:text-psyche-gold"
+                  >
+                    https://orcid.org/0009-0006-4312-526X
+                  </a>
                 </div>
               </div>
 
@@ -383,12 +343,10 @@ export default function Home() {
       </section>
 
       {/* Etheric University Section */}
-      <section id="university" className="border-t border-border py-24 bg-celestial-900/20">
+      <section id="university" className="border-t border-border py-32">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div {...fadeInUp} className="text-center">
-            <span className="text-sm tracking-widest text-psyche-violet uppercase">
-              Learning Platform
-            </span>
+            <span className="section-index">// 04 &mdash; The University</span>
             <h2
               className="mt-4 mb-16 text-4xl font-bold text-text-primary md:text-5xl"
               style={{ fontFamily: "var(--font-heading)" }}
@@ -404,7 +362,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="mx-auto max-w-3xl"
           >
-            <div className="gradient-card glow-purple rounded-3xl p-10 md:p-12 text-center border border-white/5">
+            <div className="gradient-card rounded-3xl p-10 md:p-12 text-center">
               <p className="mb-10 text-xl leading-relaxed text-text-secondary">
                 A learning platform built on a new paradigm. Explore history,
                 mathematics, and science through a lens that expands knowledge
@@ -414,7 +372,7 @@ export default function Home() {
 
               <Link
                 href="/university"
-                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-violet to-psyche-teal px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl"
+                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-violet to-psyche-teal px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
               >
                 Begin Your Spiral
               </Link>
@@ -424,7 +382,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="gradient-hero relative overflow-hidden py-32 border-t border-white/5">
+      <section className="relative overflow-hidden py-32 [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]">
         <div className="orb left-[20%] top-[10%] h-48 w-48 bg-psyche-gold/20" />
         <div
           className="orb right-[10%] bottom-[20%] h-56 w-56 bg-psyche-teal/15"
@@ -453,7 +411,7 @@ export default function Home() {
                 href="https://payhip.com/VinesConnection"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glow-gold rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-10 py-4 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl"
+                className="glow-gold rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-10 py-4 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
               >
                 Browse All Products
               </a>
