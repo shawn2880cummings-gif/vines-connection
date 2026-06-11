@@ -383,6 +383,32 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Presentations Section */}
+      <section className="border-t border-border py-32">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <motion.div {...fadeInUp}>
+            <span className="section-index">// 05 &mdash; The Deck Room</span>
+            <h2
+              className="mt-4 mb-8 text-4xl font-bold text-text-primary md:text-5xl"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              <span className="gradient-text">Presentations</span>
+            </h2>
+            <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-text-secondary">
+              Step inside the research. Full visual presentations &mdash; like{" "}
+              <em>The Eumelanin Standard</em> &mdash; rendered as immersive 3D
+              decks.
+            </p>
+            <Link
+              href="/presentations"
+              className="glow-teal inline-flex rounded-full bg-gradient-to-r from-psyche-teal to-psyche-gold px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
+            >
+              Enter the Deck Room
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="relative overflow-hidden py-32 [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]">
         <div className="orb left-[20%] top-[10%] h-48 w-48 bg-psyche-gold/20" />
