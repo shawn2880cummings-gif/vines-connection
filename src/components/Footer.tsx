@@ -29,6 +29,12 @@ export default function Footer() {
               intelligence. Books and digital products for coherent
               self-discovery.
             </p>
+            <a
+              href="mailto:wisdom@vinesconnection.info"
+              className="mt-4 inline-block text-sm text-psyche-teal transition-colors hover:text-psyche-gold"
+            >
+              wisdom@vinesconnection.info
+            </a>
           </div>
 
           {/* Links */}

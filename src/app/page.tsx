@@ -421,6 +421,49 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+
+      {/* Contact Section */}
+      <section
+        id="contact"
+        className="relative px-6 py-32 text-center [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]"
+      >
+        <motion.div
+          {...fadeInUp}
+          className="mx-auto max-w-2xl"
+        >
+          <span className="section-index">// Contact</span>
+          <h2
+            className="mt-4 mb-6 text-4xl font-bold text-text-primary md:text-5xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            Get in <span className="gradient-text">Touch</span>
+          </h2>
+          <p className="mb-8 text-lg text-text-secondary">
+            Questions, collaborations, or media inquiries &mdash; reach out
+            directly.
+          </p>
+          <a
+            href="mailto:wisdom@vinesconnection.info"
+            className="glow-gold inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-8 py-4 text-lg font-semibold text-celestial-900 transition-all hover:scale-105 active:scale-95 [text-shadow:none]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+            </svg>
+            wisdom@vinesconnection.info
+          </a>
+        </motion.div>
+      </section>
     </>
   );
 }
