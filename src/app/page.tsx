@@ -126,9 +126,6 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-
-        {/* Bottom gradient fade */}
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-bg-primary to-transparent" />
       </section>
 
       {/* Featured Book Section */}
@@ -346,7 +343,7 @@ export default function Home() {
       </section>
 
       {/* Etheric University Section */}
-      <section id="university" className="border-t border-border py-32 bg-celestial-900/20">
+      <section id="university" className="border-t border-border py-32">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div {...fadeInUp} className="text-center">
             <span className="section-index">// 04 &mdash; The University</span>
@@ -385,7 +382,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="gradient-hero-veil relative overflow-hidden py-32 border-t border-white/5">
+      <section className="relative overflow-hidden py-32 [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]">
         <div className="orb left-[20%] top-[10%] h-48 w-48 bg-psyche-gold/20" />
         <div
           className="orb right-[10%] bottom-[20%] h-56 w-56 bg-psyche-teal/15"
