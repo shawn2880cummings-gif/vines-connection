@@ -49,14 +49,16 @@ function Slides({ slides, targetRef, onPick }: SlidesProps) {
 
   const W = 3.5;
   const H = (W * 9) / 16;
-  const geometry = useCurvedGeometry(W, H, 0.55);
+  const geometry = useCurvedGeometry(W, H, 0.45);
 
   const meshes = useRef<(THREE.Mesh | null)[]>([]);
   const current = useRef(0);
 
-  useFrame(() => {
+  useFrame(({ viewport }) => {
     current.current += (targetRef.current - current.current) * 0.12;
     const cur = current.current;
+    // Scale the whole arrangement so the active slide fills most of the view
+    const fit = Math.min(viewport.width / (W * 1.18), viewport.height / (H * 1.25));
     meshes.current.forEach((m, i) => {
       if (!m) return;
       const d = i - cur;
@@ -64,14 +66,14 @@ function Slides({ slides, targetRef, onPick }: SlidesProps) {
       const visible = ad < 3.6;
       m.visible = visible;
       if (!visible) return;
-      m.position.x = d * 2.55;
+      m.position.x = d * W * 0.88 * fit;
       m.position.y = 0;
-      m.position.z = -ad * 1.15;
-      m.rotation.y = clampNum(-d, -1.5, 1.5) * 0.5;
-      const s = 1 / (1 + ad * 0.26);
+      m.position.z = d === 0 ? 0 : -ad * 1.0;
+      m.rotation.y = clampNum(-d, -1.5, 1.5) * 0.45;
+      const s = fit / (1 + ad * 0.3);
       m.scale.setScalar(s);
       const mat = m.material as THREE.MeshBasicMaterial;
-      mat.opacity = ad < 2.4 ? 1 - ad * 0.16 : Math.max(0, (3.6 - ad) / 1.2);
+      mat.opacity = ad < 2.4 ? 1 - ad * 0.14 : Math.max(0, (3.6 - ad) / 1.2);
     });
   });
 
@@ -166,7 +168,7 @@ export default function Coverflow({ slides }: { slides: string[] }) {
   return (
     <div className="relative w-full select-none">
       <div
-        className="relative mx-auto h-[clamp(260px,52vh,560px)] w-full cursor-grab touch-pan-y active:cursor-grabbing"
+        className="relative mx-auto h-[clamp(300px,62vh,720px)] w-full cursor-grab touch-pan-y active:cursor-grabbing"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
