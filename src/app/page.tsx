@@ -3,6 +3,31 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import OrbitCarousel, { type Pillar } from "@/components/cinematic/OrbitCarousel";
+
+const pillars: Pillar[] = [
+  {
+    title: "Neuromelanin Biology",
+    description:
+      "Understanding human melanin as an instrument of intelligence &mdash; the biological substrate of recursive awareness and coherent perception.",
+    color: "from-psyche-teal to-celestial-400",
+    glow: "glow-teal",
+  },
+  {
+    title: "Sacred Geometry",
+    description:
+      "The mathematical language of creation. Geometric patterns as the architecture of consciousness, from Platonic solids to fractal recursion.",
+    color: "from-psyche-gold to-psyche-coral",
+    glow: "glow-gold",
+  },
+  {
+    title: "The Enneagram",
+    description:
+      "Mapping personality structures to identify distortions and unlock recursive self-knowledge. Beyond typology &mdash; a tool for coherence.",
+    color: "from-psyche-violet to-psyche-magenta",
+    glow: "glow-purple",
+  },
+];
 
 export default function Home() {
   const fadeInUp = {
@@ -12,17 +37,10 @@ export default function Home() {
     transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as any }
   };
 
-  const staggerContainer = {
-    initial: { opacity: 0 },
-    whileInView: { opacity: 1 },
-    viewport: { once: true },
-    transition: { staggerChildren: 0.2 }
-  };
-
   return (
     <>
       {/* Hero Section */}
-      <section className="gradient-hero-veil relative min-h-[90vh] overflow-hidden">
+      <section className="relative min-h-[90vh] overflow-hidden">
         {/* Floating orbs */}
         <div className="orb left-[10%] top-[20%] h-64 w-64 bg-psyche-teal/20" />
         <div
@@ -227,75 +245,21 @@ export default function Home() {
 
 
       {/* Topics / Pillars Section */}
-      <section className="border-t border-border py-24 bg-celestial-900/30">
+      <section className="border-t border-border py-24">
         <div className="mx-auto max-w-7xl px-6">
-          <motion.div {...fadeInUp} className="mb-4 text-center">
+          <motion.div {...fadeInUp} className="mb-16 text-center">
             <span className="text-sm tracking-widest text-psyche-gold uppercase">
               Core Pillars
             </span>
             <h2
-              className="mt-4 mb-16 text-4xl font-bold text-text-primary"
+              className="mt-4 text-4xl font-bold text-text-primary"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               What We Explore
             </h2>
           </motion.div>
 
-          <motion.div 
-            variants={staggerContainer}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true }}
-            className="grid gap-8 md:grid-cols-3"
-          >
-            {[
-              {
-                title: "Neuromelanin Biology",
-                description:
-                  "Understanding human melanin as an instrument of intelligence &mdash; the biological substrate of recursive awareness and coherent perception.",
-                color: "from-psyche-teal to-celestial-400",
-                glow: "glow-teal",
-              },
-              {
-                title: "Sacred Geometry",
-                description:
-                  "The mathematical language of creation. Geometric patterns as the architecture of consciousness, from Platonic solids to fractal recursion.",
-                color: "from-psyche-gold to-psyche-coral",
-                glow: "glow-gold",
-              },
-              {
-                title: "The Enneagram",
-                description:
-                  "Mapping personality structures to identify distortions and unlock recursive self-knowledge. Beyond typology &mdash; a tool for coherence.",
-                color: "from-psyche-violet to-psyche-magenta",
-                glow: "glow-purple",
-              },
-            ].map((pillar) => (
-              <motion.div
-                key={pillar.title}
-                variants={{
-                  initial: { opacity: 0, y: 20 },
-                  whileInView: { opacity: 1, y: 0 }
-                }}
-                whileHover={{ y: -10, transition: { duration: 0.3 } }}
-                className={`gradient-card rounded-2xl p-8 transition-shadow duration-300 ${pillar.glow} cursor-default`}
-              >
-                <div
-                  className={`mb-4 h-1 w-16 rounded-full bg-gradient-to-r ${pillar.color}`}
-                />
-                <h3
-                  className="mb-3 text-xl font-bold text-text-primary"
-                  style={{ fontFamily: "var(--font-heading)" }}
-                >
-                  {pillar.title}
-                </h3>
-                <p
-                  className="leading-relaxed text-text-secondary"
-                  dangerouslySetInnerHTML={{ __html: pillar.description }}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
+          <OrbitCarousel pillars={pillars} />
         </div>
       </section>
 
@@ -342,9 +306,14 @@ export default function Home() {
                   <p className="text-xs tracking-wider text-psyche-teal uppercase font-semibold">
                     ORCID Profile
                   </p>
-                  <p className="font-mono text-sm text-text-primary mt-1">
-                    0009-0006-4312-526X
-                  </p>
+                  <a
+                    href="https://orcid.org/0009-0006-4312-526X"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-block break-all font-mono text-sm text-psyche-teal underline decoration-dotted underline-offset-4 transition-colors hover:text-psyche-gold"
+                  >
+                    https://orcid.org/0009-0006-4312-526X
+                  </a>
                 </div>
               </div>
 

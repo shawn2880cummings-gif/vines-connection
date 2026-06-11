@@ -99,15 +99,12 @@ body {
 }
 
 .gradient-text {
-  background: linear-gradient(
-    90deg,
-    var(--color-psyche-gold),
-    var(--color-psyche-teal),
-    var(--color-psyche-magenta)
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  background: none;
+  color: var(--color-psyche-teal);
+  -webkit-text-fill-color: var(--color-psyche-teal);
+  text-shadow:
+    0 0 18px rgba(32, 201, 176, 0.5),
+    0 0 42px rgba(32, 201, 176, 0.25);
 }
 
 /* Glow effects */

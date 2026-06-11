@@ -65,7 +65,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
                   }
                 : {}
             }
-            className="relative mb-12 flex items-center justify-center w-[90vw] h-[90vw] max-w-[620px] max-h-[620px]"
+            className="relative mb-8 flex items-center justify-center w-[60vw] h-[60vw] max-w-[300px] max-h-[300px]"
           >
             <div className="absolute inset-0 rounded-full bg-psyche-gold/10 blur-3xl opacity-50" />
             <div className="relative z-10 w-full h-full rounded-full overflow-hidden border border-white/10 shadow-2xl">
@@ -93,13 +93,9 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onEnter }) => {
                 transition={{ delay: 0.5, duration: 0.8 }}
                 className="text-center"
               >
-                <h1 className="mb-8 text-2xl font-light tracking-[0.3em] text-white/80 md:text-3xl">
-                  VINES CONNECTION
-                </h1>
-
                 <button
                   onClick={handleEnter}
-                  className="group relative overflow-hidden rounded-full border border-white/20 bg-white/5 px-12 py-4 text-sm font-medium tracking-widest text-white transition-all hover:border-white/40 hover:bg-white/10 active:scale-95"
+                  className="group relative overflow-hidden rounded-full border border-psyche-gold/40 bg-white/5 px-12 py-4 text-sm font-medium tracking-widest text-white transition-all hover:border-psyche-gold/70 hover:bg-white/10 active:scale-95"
                 >
                   <span className="relative z-10">ENTER EXPERIENCE</span>
                   <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-1000 group-hover:translate-x-full" />
