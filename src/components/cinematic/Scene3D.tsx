@@ -1,10 +1,14 @@
 "use client";
 
-import { useMemo, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Suspense, useMemo, useRef } from "react";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { EffectComposer, Bloom, Vignette } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { scrollState } from "./scrollStore";
+
+// Planet/earth maps: three.js examples (MIT) + threex.planets
+// (textures by James Hastings-Trew / planetpixelemporium, free with credit)
+const TEX = "/textures/planets";
 
 const CORE = "#ffd9a0";
 const MID = "#f0a830";
@@ -12,13 +16,30 @@ const ARM = "#5a3cb8";
 const TEAL = "#20c9b0";
 const VOID = "#000209";
 
-// Camera flies from z = START toward z = START - TRAVEL as you scroll
 const CAM_START = 14;
 const CAM_TRAVEL = 106; // p=1 -> z = -92
 const EARTH_Z = -98;
 
 /* ------------------------------------------------------------------ *
- *  Galactic vortex — spiral arms forming a tunnel you fly down
+ *  HD Milky Way panorama wrapping the whole journey
+ * ------------------------------------------------------------------ */
+function MilkyWaySkybox() {
+  const map = useLoader(THREE.TextureLoader, `${TEX}/galaxy_starfield.png`);
+  map.colorSpace = THREE.SRGBColorSpace;
+  const ref = useRef<THREE.Mesh>(null);
+  useFrame((_, delta) => {
+    if (ref.current) ref.current.rotation.y += delta * 0.0035;
+  });
+  return (
+    <mesh ref={ref} position={[0, 0, -40]} rotation={[0.4, 0, 0.15]}>
+      <sphereGeometry args={[320, 48, 48]} />
+      <meshBasicMaterial map={map} side={THREE.BackSide} fog={false} />
+    </mesh>
+  );
+}
+
+/* ------------------------------------------------------------------ *
+ *  Galactic vortex — spiral arms forming the tunnel you fly down
  * ------------------------------------------------------------------ */
 function GalaxyVortex() {
   const ref = useRef<THREE.Points>(null);
@@ -39,12 +60,12 @@ function GalaxyVortex() {
     const colors = new Float32Array(count * 3);
 
     for (let i = 0; i < count; i++) {
-      const t = Math.random(); // 0 (front) .. 1 (deep)
+      const t = Math.random();
       const z = zStart - t * depth;
 
       const branchAngle = ((i % branches) / branches) * Math.PI * 2;
-      const twist = t * Math.PI * 6; // arms spiral as the tunnel deepens
-      const armR = 5 + t * 12; // tunnel widens with depth
+      const twist = t * Math.PI * 6;
+      const armR = 5 + t * 12;
 
       const sign = () => (Math.random() < 0.5 ? 1 : -1);
       const jitter = Math.pow(Math.random(), 2.4) * sign() * armR * 0.35;
@@ -55,7 +76,6 @@ function GalaxyVortex() {
       positions[i * 3 + 1] = Math.sin(angle) * radius;
       positions[i * 3 + 2] = z;
 
-      // Inner stars warm, outer stars violet, occasional teal sparkle
       const rt = Math.min(1, radius / (armR + 6));
       const col = core.clone().lerp(mid, Math.min(1, rt * 1.6));
       col.lerp(arm, rt);
@@ -67,9 +87,8 @@ function GalaxyVortex() {
     return { positions, colors };
   }, []);
 
-  useFrame((st, delta) => {
+  useFrame((st) => {
     if (!ref.current) return;
-    // Arms swirl constantly + extra swirl as you scroll
     ref.current.rotation.z =
       st.clock.elapsedTime * 0.04 + scrollState.smooth * Math.PI * 1.2;
   });
@@ -94,175 +113,149 @@ function GalaxyVortex() {
 }
 
 /* ------------------------------------------------------------------ *
- *  Sparse stars filling the whole flight path
+ *  Real-texture planets along the descent
  * ------------------------------------------------------------------ */
-function DeepStars({ count = 3500 }: { count?: number }) {
-  const positions = useMemo(() => {
-    const arr = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 70;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 70;
-      arr[i * 3 + 2] = 16 - Math.random() * 130; // along the travel axis
-    }
-    return arr;
-  }, [count]);
-
-  return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.08}
-        color="#cdd6ff"
-        transparent
-        opacity={0.6}
-        sizeAttenuation
-        depthWrite={false}
-      />
-    </points>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- *  Planets passed along the way
- * ------------------------------------------------------------------ */
-type PlanetData = {
+type PlanetSpec = {
+  texture: string;
   z: number;
   x: number;
   y: number;
   r: number;
-  color: string;
   ring?: boolean;
+  spin: number;
 };
 
-const PLANETS: PlanetData[] = [
-  { z: -22, x: -7, y: 3, r: 1.4, color: "#caa06a" },
-  { z: -40, x: 8, y: -3.5, r: 2.1, color: "#d8b06a", ring: true },
-  { z: -58, x: -8.5, y: 4, r: 1.7, color: "#c2553f" },
-  { z: -76, x: 7.5, y: -2.5, r: 2.6, color: "#6f86d6" },
+const PLANETS: PlanetSpec[] = [
+  { texture: "marsmap1k.jpg", z: -22, x: -7, y: 3, r: 1.3, spin: 0.12 },
+  { texture: "jupitermap.jpg", z: -40, x: 8.5, y: -3.5, r: 2.8, spin: 0.18 },
+  { texture: "saturnmap.jpg", z: -58, x: -9, y: 4, r: 2.2, ring: true, spin: 0.16 },
+  { texture: "neptunemap.jpg", z: -76, x: 7.5, y: -2.5, r: 1.9, spin: 0.1 },
 ];
 
-function Planet({ data }: { data: PlanetData }) {
-  const ref = useRef<THREE.Group>(null);
-  useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.15;
-  });
-  const color = new THREE.Color(data.color);
+function SaturnRings({ radius }: { radius: number }) {
+  const colorMap = useLoader(THREE.TextureLoader, `${TEX}/saturnringcolor.jpg`);
+  const alphaMap = useLoader(THREE.TextureLoader, `${TEX}/saturnringpattern.gif`);
+  colorMap.colorSpace = THREE.SRGBColorSpace;
+
+  // Remap ring UVs radially so the band texture wraps correctly
+  const geometry = useMemo(() => {
+    const inner = radius * 1.35;
+    const outer = radius * 2.35;
+    const geo = new THREE.RingGeometry(inner, outer, 96);
+    const pos = geo.attributes.position;
+    const v = new THREE.Vector3();
+    for (let i = 0; i < pos.count; i++) {
+      v.fromBufferAttribute(pos, i);
+      const u = (v.length() - inner) / (outer - inner);
+      geo.attributes.uv.setXY(i, u, 1);
+    }
+    return geo;
+  }, [radius]);
+
   return (
-    <group ref={ref} position={[data.x, data.y, data.z]}>
-      <mesh>
-        <sphereGeometry args={[data.r, 48, 48]} />
-        <meshStandardMaterial
-          color={data.color}
-          emissive={color.clone().multiplyScalar(0.25)}
-          roughness={0.85}
-          metalness={0.1}
-        />
+    <mesh geometry={geometry} rotation={[-Math.PI / 2.15, 0.18, 0]}>
+      <meshBasicMaterial
+        map={colorMap}
+        alphaMap={alphaMap}
+        transparent
+        opacity={0.9}
+        side={THREE.DoubleSide}
+        depthWrite={false}
+      />
+    </mesh>
+  );
+}
+
+function Planet({ spec }: { spec: PlanetSpec }) {
+  const map = useLoader(THREE.TextureLoader, `${TEX}/${spec.texture}`);
+  map.colorSpace = THREE.SRGBColorSpace;
+  const ref = useRef<THREE.Mesh>(null);
+  useFrame((_, delta) => {
+    if (ref.current) ref.current.rotation.y += delta * spec.spin;
+  });
+  return (
+    <group position={[spec.x, spec.y, spec.z]}>
+      <mesh ref={ref} rotation={[0.1, 0, 0.05]}>
+        <sphereGeometry args={[spec.r, 64, 64]} />
+        <meshStandardMaterial map={map} roughness={0.9} metalness={0} />
       </mesh>
-      {data.ring && (
-        <mesh rotation={[-Math.PI / 2.3, 0, 0.2]}>
-          <ringGeometry args={[data.r * 1.4, data.r * 2.2, 64]} />
-          <meshBasicMaterial
-            color="#e8d3a0"
-            side={THREE.DoubleSide}
-            transparent
-            opacity={0.45}
-          />
-        </mesh>
-      )}
+      {spec.ring && <SaturnRings radius={spec.r} />}
     </group>
   );
 }
 
 /* ------------------------------------------------------------------ *
- *  Earth — the destination at the bottom of the page
+ *  Earth — real NASA-derived maps with clouds, terrain relief and
+ *  ocean specular highlights, plus the Moon
  * ------------------------------------------------------------------ */
-function makeEarthTexture() {
-  const c = document.createElement("canvas");
-  c.width = 1024;
-  c.height = 512;
-  const ctx = c.getContext("2d")!;
-  // Ocean
-  const ocean = ctx.createLinearGradient(0, 0, 0, 512);
-  ocean.addColorStop(0, "#0b2a5b");
-  ocean.addColorStop(0.5, "#12498f");
-  ocean.addColorStop(1, "#0b2a5b");
-  ctx.fillStyle = ocean;
-  ctx.fillRect(0, 0, 1024, 512);
-  // Continents
-  const greens = ["#2f7d3f", "#3c6b2f", "#4f8a3a", "#6b8f3a"];
-  for (let i = 0; i < 70; i++) {
-    ctx.fillStyle = greens[Math.floor(Math.random() * greens.length)];
-    const cx = Math.random() * 1024;
-    const cy = Math.random() * 512;
-    ctx.beginPath();
-    const blobs = 5 + Math.floor(Math.random() * 6);
-    for (let b = 0; b < blobs; b++) {
-      ctx.ellipse(
-        cx + (Math.random() - 0.5) * 90,
-        cy + (Math.random() - 0.5) * 60,
-        10 + Math.random() * 45,
-        8 + Math.random() * 30,
-        Math.random() * Math.PI,
-        0,
-        Math.PI * 2
-      );
-    }
-    ctx.fill();
-  }
-  // Clouds
-  ctx.globalAlpha = 0.35;
-  ctx.fillStyle = "#ffffff";
-  for (let i = 0; i < 40; i++) {
-    ctx.beginPath();
-    ctx.ellipse(
-      Math.random() * 1024,
-      Math.random() * 512,
-      30 + Math.random() * 80,
-      10 + Math.random() * 25,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-  const tex = new THREE.CanvasTexture(c);
-  tex.colorSpace = THREE.SRGBColorSpace;
-  return tex;
-}
-
 function Earth() {
-  const ref = useRef<THREE.Mesh>(null);
-  const tex = useMemo(() => makeEarthTexture(), []);
-  useFrame((_, delta) => {
-    if (ref.current) ref.current.rotation.y += delta * 0.06;
+  const [dayMap, normalMap, specularMap, cloudsMap, moonMap] = useLoader(
+    THREE.TextureLoader,
+    [
+      `${TEX}/earth_atmos_2048.jpg`,
+      `${TEX}/earth_normal_2048.jpg`,
+      `${TEX}/earth_specular_2048.jpg`,
+      `${TEX}/earth_clouds_1024.png`,
+      `${TEX}/moon_1024.jpg`,
+    ]
+  );
+  dayMap.colorSpace = THREE.SRGBColorSpace;
+  moonMap.colorSpace = THREE.SRGBColorSpace;
+
+  const earthRef = useRef<THREE.Mesh>(null);
+  const cloudsRef = useRef<THREE.Mesh>(null);
+  const moonRef = useRef<THREE.Group>(null);
+
+  useFrame((st, delta) => {
+    if (earthRef.current) earthRef.current.rotation.y += delta * 0.05;
+    if (cloudsRef.current) cloudsRef.current.rotation.y += delta * 0.065;
+    if (moonRef.current)
+      moonRef.current.rotation.y = st.clock.elapsedTime * 0.12;
   });
+
   return (
     <group position={[0, 0, EARTH_Z]}>
-      <mesh ref={ref}>
-        <sphereGeometry args={[3, 64, 64]} />
-        <meshStandardMaterial
-          map={tex}
-          emissive={new THREE.Color("#10325f")}
-          emissiveIntensity={0.25}
-          roughness={1}
-          metalness={0}
+      {/* Earth surface */}
+      <mesh ref={earthRef} rotation={[0.41, 0, 0]}>
+        <sphereGeometry args={[3, 96, 96]} />
+        <meshPhongMaterial
+          map={dayMap}
+          normalMap={normalMap}
+          normalScale={new THREE.Vector2(0.85, 0.85)}
+          specularMap={specularMap}
+          specular={new THREE.Color("#334155")}
+          shininess={18}
         />
       </mesh>
-      {/* Atmosphere glow */}
-      <mesh scale={1.12}>
+      {/* Cloud layer */}
+      <mesh ref={cloudsRef} scale={1.012}>
+        <sphereGeometry args={[3, 64, 64]} />
+        <meshLambertMaterial
+          map={cloudsMap}
+          transparent
+          opacity={0.85}
+          depthWrite={false}
+        />
+      </mesh>
+      {/* Atmosphere rim glow */}
+      <mesh scale={1.1}>
         <sphereGeometry args={[3, 48, 48]} />
         <meshBasicMaterial
           color="#4aa3ff"
           transparent
-          opacity={0.22}
+          opacity={0.16}
           side={THREE.BackSide}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
         />
       </mesh>
+      {/* Moon */}
+      <group ref={moonRef}>
+        <mesh position={[7.5, 1.2, 0]}>
+          <sphereGeometry args={[0.8, 48, 48]} />
+          <meshStandardMaterial map={moonMap} roughness={1} metalness={0} />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -281,9 +274,7 @@ function FlightRig() {
     const p = scrollState.smooth;
     const cam = st.camera;
 
-    // Fly forward into the galaxy
     const targetZ = CAM_START - p * CAM_TRAVEL;
-    // Gentle spiral wobble that settles to center as you reach Earth
     const wobble = 1 - p;
     const targetX = Math.sin(p * Math.PI * 4) * 3 * wobble + st.pointer.x * 1.2;
     const targetY =
@@ -293,7 +284,6 @@ function FlightRig() {
     cam.position.y += (targetY - cam.position.y) * 0.06;
     cam.position.z += (targetZ - cam.position.z) * 0.08;
 
-    // Look ahead down the tunnel, easing onto Earth near the end
     const lookZ = THREE.MathUtils.lerp(cam.position.z - 20, EARTH_Z, p * p);
     cam.lookAt(0, 0, lookZ);
   });
@@ -308,31 +298,32 @@ export default function Scene3D() {
       dpr={[1, 1.75]}
     >
       <color attach="background" args={[VOID]} />
-      <fog attach="fog" args={[VOID, 14, 70]} />
+      <fog attach="fog" args={[VOID, 14, 90]} />
 
-      <ambientLight intensity={0.35} />
-      {/* Sun near Earth */}
-      <pointLight
-        position={[18, 12, EARTH_Z + 8]}
-        intensity={9}
+      <ambientLight intensity={0.32} />
+      {/* Sun lighting Earth and the deep planets */}
+      <directionalLight
+        position={[30, 18, EARTH_Z + 30]}
+        intensity={2.6}
         color="#fff3da"
-        distance={120}
       />
       <pointLight position={[0, 0, 6]} intensity={4} color={CORE} distance={30} />
 
-      <DeepStars />
-      <GalaxyVortex />
-      {PLANETS.map((p, i) => (
-        <Planet key={i} data={p} />
-      ))}
-      <Earth />
+      <Suspense fallback={null}>
+        <MilkyWaySkybox />
+        <GalaxyVortex />
+        {PLANETS.map((p) => (
+          <Planet key={p.texture} spec={p} />
+        ))}
+        <Earth />
+      </Suspense>
 
       <FlightRig />
 
       <EffectComposer>
         <Bloom
-          intensity={1.25}
-          luminanceThreshold={0.18}
+          intensity={1.0}
+          luminanceThreshold={0.25}
           luminanceSmoothing={0.9}
           mipmapBlur
         />
