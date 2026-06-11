@@ -370,12 +370,20 @@ export default function Home() {
                 understanding.
               </p>
 
-              <Link
+              <a
                 href="/university"
-                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-violet to-psyche-teal px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.dispatchEvent(
+                    new CustomEvent("vines-warp", {
+                      detail: { href: "/university" },
+                    })
+                  );
+                }}
+                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-violet to-psyche-teal px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
               >
                 Begin Your Spiral
-              </Link>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -411,7 +419,7 @@ export default function Home() {
                 href="https://payhip.com/VinesConnection"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="glow-gold rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-10 py-4 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl"
+                className="glow-gold rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-10 py-4 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
               >
                 Browse All Products
               </a>
