@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import LeadMagnet, { GROUPS } from "@/components/LeadMagnet";
 export default function UniversityPage() {
   const courses = [
     {
@@ -106,13 +107,36 @@ export default function UniversityPage() {
         </div>
 
 
-        <motion.div 
+        <LeadMagnet
+          groupId={GROUPS.roadmap}
+          heading={
+            <>
+              Get the Free{" "}
+              <span className="text-psyche-gold font-medium">First Spiral</span>{" "}
+              Roadmap
+            </>
+          }
+          blurb={
+            <>
+              A visual roadmap to begin your study at the Etheric University,
+              delivered straight to your inbox &mdash; plus the weekly
+              recursive-clarity letter.
+              <br />
+              <span className="text-sm opacity-60 mt-2 block">
+                No spam &mdash; unsubscribe anytime.
+              </span>
+            </>
+          }
+          cta="SEND ME THE ROADMAP"
+        />
+
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
           className="mt-24 text-center"
         >
-          <Link 
+          <Link
             href="/"
             className="text-text-secondary hover:text-white transition-colors flex items-center justify-center gap-2"
           >

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import OrbitCarousel, { type Pillar } from "@/components/cinematic/OrbitCarousel";
+import LeadMagnet, { GROUPS } from "@/components/LeadMagnet";
 
 const pillars: Pillar[] = [
   {
@@ -379,6 +380,14 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
+      </section>
+
+      {/* Email capture — free ebook */}
+      <section className="px-6">
+        <div className="mb-2 text-center">
+          <span className="section-index">// 05 &mdash; Join the Vines</span>
+        </div>
+        <LeadMagnet groupId={GROUPS.ebook} />
       </section>
 
       {/* CTA Section */}

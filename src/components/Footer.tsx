@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
+import FooterOptIn from "@/components/FooterOptIn";
 
 export default function Footer() {
   return (
     <footer className="border-t border-border [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]">
       <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="grid gap-10 md:grid-cols-3">
+        <div className="grid gap-10 md:grid-cols-4">
           {/* Brand */}
           <div>
             <div className="mb-4 flex items-center gap-3">
@@ -87,6 +88,9 @@ export default function Footer() {
               </a>
             </div>
           </div>
+
+          {/* Newsletter opt-in */}
+          <FooterOptIn />
         </div>
 
         {/* Bottom bar */}
