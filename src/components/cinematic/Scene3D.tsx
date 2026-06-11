@@ -197,6 +197,158 @@ function Nebula({ count = 2600 }: { count?: number }) {
 }
 
 /* ------------------------------------------------------------------ *
+ *  Connected node-network ("hashgraph" style living web)
+ * ------------------------------------------------------------------ */
+function NodeNetwork({ count = 90 }: { count?: number }) {
+  const pointsGeo = useRef<THREE.BufferGeometry>(null);
+  const lineGeo = useRef<THREE.BufferGeometry>(null);
+
+  const BOX = useMemo(() => ({ x: 16, y: 26, z: 16 }), []);
+  const baseThreshold = 3.6;
+
+  // Node positions (shared as the points attribute buffer) + velocities
+  const { positions, velocities, nodeColors } = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const velocities = new Float32Array(count * 3);
+    const nodeColors = new Float32Array(count * 3);
+    const teal = new THREE.Color(TEAL);
+    const gold = new THREE.Color(GOLD);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3] = (Math.random() - 0.5) * BOX.x;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * BOX.y;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * BOX.z;
+      velocities[i * 3] = (Math.random() - 0.5) * 0.5;
+      velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.5;
+      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.5;
+      const col = Math.random() < 0.25 ? gold : teal;
+      nodeColors[i * 3] = col.r;
+      nodeColors[i * 3 + 1] = col.g;
+      nodeColors[i * 3 + 2] = col.b;
+    }
+    return { positions, velocities, nodeColors };
+  }, [count, BOX]);
+
+  const maxSeg = count * 8;
+  const linePositions = useMemo(() => new Float32Array(maxSeg * 6), [maxSeg]);
+  const lineColors = useMemo(() => new Float32Array(maxSeg * 6), [maxSeg]);
+  const base = useMemo(() => new THREE.Color(TEAL), []);
+
+  useFrame((st, delta) => {
+    const d = Math.min(delta, 0.05);
+    // Web reshapes as you scroll — more links form on the descent
+    const thr = baseThreshold * (1 + scrollState.smooth * 0.45);
+    // Pointer target mapped into scene space (web follows the mouse)
+    const px = st.pointer.x * BOX.x * 0.5;
+    const py = st.pointer.y * BOX.y * 0.5;
+
+    for (let i = 0; i < count; i++) {
+      const ix = i * 3,
+        iy = i * 3 + 1,
+        iz = i * 3 + 2;
+      const dxp = px - positions[ix];
+      const dyp = py - positions[iy];
+      const distP = Math.hypot(dxp, dyp) + 0.001;
+      if (distP < 6) {
+        velocities[ix] += (dxp / distP) * 0.025;
+        velocities[iy] += (dyp / distP) * 0.025;
+      }
+      positions[ix] += velocities[ix] * d;
+      positions[iy] += velocities[iy] * d;
+      positions[iz] += velocities[iz] * d;
+      velocities[ix] *= 0.985;
+      velocities[iy] *= 0.985;
+      velocities[iz] *= 0.985;
+      // wrap within the box
+      if (positions[ix] > BOX.x / 2) positions[ix] = -BOX.x / 2;
+      else if (positions[ix] < -BOX.x / 2) positions[ix] = BOX.x / 2;
+      if (positions[iy] > BOX.y / 2) positions[iy] = -BOX.y / 2;
+      else if (positions[iy] < -BOX.y / 2) positions[iy] = BOX.y / 2;
+      if (positions[iz] > BOX.z / 2) positions[iz] = -BOX.z / 2;
+      else if (positions[iz] < -BOX.z / 2) positions[iz] = BOX.z / 2;
+    }
+
+    // Build connections between nearby nodes
+    let seg = 0;
+    for (let i = 0; i < count && seg < maxSeg; i++) {
+      const ax = positions[i * 3],
+        ay = positions[i * 3 + 1],
+        az = positions[i * 3 + 2];
+      for (let j = i + 1; j < count && seg < maxSeg; j++) {
+        const bx = positions[j * 3],
+          by = positions[j * 3 + 1],
+          bz = positions[j * 3 + 2];
+        const dx = ax - bx,
+          dy = ay - by,
+          dz = az - bz;
+        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        if (dist < thr) {
+          const a = 1 - dist / thr; // brighter when closer
+          const o = seg * 6;
+          linePositions[o] = ax;
+          linePositions[o + 1] = ay;
+          linePositions[o + 2] = az;
+          linePositions[o + 3] = bx;
+          linePositions[o + 4] = by;
+          linePositions[o + 5] = bz;
+          const r = base.r * a,
+            g = base.g * a,
+            b = base.b * a;
+          lineColors[o] = r;
+          lineColors[o + 1] = g;
+          lineColors[o + 2] = b;
+          lineColors[o + 3] = r;
+          lineColors[o + 4] = g;
+          lineColors[o + 5] = b;
+          seg++;
+        }
+      }
+    }
+
+    if (pointsGeo.current) {
+      pointsGeo.current.attributes.position.needsUpdate = true;
+    }
+    if (lineGeo.current) {
+      lineGeo.current.attributes.position.needsUpdate = true;
+      lineGeo.current.attributes.color.needsUpdate = true;
+      lineGeo.current.setDrawRange(0, seg * 2);
+    }
+  });
+
+  return (
+    <group>
+      <lineSegments>
+        <bufferGeometry ref={lineGeo}>
+          <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
+          <bufferAttribute attach="attributes-color" args={[lineColors, 3]} />
+        </bufferGeometry>
+        <lineBasicMaterial
+          vertexColors
+          transparent
+          opacity={0.7}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+        />
+      </lineSegments>
+      <points>
+        <bufferGeometry ref={pointsGeo}>
+          <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+          <bufferAttribute attach="attributes-color" args={[nodeColors, 3]} />
+        </bufferGeometry>
+        <pointsMaterial
+          size={0.14}
+          vertexColors
+          transparent
+          opacity={0.95}
+          sizeAttenuation
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </points>
+    </group>
+  );
+}
+
+/* ------------------------------------------------------------------ *
  *  Scroll-driven cinematic camera rig
  * ------------------------------------------------------------------ */
 function CameraRig() {
@@ -242,7 +394,8 @@ export default function Scene3D() {
       <pointLight position={[-6, -4, 2]} intensity={30} color={TEAL} distance={30} />
       <pointLight position={[6, 0, -4]} intensity={25} color={MAGENTA} distance={30} />
 
-      <Nebula />
+      <Nebula count={1700} />
+      <NodeNetwork />
       <SacredGeometry />
       <VineHelix />
 
