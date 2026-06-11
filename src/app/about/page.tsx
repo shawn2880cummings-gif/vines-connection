@@ -10,7 +10,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Header */}
-      <section className="gradient-hero relative overflow-hidden py-24">
+      <section className="gradient-hero-veil relative overflow-hidden py-24">
         <div className="orb left-[15%] top-[10%] h-56 w-56 bg-psyche-teal/15" />
         <div
           className="orb right-[20%] bottom-[20%] h-48 w-48 bg-psyche-magenta/10"

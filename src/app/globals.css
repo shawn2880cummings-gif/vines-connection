@@ -66,6 +66,18 @@ body {
   );
 }
 
+/* Translucent hero backdrop — lets the cinematic 3D scene show through
+   while preserving the brand gradient feel and text contrast */
+.gradient-hero-veil {
+  background: linear-gradient(
+    135deg,
+    rgba(13, 6, 40, 0.55) 0%,
+    rgba(42, 24, 112, 0.28) 50%,
+    rgba(26, 14, 10, 0.5) 100%
+  );
+  backdrop-filter: blur(2px);
+}
+
 .gradient-card {
   background: linear-gradient(
     160deg,

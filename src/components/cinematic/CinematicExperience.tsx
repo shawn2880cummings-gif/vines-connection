@@ -1,13 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { updateScrollProgress } from "./scrollStore";
-
-// The WebGL canvas must never render on the server.
-const Scene3D = dynamic(() => import("./Scene3D"), { ssr: false });
 
 const fadeUp = {
   initial: { opacity: 0, y: 40 },
@@ -43,25 +37,9 @@ function Pillar({
 }
 
 export default function CinematicExperience() {
-  useEffect(() => {
-    updateScrollProgress();
-    const onScroll = () => updateScrollProgress();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, []);
-
   return (
     <div className="relative">
-      {/* Fixed cinematic 3D backdrop */}
-      <div className="pointer-events-none fixed inset-0 z-0">
-        <Scene3D />
-      </div>
-
-      {/* Scrollable content layered on top */}
+      {/* The cinematic 3D backdrop is provided globally by ClientLayout */}
       <div className="relative z-10">
         {/* ---------------- HERO ---------------- */}
         <section className="flex min-h-screen flex-col items-center justify-center px-6 text-center">

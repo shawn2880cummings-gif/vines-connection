@@ -15,7 +15,7 @@ export default function ProductsPage() {
   return (
     <>
       {/* Header */}
-      <section className="gradient-hero relative overflow-hidden py-24">
+      <section className="gradient-hero-veil relative overflow-hidden py-24">
         <div className="orb left-[5%] top-[20%] h-48 w-48 bg-psyche-violet/20" />
         <div
           className="orb right-[10%] bottom-[10%] h-56 w-56 bg-psyche-gold/15"

@@ -30,7 +30,7 @@ export default function UniversityPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary pt-32 pb-24 overflow-hidden relative">
+    <div className="min-h-screen pt-32 pb-24 overflow-hidden relative">
       {/* Background elements */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
         <div className="orb left-[10%] top-[20%] h-64 w-64 bg-psyche-teal/10" />

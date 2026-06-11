@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="gradient-hero relative min-h-[90vh] overflow-hidden">
+      <section className="gradient-hero-veil relative min-h-[90vh] overflow-hidden">
         {/* Floating orbs */}
         <div className="orb left-[10%] top-[20%] h-64 w-64 bg-psyche-teal/20" />
         <div
@@ -424,7 +424,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="gradient-hero relative overflow-hidden py-32 border-t border-white/5">
+      <section className="gradient-hero-veil relative overflow-hidden py-32 border-t border-white/5">
         <div className="orb left-[20%] top-[10%] h-48 w-48 bg-psyche-gold/20" />
         <div
           className="orb right-[10%] bottom-[20%] h-56 w-56 bg-psyche-teal/15"
