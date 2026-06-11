@@ -279,7 +279,7 @@ export default function Home() {
             transition={{ duration: 1 }}
             className="mx-auto max-w-3xl"
           >
-            <div className="gradient-card glow-teal rounded-2xl p-8 md:p-10 border border-white/5 relative overflow-hidden">
+            <div className="gradient-card rounded-2xl p-8 md:p-10 relative overflow-hidden">
               <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-psyche-teal/5 blur-3xl animate-pulse" />
               
               <p className="relative z-10 mb-8 text-lg leading-relaxed text-text-secondary">
@@ -288,7 +288,7 @@ export default function Home() {
                 published and archived through CERN&apos;s Zenodo repository.
               </p>
 
-              <div className="mb-8 flex items-center gap-4 rounded-xl bg-celestial-800/40 px-6 py-5 border border-white/5">
+              <div className="mb-8 flex items-center gap-4">
                 <Image
                   src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg"
                   alt="ORCID"
@@ -365,7 +365,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
             className="mx-auto max-w-3xl"
           >
-            <div className="gradient-card glow-purple rounded-3xl p-10 md:p-12 text-center border border-white/5">
+            <div className="gradient-card rounded-3xl p-10 md:p-12 text-center">
               <p className="mb-10 text-xl leading-relaxed text-text-secondary">
                 A learning platform built on a new paradigm. Explore history,
                 mathematics, and science through a lens that expands knowledge

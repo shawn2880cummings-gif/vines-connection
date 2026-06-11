@@ -12,9 +12,7 @@ export type Pillar = {
 
 function PillarCard({ pillar }: { pillar: Pillar }) {
   return (
-    <div
-      className={`gradient-card rounded-2xl p-8 ${pillar.glow} h-full`}
-    >
+    <div className="gradient-card rounded-2xl p-8 h-full">
       <div
         className={`mb-4 h-1 w-16 rounded-full bg-gradient-to-r ${pillar.color}`}
       />

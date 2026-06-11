@@ -77,15 +77,14 @@ body {
   backdrop-filter: blur(2px);
 }
 
+/* Floating content — no box. Text reads directly over the 3D scene,
+   with a soft shadow for legibility over bright areas (planets/stars). */
 .gradient-card {
-  background: linear-gradient(
-    160deg,
-    rgba(255, 255, 255, 0.055) 0%,
-    rgba(32, 201, 176, 0.04) 55%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--color-border);
+  background: transparent;
+  border: none;
+  text-shadow:
+    0 2px 16px rgba(0, 0, 0, 0.9),
+    0 0 6px rgba(0, 0, 0, 0.7);
 }
 
 /* Editorial numbered section marker */
