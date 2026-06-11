@@ -58,7 +58,7 @@ function Slides({ slides, targetRef, onPick }: SlidesProps) {
     current.current += (targetRef.current - current.current) * 0.12;
     const cur = current.current;
     // Scale the whole arrangement so the active slide fills most of the view
-    const fit = Math.min(viewport.width / (W * 1.18), viewport.height / (H * 1.25));
+    const fit = Math.min(viewport.width / (W * 1.04), viewport.height / (H * 1.1));
     meshes.current.forEach((m, i) => {
       if (!m) return;
       const d = i - cur;

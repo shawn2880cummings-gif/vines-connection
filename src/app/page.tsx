@@ -397,8 +397,7 @@ export default function Home() {
             <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-text-secondary">
               Step inside the research. Full visual presentations &mdash; like{" "}
               <em>The Eumelanin Standard</em> &mdash; rendered as immersive 3D
-              decks where the slides curve around you and sweep across your
-              view as you move through them.
+              decks.
             </p>
             <Link
               href="/presentations"
