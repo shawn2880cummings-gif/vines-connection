@@ -238,7 +238,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-
+      {/* Email capture — free ebook (under the book, above What We Explore) */}
+      <LeadMagnet groupId={GROUPS.ebook} />
 
       {/* Topics / Pillars Section */}
       <section className="border-t border-border py-32">
@@ -380,14 +381,6 @@ export default function Home() {
             </div>
           </motion.div>
         </div>
-      </section>
-
-      {/* Email capture — free ebook */}
-      <section className="px-6">
-        <div className="mb-2 text-center">
-          <span className="section-index">// 05 &mdash; Join the Vines</span>
-        </div>
-        <LeadMagnet groupId={GROUPS.ebook} />
       </section>
 
       {/* CTA Section */}

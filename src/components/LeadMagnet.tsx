@@ -71,19 +71,8 @@ export const LeadMagnet = ({
   };
 
   return (
-    <section className="relative w-full max-w-3xl mx-auto my-24 p-1">
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-tr from-psyche-violet/40 via-psyche-gold/20 to-psyche-teal/40 opacity-50 blur-md pointer-events-none" />
-
-      <div className="relative z-10 bg-[#05070f]/85 border border-white/10 rounded-2xl p-8 md:p-12 shadow-2xl backdrop-blur-xl overflow-hidden">
-        <div className="absolute right-0 top-0 opacity-10 pointer-events-none">
-          <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="#FFD700" strokeWidth="0.5">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 2A15.3 15.3 0 0 1 17 12a15.3 15.3 0 0 1-5 10 15.3 15.3 0 0 1-5-10 15.3 15.3 0 0 1 5-10z" />
-            <path d="M2 12h20" />
-          </svg>
-        </div>
-
-        <div className="relative z-10 text-center">
+    <section className="relative w-full max-w-2xl mx-auto my-20 px-6 [text-shadow:0_2px_16px_rgba(0,0,0,0.9)]">
+      <div className="relative z-10 text-center">
           <h2 className="text-3xl md:text-4xl font-light text-white mb-4 tracking-wide">
             {heading}
           </h2>
@@ -133,7 +122,7 @@ export const LeadMagnet = ({
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-gradient-to-r from-psyche-gold/90 to-psyche-teal/90 text-celestial-900 font-semibold tracking-widest px-6 py-4 rounded hover:from-psyche-gold hover:to-psyche-teal transition-all active:scale-[0.98] disabled:opacity-50 mt-2"
+                    className="w-full bg-gradient-to-r from-psyche-gold/90 to-psyche-teal/90 text-celestial-900 font-semibold tracking-widest px-6 py-4 rounded hover:from-psyche-gold hover:to-psyche-teal transition-all active:scale-[0.98] disabled:opacity-50 mt-2 [text-shadow:none]"
                   >
                     {isLoading ? "ALIGNING..." : cta}
                   </button>
@@ -176,7 +165,6 @@ export const LeadMagnet = ({
             )}
           </AnimatePresence>
         </div>
-      </div>
     </section>
   );
 };
