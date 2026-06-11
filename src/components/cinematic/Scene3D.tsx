@@ -239,18 +239,6 @@ function Earth() {
           depthWrite={false}
         />
       </mesh>
-      {/* Atmosphere rim glow */}
-      <mesh scale={1.1}>
-        <sphereGeometry args={[3, 48, 48]} />
-        <meshBasicMaterial
-          color="#4aa3ff"
-          transparent
-          opacity={0.16}
-          side={THREE.BackSide}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-        />
-      </mesh>
       {/* Moon */}
       <group ref={moonRef}>
         <mesh position={[7.5, 1.2, 0]}>
