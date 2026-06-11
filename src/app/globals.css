@@ -33,14 +33,14 @@
   --color-psyche-lime: #a8e06c;
   --color-psyche-violet: #9b59b6;
 
-  /* Semantic tokens */
-  --color-bg-primary: #0d0628;
-  --color-bg-secondary: #1a0e4a;
-  --color-bg-card: rgba(42, 24, 112, 0.5);
-  --color-text-primary: #f0e0cc;
-  --color-text-secondary: #c9a07a;
+  /* Semantic tokens — abyssal premium palette */
+  --color-bg-primary: #000209;
+  --color-bg-secondary: #05070f;
+  --color-bg-card: rgba(255, 255, 255, 0.04);
+  --color-text-primary: #eeeeee;
+  --color-text-secondary: #aab2c5;
   --color-text-accent: #f0a830;
-  --color-border: rgba(93, 60, 184, 0.3);
+  --color-border: rgba(255, 255, 255, 0.08);
 
   /* Fonts */
   --font-heading: "Georgia", "Times New Roman", serif;
@@ -66,14 +66,13 @@ body {
   );
 }
 
-/* Translucent hero backdrop — lets the cinematic 3D scene show through
-   while preserving the brand gradient feel and text contrast */
+/* Translucent hero backdrop — lets the cinematic 3D scene show through */
 .gradient-hero-veil {
   background: linear-gradient(
     135deg,
-    rgba(13, 6, 40, 0.55) 0%,
-    rgba(42, 24, 112, 0.28) 50%,
-    rgba(26, 14, 10, 0.5) 100%
+    rgba(0, 2, 9, 0.6) 0%,
+    rgba(5, 7, 15, 0.3) 50%,
+    rgba(0, 2, 9, 0.55) 100%
   );
   backdrop-filter: blur(2px);
 }
@@ -81,12 +80,20 @@ body {
 .gradient-card {
   background: linear-gradient(
     160deg,
-    rgba(42, 24, 112, 0.6) 0%,
-    rgba(61, 16, 112, 0.4) 50%,
-    rgba(107, 61, 34, 0.3) 100%
+    rgba(255, 255, 255, 0.055) 0%,
+    rgba(32, 201, 176, 0.04) 55%,
+    rgba(255, 255, 255, 0.02) 100%
   );
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
+}
+
+/* Editorial numbered section marker */
+.section-index {
+  font-family: "SFMono-Regular", "Consolas", "Liberation Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
+  color: rgba(32, 201, 176, 0.75);
 }
 
 .gradient-accent {

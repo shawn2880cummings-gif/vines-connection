@@ -31,10 +31,10 @@ const pillars: Pillar[] = [
 
 export default function Home() {
   const fadeInUp = {
-    initial: { opacity: 0, y: 30 },
-    whileInView: { opacity: 1, y: 0 },
+    initial: { opacity: 0, y: 44, filter: "blur(10px)" },
+    whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
     viewport: { once: true, margin: "-100px" },
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as any }
+    transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] as any }
   };
 
   return (
@@ -95,7 +95,7 @@ export default function Home() {
             </div>
 
             <h1
-              className="mb-6 max-w-4xl text-5xl leading-tight font-bold md:text-7xl"
+              className="mb-8 max-w-5xl text-6xl leading-[1.05] font-bold md:text-8xl"
               style={{ fontFamily: "var(--font-heading)" }}
             >
               Dismantle Incoherence.{" "}
@@ -132,15 +132,13 @@ export default function Home() {
       </section>
 
       {/* Featured Book Section */}
-      <section className="relative py-24 overflow-hidden">
+      <section className="relative py-32 overflow-hidden">
         <motion.div 
           {...fadeInUp}
           className="mx-auto max-w-7xl px-6"
         >
           <div className="mb-4 text-center">
-            <span className="text-sm tracking-widest text-psyche-teal uppercase">
-              Featured Release
-            </span>
+            <span className="section-index">// 01 &mdash; The Work</span>
           </div>
           <h2
             className="mb-16 text-center text-4xl font-bold text-text-primary md:text-5xl"
@@ -245,12 +243,10 @@ export default function Home() {
 
 
       {/* Topics / Pillars Section */}
-      <section className="border-t border-border py-24">
+      <section className="border-t border-border py-32">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div {...fadeInUp} className="mb-16 text-center">
-            <span className="text-sm tracking-widest text-psyche-gold uppercase">
-              Core Pillars
-            </span>
+            <span className="section-index">// 02 &mdash; The Framework</span>
             <h2
               className="mt-4 text-4xl font-bold text-text-primary"
               style={{ fontFamily: "var(--font-heading)" }}
@@ -264,12 +260,10 @@ export default function Home() {
       </section>
 
       {/* Research Section */}
-      <section id="research" className="border-t border-border py-24 relative overflow-hidden">
+      <section id="research" className="border-t border-border py-32 relative overflow-hidden">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div {...fadeInUp} className="text-center">
-            <span className="text-sm tracking-widest text-psyche-teal uppercase">
-              Peer-Reviewed Work
-            </span>
+            <span className="section-index">// 03 &mdash; The Research</span>
             <h2
               className="mt-4 mb-16 text-4xl font-bold text-text-primary md:text-5xl"
               style={{ fontFamily: "var(--font-heading)" }}
@@ -352,12 +346,10 @@ export default function Home() {
       </section>
 
       {/* Etheric University Section */}
-      <section id="university" className="border-t border-border py-24 bg-celestial-900/20">
+      <section id="university" className="border-t border-border py-32 bg-celestial-900/20">
         <div className="mx-auto max-w-7xl px-6">
           <motion.div {...fadeInUp} className="text-center">
-            <span className="text-sm tracking-widest text-psyche-violet uppercase">
-              Learning Platform
-            </span>
+            <span className="section-index">// 04 &mdash; The University</span>
             <h2
               className="mt-4 mb-16 text-4xl font-bold text-text-primary md:text-5xl"
               style={{ fontFamily: "var(--font-heading)" }}

@@ -11,7 +11,7 @@ const GOLD = "#f0a830";
 const TEAL = "#20c9b0";
 const MAGENTA = "#e83e8c";
 const VIOLET = "#7b5cd4";
-const INDIGO = "#0d0628";
+const INDIGO = "#000209";
 
 /* ------------------------------------------------------------------ *
  *  Double golden vine helix — the brand's "Vines Connection" centrepiece
