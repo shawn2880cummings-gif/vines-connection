@@ -422,7 +422,7 @@ export default function Home() {
             </h2>
             <p className="mx-auto mb-4 max-w-2xl text-xl leading-relaxed text-text-secondary">
               A private membership with a research AI that lives entirely inside
-              Shawn&apos;s work &mdash; plus weekly live classes, a members
+              Vine&apos;s work &mdash; plus weekly live classes, a members
               podcast, and a private Discord community.
             </p>
             <p className="mb-10 text-2xl font-bold text-psyche-gold">

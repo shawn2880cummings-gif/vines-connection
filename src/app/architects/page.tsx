@@ -4,13 +4,13 @@ import BecomeArchitectButton from "@/components/BecomeArchitectButton";
 export const metadata: Metadata = {
   title: "Architects of Reality | Vines Connection",
   description:
-    "A private membership: a research AI grounded only in Shawn Cummings' books and papers, weekly live classes, a members podcast, and a private Discord community. $36/month.",
+    "A private membership: a research AI grounded only in Vine's books and papers, weekly live classes, a members podcast, and a private Discord community. $36/month.",
 };
 
 const benefits = [
   {
     title: "The Private Research AI",
-    body: "A grounded intelligence trained only on Shawn Cummings' books and research papers. Ask anything across the corpus — every answer is cited and stays strictly inside the work.",
+    body: "A grounded intelligence trained only on Vine's books and research papers. Ask anything across the corpus — every answer is cited and stays strictly inside the work.",
     accent: "#20c9b0",
   },
   {
@@ -25,17 +25,17 @@ const benefits = [
   },
   {
     title: "Weekly Live Classes",
-    body: "Go deeper every week. Live sessions with Shawn — teaching, Q&A, and working through the framework together in real time.",
+    body: "Go deeper every week. Live sessions with Vine — teaching, Q&A, and working through the framework together in real time.",
     accent: "#ff6b6b",
   },
   {
     title: "The Members Podcast",
-    body: "A members-only podcast every week — Shawn's thinking unpacked in audio, exclusive to Architects and available nowhere else.",
+    body: "A members-only podcast every week — Vine's thinking unpacked in audio, exclusive to Architects and available nowhere else.",
     accent: "#20c9b0",
   },
   {
     title: "Private Discord Community",
-    body: "A members-only Discord — the inner circle. Connect with fellow Architects and with Shawn directly, between the classes.",
+    body: "A members-only Discord — the inner circle. Connect with fellow Architects and with Vine directly, between the classes.",
     accent: "#5a3cb8",
   },
   {
@@ -48,7 +48,7 @@ const benefits = [
 const faqs = [
   {
     q: "What can the AI answer?",
-    a: "Only what is in Shawn's documented research. If something isn't covered in the work, it tells you plainly — it never invents or pulls from the outside.",
+    a: "Only what is in Vine's documented research. If something isn't covered in the work, it tells you plainly — it never invents or pulls from the outside.",
   },
   {
     q: "Can I cancel anytime?",
