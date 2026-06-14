@@ -47,25 +47,6 @@ const included = [
   },
 ];
 
-const faqs = [
-  {
-    q: "What do I actually get from the AI?",
-    a: "A way to interrogate the entire body of work: find where an idea is defined, connect concepts across papers, and get sourced answers in seconds — by text or voice.",
-  },
-  {
-    q: "What can it answer?",
-    a: "Only what is in Vine's documented research. If something isn't in the work, it says so plainly — it never invents or pulls from the outside.",
-  },
-  {
-    q: "How often are the classes and podcast?",
-    a: "Weekly, both. Class recordings and past episodes stay available to you in the members area.",
-  },
-  {
-    q: "Can I cancel anytime?",
-    a: "Yes. Membership is month-to-month — cancel whenever you like.",
-  },
-];
-
 export default async function ArchitectsPage({
   searchParams,
 }: {
@@ -170,26 +151,6 @@ export default async function ArchitectsPage({
                 {b.title}
               </h3>
               <p className="leading-relaxed text-text-secondary">{b.body}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* FAQ */}
-      <section className="mx-auto mt-28 max-w-2xl">
-        <h2
-          className="mb-10 text-center text-3xl font-bold text-text-primary md:text-4xl"
-          style={{ fontFamily: "var(--font-heading)" }}
-        >
-          Questions
-        </h2>
-        <div className="space-y-8">
-          {faqs.map((f) => (
-            <div key={f.q}>
-              <h3 className="mb-2 text-lg font-semibold text-psyche-teal">
-                {f.q}
-              </h3>
-              <p className="leading-relaxed text-text-secondary">{f.a}</p>
             </div>
           ))}
         </div>
