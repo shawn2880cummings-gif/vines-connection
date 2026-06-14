@@ -4,7 +4,7 @@ import BecomeArchitectButton from "@/components/BecomeArchitectButton";
 export const metadata: Metadata = {
   title: "Architects of Reality | Vines Connection",
   description:
-    "A private membership: a research AI grounded only in Shawn Cummings' books and papers, plus members-first access. $36/month.",
+    "A private membership: a research AI grounded only in Shawn Cummings' books and papers, weekly live classes, and a private Discord community. $36/month.",
 };
 
 const benefits = [
@@ -22,6 +22,16 @@ const benefits = [
     title: "The Whole Corpus, Connected",
     body: "Dozens of books and research papers, cross-referenced — answers draw the threads between them, never from the outside.",
     accent: "#9b59b6",
+  },
+  {
+    title: "Weekly Live Classes",
+    body: "Go deeper every week. Live sessions with Shawn — teaching, Q&A, and working through the framework together in real time.",
+    accent: "#ff6b6b",
+  },
+  {
+    title: "Private Discord Community",
+    body: "A members-only Discord — the inner circle. Connect with fellow Architects and with Shawn directly, between the classes.",
+    accent: "#5a3cb8",
   },
   {
     title: "Architects First",
