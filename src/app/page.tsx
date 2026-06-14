@@ -409,6 +409,34 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Architects of Reality (Membership) Section */}
+      <section className="border-t border-border py-32">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <motion.div {...fadeInUp}>
+            <span className="section-index">// 06 &mdash; Membership</span>
+            <h2
+              className="mt-4 mb-8 text-4xl font-bold text-text-primary md:text-5xl"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Architects of <span className="gradient-text">Reality</span>
+            </h2>
+            <p className="mx-auto mb-4 max-w-2xl text-xl leading-relaxed text-text-secondary">
+              A private membership with a research AI that lives entirely inside
+              Shawn&apos;s work &mdash; cited, grounded, members-only.
+            </p>
+            <p className="mb-10 text-2xl font-bold text-psyche-gold">
+              $36 <span className="text-base font-normal text-text-secondary">/ month</span>
+            </p>
+            <Link
+              href="/architects"
+              className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-gold to-psyche-magenta px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
+            >
+              Become an Architect
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="relative overflow-hidden py-32 [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]">
         <div className="orb left-[20%] top-[10%] h-48 w-48 bg-psyche-gold/20" />
