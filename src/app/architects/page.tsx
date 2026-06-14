@@ -4,59 +4,65 @@ import BecomeArchitectButton from "@/components/BecomeArchitectButton";
 export const metadata: Metadata = {
   title: "Architects of Reality | Vines Connection",
   description:
-    "A private membership: a research AI grounded only in Vine's books and papers, weekly live classes, a members podcast, and a private Discord community. $36/month.",
+    "A private research intelligence trained only on Vine's 55+ books and papers — ask anything by text or voice and get cited answers. Plus weekly live classes, a members podcast, and a private Discord. $36/month.",
 };
 
-const benefits = [
+// What you GAIN from the AI — the centrepiece
+const aiPoints = [
   {
-    title: "The Private Research AI",
-    body: "A grounded intelligence trained only on Vine's books and research papers. Ask anything across the corpus — every answer is cited and stays strictly inside the work.",
-    accent: "#20c9b0",
+    title: "Cited answers",
+    body: "Every claim is tied back to its source — book and page, or paper name. Nothing floats free.",
   },
   {
-    title: "Voice & Text Study",
-    body: "Speak or type. Explore the framework hands-free — a dialogue with the body of work itself.",
-    accent: "#f0a830",
+    title: "Connects the whole corpus",
+    body: "It draws the threads between 55+ documents, surfacing links across the books and papers you'd never find by hand.",
   },
   {
-    title: "The Whole Corpus, Connected",
-    body: "Dozens of books and research papers, cross-referenced — answers draw the threads between them, never from the outside.",
-    accent: "#9b59b6",
+    title: "Text or voice, any hour",
+    body: "Ask out loud or in writing. The entire body of research, on call whenever a question hits.",
   },
+];
+
+// Everything else included beyond the AI
+const included = [
   {
     title: "Weekly Live Classes",
-    body: "Go deeper every week. Live sessions with Vine — teaching, Q&A, and working through the framework together in real time.",
+    body: "A live class every week — Vine teaching the framework and answering your questions in real time. Recordings stay in the members area.",
     accent: "#ff6b6b",
   },
   {
     title: "The Members Podcast",
-    body: "A members-only podcast every week — Vine's thinking unpacked in audio, exclusive to Architects and available nowhere else.",
-    accent: "#20c9b0",
+    body: "A new members-only episode every week — the research unpacked in audio you won't find anywhere else.",
+    accent: "#f0a830",
   },
   {
     title: "Private Discord Community",
-    body: "A members-only Discord — the inner circle. Connect with fellow Architects and with Vine directly, between the classes.",
+    body: "The inner circle. A members-only Discord to think alongside other Architects and reach Vine directly.",
     accent: "#5a3cb8",
   },
   {
     title: "Architects First",
-    body: "New work, decks, and tools reach members before anyone else.",
+    body: "Early access to new books, decks, and tools before they go public.",
     accent: "#e83e8c",
   },
 ];
 
 const faqs = [
   {
-    q: "What can the AI answer?",
-    a: "Only what is in Vine's documented research. If something isn't covered in the work, it tells you plainly — it never invents or pulls from the outside.",
+    q: "What do I actually get from the AI?",
+    a: "A way to interrogate the entire body of work: find where an idea is defined, connect concepts across papers, and get sourced answers in seconds — by text or voice.",
+  },
+  {
+    q: "What can it answer?",
+    a: "Only what is in Vine's documented research. If something isn't in the work, it says so plainly — it never invents or pulls from the outside.",
+  },
+  {
+    q: "How often are the classes and podcast?",
+    a: "Weekly, both. Class recordings and past episodes stay available to you in the members area.",
   },
   {
     q: "Can I cancel anytime?",
-    a: "Yes. Your membership is month-to-month and you can cancel whenever you like.",
-  },
-  {
-    q: "Is my access private?",
-    a: "Yes — the research AI is members-only, reserved for Architects.",
+    a: "Yes. Membership is month-to-month — cancel whenever you like.",
   },
 ];
 
@@ -81,7 +87,7 @@ export default async function ArchitectsPage({
         </div>
       )}
 
-      {/* Hero */}
+      {/* Hero — the core offer in one breath */}
       <section className="mx-auto max-w-3xl text-center">
         <span className="section-index">// Membership</span>
         <h1
@@ -90,17 +96,15 @@ export default async function ArchitectsPage({
         >
           Architects of <span className="gradient-text">Reality</span>
         </h1>
-        <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-text-secondary md:text-xl">
-          A private chamber for those building coherence from the ground up —
-          and a research intelligence that lives entirely inside the work.
+        <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
+          A private research intelligence trained on Vine&apos;s entire body of
+          work — ask it anything, by text or voice, and get cited answers.
+          Plus weekly live classes, a members podcast, and a private community.
         </p>
         <div className="mt-8 flex flex-col items-center gap-3">
           <div className="text-4xl font-bold text-psyche-gold">
             $36
-            <span className="text-lg font-normal text-text-secondary">
-              {" "}
-              / month
-            </span>
+            <span className="text-lg font-normal text-text-secondary"> / month</span>
           </div>
           <BecomeArchitectButton />
           <p className="text-xs uppercase tracking-widest text-text-secondary/50">
@@ -109,21 +113,62 @@ export default async function ArchitectsPage({
         </div>
       </section>
 
-      {/* Benefits */}
+      {/* The AI — centrepiece */}
+      <section className="mx-auto mt-28 max-w-4xl">
+        <div className="text-center">
+          <span className="section-index">// The Research Intelligence</span>
+          <h2
+            className="mx-auto mt-4 max-w-2xl text-3xl font-bold text-text-primary md:text-5xl"
+            style={{ fontFamily: "var(--font-heading)" }}
+          >
+            An intelligence that only knows{" "}
+            <span className="gradient-text">the work</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-text-secondary">
+            Ask anything across 55+ of Vine&apos;s books and research papers and
+            get answers that cite their source and connect the ideas between
+            them. It studies <em>only</em> the corpus — it never invents, never
+            borrows from the outside, and tells you plainly when something
+            isn&apos;t covered.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-10 md:grid-cols-3">
+          {aiPoints.map((p) => (
+            <div key={p.title} className="text-center md:text-left">
+              <h3
+                className="mb-2 text-xl font-bold text-psyche-teal"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                {p.title}
+              </h3>
+              <p className="leading-relaxed text-text-secondary">{p.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Everything else included */}
       <section className="mx-auto mt-28 max-w-5xl">
+        <h2
+          className="mb-14 text-center text-3xl font-bold text-text-primary md:text-4xl"
+          style={{ fontFamily: "var(--font-heading)" }}
+        >
+          Included with your membership
+        </h2>
         <div className="grid gap-10 md:grid-cols-2">
-          {benefits.map((b) => (
+          {included.map((b) => (
             <div key={b.title}>
               <div
                 className="mb-4 h-1 w-16 rounded-full"
                 style={{ background: b.accent }}
               />
-              <h2
+              <h3
                 className="mb-3 text-2xl font-bold text-text-primary"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
                 {b.title}
-              </h2>
+              </h3>
               <p className="leading-relaxed text-text-secondary">{b.body}</p>
             </div>
           ))}
@@ -150,19 +195,22 @@ export default async function ArchitectsPage({
         </div>
       </section>
 
-      {/* Final CTA */}
+      {/* Single, decisive close */}
       <section className="mx-auto mt-28 max-w-2xl text-center">
         <h2
-          className="mb-6 text-3xl font-bold text-text-primary md:text-5xl"
+          className="mb-3 text-3xl font-bold text-text-primary md:text-5xl"
           style={{ fontFamily: "var(--font-heading)" }}
         >
-          Build with <span className="gradient-text">conviction</span>.
+          Become an <span className="gradient-text">Architect</span>
         </h2>
-        <p className="mx-auto mb-8 max-w-lg text-lg text-text-secondary">
-          Step inside the work and study it directly — in your own words, in
-          your own voice.
+        <p className="mb-8 text-lg text-text-secondary">
+          The whole body of research, a weekly room, and a private intelligence
+          — for $36/month.
         </p>
         <BecomeArchitectButton />
+        <p className="mt-3 text-xs uppercase tracking-widest text-text-secondary/50">
+          Cancel anytime
+        </p>
       </section>
     </div>
   );
