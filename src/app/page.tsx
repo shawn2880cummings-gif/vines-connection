@@ -421,9 +421,8 @@ export default function Home() {
               Architects of <span className="gradient-text">Reality</span>
             </h2>
             <p className="mx-auto mb-4 max-w-2xl text-xl leading-relaxed text-text-secondary">
-              A private membership with a research AI that lives entirely inside
-              Vine&apos;s work &mdash; plus weekly live classes, a members
-              podcast, and a private Discord community.
+              A private inner circle &mdash; weekly live classes, a members
+              podcast, a private Discord community, and the work first.
             </p>
             <p className="mb-10 text-2xl font-bold text-psyche-gold">
               $36 <span className="text-base font-normal text-text-secondary">/ month</span>
