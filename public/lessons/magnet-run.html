@@ -109,7 +109,6 @@
   </div>
 </div>
 
-<script src="/lessons/sunny.js"></script>
 <script type="module">
 import * as THREE from '/vendor/three.module.min.js';
 
@@ -350,21 +349,21 @@ var Audio=(function(){
 function move(d){ if(running){ var p=pLane; pLane=Math.max(0,Math.min(2,pLane+d)); if(pLane!==p) Audio.sfx('move'); } }
 function moveTo(l){ if(running){ var p=pLane; pLane=Math.max(0,Math.min(2,l|0)); if(pLane!==p) Audio.sfx('move'); } }
 function laneFromX(x){ var w=window.innerWidth; return x<w/3?0:(x<w*2/3?1:2); }
-function hit(){ S.lives--; hitFlash=0.5; Audio.sfx('hit'); if(window.Sunny)try{Sunny.react('bounce');}catch(e){} if(S.lives<=0) gameOver(); updateHUD(); }
+function hit(){ S.lives--; hitFlash=0.5; Audio.sfx('hit'); if(S.lives<=0) gameOver(); updateHUD(); }
 var MAXLIVES=5;
 function addCrystals(n){ S.crystals+=n;
   // every 100 crystals → an extra heart (up to MAXLIVES)
-  while(S.crystals>=S.nextLife){ if(S.lives<MAXLIVES){ S.lives++; Audio.sfx('life'); showToast('💖 EXTRA LIFE! ('+S.nextLife+' crystals)'); } S.nextLife+=100; }
+  while(S.crystals>=S.nextLife){ if(S.lives<MAXLIVES){ S.lives++; Audio.sfx('life'); showToast('💖 +1 LIFE!'); } S.nextLife+=100; }
   updateHUD();
 }
-function collect(){ addCrystals(1); Audio.sfx('collect'); if(S.crystals%8===0){ showToast('🧲 '+FACTS[S.factIdx%FACTS.length]); S.factIdx++; } }
+function collect(){ addCrystals(1); Audio.sfx('collect'); }
 function collectLetter(ch){ Audio.sfx('letter');
   if(!S.letters[ch]){ S.letters[ch]=1; addCrystals(5); updateMagnetHUD();
-    if(WORD.every(function(c){return S.letters[c];})){ S.magnetBonuses=(S.magnetBonuses||0)+1; addCrystals(50); Audio.sfx('word'); showToast('✨ MAGNET COMPLETE! +50 BONUS ✨'); S.letters={}; updateMagnetHUD(); }
-    else { showToast('🔠 Got "'+ch+'" — spell MAGNET for a bonus!'); }
+    if(WORD.every(function(c){return S.letters[c];})){ S.magnetBonuses=(S.magnetBonuses||0)+1; addCrystals(50); Audio.sfx('word'); showToast('✨ MAGNET! +50 ✨'); S.letters={}; updateMagnetHUD(); }
+    else { showToast('🔠 '+ch+'!'); }
   } else { addCrystals(2); }
 }
-function activateInv(){ S.invT=10; Audio.sfx('power'); playerShield.visible=true; updateInvHUD(); showToast('🛡 INVINCIBLE for 10s — smash through anything!'); }
+function activateInv(){ S.invT=10; Audio.sfx('power'); playerShield.visible=true; updateInvHUD(); showToast('🛡 INVINCIBLE 10s!'); }
 var toastEl=document.getElementById('toast'),toastTimer=null;
 function showToast(t){ toastEl.textContent=t; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2600); }
 function updateHUD(){ document.getElementById('cryCount').textContent=S.crystals; document.getElementById('distCount').textContent=Math.floor(S.dist);
@@ -432,7 +431,6 @@ function start(){ clearObjs(); S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,li
   document.getElementById('titleScreen').classList.add('hidden'); document.getElementById('overScreen').classList.add('hidden'); document.getElementById('hud').classList.remove('hidden');
   document.getElementById('magBar').classList.remove('hidden');
   updateHUD(); updateMagnetHUD(); updateInvHUD();
-  if(window.Sunny)try{Sunny.say({text:"Dive, dive! Grab the 🧲 gold crystals — dodge the red magnets & rocks!",mood:'excited'});}catch(e){}
 }
 function gameOver(){ running=false;
   // keep body.mr-playing on so Coach Sunny stays hidden on the game-over screen too
@@ -473,7 +471,6 @@ S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0,letters:
 document.getElementById('loading').style.display='none';
 document.getElementById('titleScreen').classList.remove('hidden');
 requestAnimationFrame(tick);
-if(window.Sunny)try{ Sunny.init({position:'bottom-right',name:'☀️ Coach Sunny', messages:{hi:{text:"Ready to dive? Grab gold crystals, dodge red magnets & rocks. Tap DIVE IN!",mood:'happy'}},startKey:'hi'}); }catch(e){}
 </script>
 </body>
 </html>
