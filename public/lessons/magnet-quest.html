@@ -581,50 +581,6 @@
 
   .mini-icon { font-size: 1.3em; vertical-align: middle; }
 
-  /* ===== SUNNY THE GUIDE MASCOT ===== */
-  .sun-guide {
-    position: fixed; left: 16px; bottom: 16px; z-index: 1500;
-    display: flex; align-items: flex-end; gap: 12px;
-    max-width: min(380px, 86vw);
-  }
-  .sun-char {
-    width: 78px; height: 78px; flex-shrink: 0; cursor: pointer;
-    filter: drop-shadow(0 0 16px rgba(255,200,60,0.65));
-    animation: sunBob 3.2s ease-in-out infinite;
-  }
-  @keyframes sunBob { 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(-9px);} }
-  .sun-rays { transform-box: fill-box; transform-origin: center; animation: sunSpin 22s linear infinite; }
-  @keyframes sunSpin { to { transform: rotate(360deg); } }
-  .sun-bubble {
-    position: relative; background: #fff; color: #1a1433;
-    border-radius: 16px; padding: 12px 16px; border: 3px solid var(--iron);
-    font-family: 'Fredoka', sans-serif; font-size: 14.5px; line-height: 1.45;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
-    transition: transform 0.25s cubic-bezier(0.23,1,0.32,1);
-  }
-  .sun-bubble::after {
-    content: ''; position: absolute; left: -13px; bottom: 20px;
-    border: 8px solid transparent; border-right-color: var(--iron);
-  }
-  .sun-bubble strong { color: var(--signal); }
-  .sun-name { display:block; font-family:'Space Mono',monospace; font-size:10px; letter-spacing:1.5px; color: var(--iron); text-transform: uppercase; margin-bottom: 3px; }
-  .sun-voice {
-    position: absolute; top: -12px; right: -10px; width: 30px; height: 30px;
-    border-radius: 50%; border: 2px solid var(--iron); background: #161b33;
-    color: var(--iron); font-size: 14px; cursor: pointer; line-height: 1;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .sun-min {
-    position: absolute; top: -12px; right: 24px; width: 30px; height: 30px;
-    border-radius: 50%; border: 2px solid var(--border); background: #161b33;
-    color: var(--muted); font-size: 13px; cursor: pointer; line-height: 1;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .sun-guide.minimized .sun-bubble { display: none; }
-  @media (max-width: 560px) {
-    .sun-char { width: 60px; height: 60px; }
-    .sun-bubble { font-size: 13px; padding: 10px 12px; }
-  }
 </style>
 </head>
 <body>
@@ -1289,10 +1245,14 @@ function collectCrystal(btn, id) {
   
   // Sparkle effect
   createSparkles(btn);
-  
+
+  // Sunny does a happy hop on each collect
+  if (window.Sunny) Sunny.react('bounce');
+
   // Check if all collected
   if (collected.size === 11) {
     fireConfetti();
+    if (window.Sunny) Sunny.celebrate();
     setTimeout(() => {
       const finale = document.getElementById('finale');
       finale.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1471,113 +1431,33 @@ window.onload = function() {
 };
 </script>
 
-<!-- ═══════════════════════════════ SUNNY THE GUIDE ═══════════════════════════════ -->
-<div class="sun-guide" id="sunGuide">
-  <svg class="sun-char" id="sunChar" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-label="Sunny the sun guide — tap to hear again">
-    <g class="sun-rays" stroke="#ffd23f" stroke-width="4" stroke-linecap="round">
-      <line x1="80" y1="50" x2="93" y2="50"/>
-      <line x1="71" y1="71" x2="80" y2="80"/>
-      <line x1="50" y1="80" x2="50" y2="93"/>
-      <line x1="29" y1="71" x2="20" y2="80"/>
-      <line x1="20" y1="50" x2="7" y2="50"/>
-      <line x1="29" y1="29" x2="20" y2="20"/>
-      <line x1="50" y1="20" x2="50" y2="7"/>
-      <line x1="71" y1="29" x2="80" y2="20"/>
-    </g>
-    <circle cx="50" cy="50" r="26" fill="#ffd23f" stroke="#ff9f1c" stroke-width="3"/>
-    <circle cx="36" cy="54" r="3.2" fill="#ff8a5b" opacity="0.6"/>
-    <circle cx="64" cy="54" r="3.2" fill="#ff8a5b" opacity="0.6"/>
-    <circle cx="42" cy="46" r="3.4" fill="#5a3a00"/>
-    <circle cx="58" cy="46" r="3.4" fill="#5a3a00"/>
-    <path d="M40 56 Q50 67 60 56" fill="none" stroke="#5a3a00" stroke-width="3" stroke-linecap="round"/>
-  </svg>
-  <div class="sun-bubble" id="sunBubble">
-    <button class="sun-min" id="sunMin" title="Hide Sunny" aria-label="Hide Sunny">–</button>
-    <button class="sun-voice" id="sunVoice" title="Let Sunny read out loud" aria-label="Toggle voice">🔈</button>
-    <span class="sun-name">☀️ Sunny says</span>
-    <span id="sunText">Hi! I'm <strong>Sunny</strong> — your magnet guide! Tap <strong>Begin the Quest</strong> and let's explore the tiny magnets in your brain!</span>
-  </div>
-</div>
-
+<!-- ☀️ Sunny — official Vines Connection kids mascot (reusable) -->
+<script src="/lessons/sunny.js"></script>
 <script>
-(function () {
-  const sunMessages = {
-    hero:   "Hi! I'm <strong>Sunny</strong> ☀️ your magnet guide! Tap <strong>Begin the Quest</strong> and let's explore the tiny magnets in your brain!",
-    ch1:    "Whoa! Scientists found <strong>REAL magnets</strong> growing inside human brains. Tap the 🧲 COLLECT buttons as we go!",
-    ch2:    "These magnet-makers are <strong>3.5 BILLION years old</strong> — older than dinosaurs, trees, almost everything!",
-    ch3:    "Every magnet needs a recipe. Meet the <strong>Magnetosome Island</strong> — the instruction manual!",
-    ch4:    "These genes are SO useful that evolution kept them in almost <strong>every living thing</strong> — even YOU!",
-    ch5:    "Your <strong>DNA</strong> has the same recipe! Four gene teams build your magnets.",
-    ch6:    "Here's a real brain stem! The magnets gather deep down in the <strong>substantia nigra</strong> and <strong>red nucleus</strong>.",
-    ch7:    "Your cells build magnets on a real <strong>assembly line</strong> — not by accident!",
-    ch8:    "Big discovery! The same gene for <strong>red hair</strong> also helps organize your brain's magnets. Wow!",
-    ch9:    "Careful — <strong>pollution magnets</strong> are sneaky troublemakers. Not all magnets are good!",
-    ch10:   "When the magnet system breaks, it's linked to brain diseases — but scientists have <strong>new ways to help</strong>!",
-    ch11:   "Here's the whole epic story — from tiny ocean bacteria all the way to <strong>YOU</strong>!",
-    finale: "You did it, explorer! 🎉 You're a <strong>Magnet Master</strong>! Press the celebrate button!"
-  };
-
-  const textEl = document.getElementById('sunText');
-  const bubbleEl = document.getElementById('sunBubble');
-  const guideEl = document.getElementById('sunGuide');
-  let voiceOn = false;
-  let lastKey = 'hero';
-
-  function stripHtml(s) { const d = document.createElement('div'); d.innerHTML = s; return d.textContent || ''; }
-  function speak(html) {
-    if (!voiceOn || !('speechSynthesis' in window)) return;
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(stripHtml(html));
-    u.rate = 1; u.pitch = 1.15;
-    speechSynthesis.speak(u);
-  }
-  function setMsg(key) {
-    if (!sunMessages[key] || key === lastKey) return;
-    lastKey = key;
-    textEl.innerHTML = sunMessages[key];
-    bubbleEl.style.transform = 'scale(0.94)';
-    requestAnimationFrame(() => { bubbleEl.style.transform = 'scale(1)'; });
-    speak(sunMessages[key]);
-  }
-
-  document.getElementById('sunVoice').addEventListener('click', function (e) {
-    e.stopPropagation();
-    voiceOn = !voiceOn;
-    this.textContent = voiceOn ? '🔊' : '🔈';
-    if (voiceOn) speak(sunMessages[lastKey]);
-    else if ('speechSynthesis' in window) speechSynthesis.cancel();
+  Sunny.init({
+    name: "☀️ Sunny says",
+    sections: [
+      ['.hero','hero'], ['#ch1','ch1'], ['#ch2','ch2'], ['#ch3','ch3'],
+      ['#ch4','ch4'], ['#ch5','ch5'], ['#ch6','ch6'], ['#ch7','ch7'],
+      ['#ch8','ch8'], ['#ch9','ch9'], ['#ch10','ch10'], ['#ch11','ch11'],
+      ['#finale','finale']
+    ],
+    messages: {
+      hero:   { text: "Hi! I'm <strong>Sunny</strong> ☀️ your magnet guide! Tap <strong>Begin the Quest</strong> and let's explore the tiny magnets in your brain!", mood: "happy" },
+      ch1:    { text: "Whoa! Scientists found <strong>REAL magnets</strong> growing inside human brains. Tap the 🧲 COLLECT buttons as we go!", mood: "wow" },
+      ch2:    { text: "These magnet-makers are <strong>3.5 BILLION years old</strong> — older than dinosaurs, trees, almost everything!", mood: "excited" },
+      ch3:    { text: "Every magnet needs a recipe. Meet the <strong>Magnetosome Island</strong> — the instruction manual!", mood: "happy" },
+      ch4:    { text: "These genes are SO useful that evolution kept them in almost <strong>every living thing</strong> — even YOU!", mood: "excited" },
+      ch5:    { text: "Your <strong>DNA</strong> has the same recipe! Four gene teams build your magnets.", mood: "happy" },
+      ch6:    { text: "Here's a real brain stem! The magnets gather deep down in the <strong>substantia nigra</strong> and <strong>red nucleus</strong>.", mood: "excited" },
+      ch7:    { text: "Your cells build magnets on a real <strong>assembly line</strong> — not by accident!", mood: "happy" },
+      ch8:    { text: "Big discovery! The same gene for <strong>red hair</strong> also helps organize your brain's magnets. Wow!", mood: "wow" },
+      ch9:    { text: "Careful — <strong>pollution magnets</strong> are sneaky troublemakers. Not all magnets are good!", mood: "wow" },
+      ch10:   { text: "When the magnet system breaks, it's linked to brain diseases — but scientists have <strong>new ways to help</strong>!", mood: "think" },
+      ch11:   { text: "Here's the whole epic story — from tiny ocean bacteria all the way to <strong>YOU</strong>!", mood: "excited" },
+      finale: { text: "You did it, explorer! 🎉 You're a <strong>Magnet Master</strong>! Press the celebrate button!", mood: "celebrate" }
+    }
   });
-  document.getElementById('sunMin').addEventListener('click', function (e) {
-    e.stopPropagation();
-    guideEl.classList.toggle('minimized');
-  });
-  document.getElementById('sunChar').addEventListener('click', function () {
-    if (guideEl.classList.contains('minimized')) guideEl.classList.remove('minimized');
-    speak(sunMessages[lastKey]);
-  });
-
-  // Update guidance as kids scroll through the lesson
-  const sections = [
-    ['.hero', 'hero'], ['#ch1', 'ch1'], ['#ch2', 'ch2'], ['#ch3', 'ch3'],
-    ['#ch4', 'ch4'], ['#ch5', 'ch5'], ['#ch6', 'ch6'], ['#ch7', 'ch7'],
-    ['#ch8', 'ch8'], ['#ch9', 'ch9'], ['#ch10', 'ch10'], ['#ch11', 'ch11'],
-    ['#finale', 'finale']
-  ];
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) {
-          const key = en.target.getAttribute('data-sun');
-          if (key) setMsg(key);
-        }
-      });
-    }, { threshold: 0.45 });
-    sections.forEach(function (pair) {
-      const el = document.querySelector(pair[0]);
-      if (el) { el.setAttribute('data-sun', pair[1]); io.observe(el); }
-    });
-  }
-})();
 </script>
 
 </body>
