@@ -646,7 +646,7 @@
     Ready for the most mind-blowing science adventure ever? Let's go! ✨
   </p>
 
-  <button onclick="document.getElementById('ch1').scrollIntoView({ behavior: 'smooth' }); startQuest();" class="hero-cta">
+  <button onclick="beginQuest()" class="hero-cta">
     BEGIN THE QUEST <span style="font-size:22px;">→</span>
   </button>
 
@@ -1286,6 +1286,18 @@ function resetQuiz() {
 function startQuest() {
   // Mark first chapter as started
   updateProgress();
+}
+
+// Robust "Begin the Quest" — reliably scrolls into Level 1 (mobile-safe)
+function beginQuest() {
+  var t = document.getElementById('ch1');
+  if (t) {
+    var y = t.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - 8;
+    try { window.scrollTo({ top: y, behavior: 'smooth' }); }
+    catch (e) { window.scrollTo(0, y); }
+  }
+  try { startQuest(); } catch (e) {}
+  if (window.Sunny) { try { Sunny.say('ch1'); Sunny.react('bounce'); } catch (e) {} }
 }
 
 window.addEventListener('scroll', () => {

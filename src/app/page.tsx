@@ -344,6 +344,32 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Lessons for Kids Section */}
+      <section className="border-t border-border py-32">
+        <div className="mx-auto max-w-4xl px-6 text-center">
+          <motion.div {...fadeInUp}>
+            <span className="section-index">// For Young Explorers</span>
+            <h2
+              className="mt-4 mb-8 text-4xl font-bold text-text-primary md:text-5xl"
+              style={{ fontFamily: "var(--font-heading)" }}
+            >
+              Lessons for <span className="gradient-text">Kids</span>
+            </h2>
+            <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-text-secondary">
+              Big science, made for young explorers. Interactive 3D quests
+              through the research &mdash; collect crystals, meet Sunny the
+              guide, and discover how amazing the body really is.
+            </p>
+            <Link
+              href="/lessons"
+              className="glow-teal inline-flex rounded-full bg-gradient-to-r from-psyche-teal to-psyche-gold px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
+            >
+              Explore Kids Lessons
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Etheric University Section */}
       <section id="university" className="border-t border-border py-32">
         <div className="mx-auto max-w-7xl px-6">
