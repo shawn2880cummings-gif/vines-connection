@@ -6,34 +6,45 @@
 <title>🧲 Magnet Run — Vines Connection Kids</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Space+Mono:wght@700&display=swap');
-  :root{ --iron:#ff9f1c; --crystal:#00f0ff; --green:#39ff14; --signal:#ff4757; --cream:#f0e9d2; }
+  :root{ --iron:#ffb02e; --crystal:#00f0ff; --green:#39ff14; --signal:#ff4757; --cream:#f0e9d2; }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html,body{height:100%;overflow:hidden;background:#03081e;font-family:'Fredoka',sans-serif;color:var(--cream)}
+  html,body{height:100%;overflow:hidden;background:#02101f;font-family:'Fredoka',sans-serif;color:var(--cream)}
   #mr{position:fixed;inset:0;touch-action:none}
   canvas{display:block;width:100%;height:100%}
 
-  .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;z-index:5}
+  .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;z-index:5}
   .ov.hidden{display:none}
-  .card{background:rgba(8,14,40,.82);border:3px solid var(--crystal);border-radius:22px;padding:30px 26px;max-width:440px;width:100%;backdrop-filter:blur(8px);box-shadow:0 20px 60px rgba(0,0,0,.5)}
-  h1{font-size:clamp(34px,9vw,56px);line-height:1;margin-bottom:10px}
+  .card{background:rgba(4,18,40,.82);border:3px solid var(--crystal);border-radius:22px;padding:26px 24px;max-width:460px;width:100%;backdrop-filter:blur(8px);box-shadow:0 20px 60px rgba(0,0,0,.55)}
+  h1{font-size:clamp(32px,9vw,54px);line-height:1;margin-bottom:8px}
   h1 .a{color:var(--iron)} h1 .b{color:var(--crystal)}
-  .sub{font-size:16px;color:rgba(240,233,210,.8);margin-bottom:18px;line-height:1.45}
-  .btn{display:inline-block;background:linear-gradient(90deg,var(--iron),#ff6b00);color:#111;font-weight:700;font-size:20px;padding:15px 40px;border:none;border-radius:999px;cursor:pointer;box-shadow:0 8px 24px rgba(255,159,28,.45);transition:transform .15s}
+  .sub{font-size:15px;color:rgba(240,233,210,.82);margin-bottom:16px;line-height:1.45}
+  .btn{display:inline-block;background:linear-gradient(90deg,var(--iron),#ff7a00);color:#111;font-weight:700;font-size:20px;padding:14px 40px;border:none;border-radius:999px;cursor:pointer;box-shadow:0 8px 24px rgba(255,159,28,.45);transition:transform .15s}
   .btn:active{transform:scale(.96)}
-  .how{font-family:'Space Mono',monospace;font-size:12.5px;color:rgba(240,233,210,.65);margin-top:16px;line-height:1.7;letter-spacing:.5px}
+  .how{font-family:'Space Mono',monospace;font-size:12px;color:rgba(240,233,210,.6);margin-top:14px;line-height:1.7;letter-spacing:.4px}
   .big{font-size:clamp(40px,11vw,68px);color:var(--iron);font-weight:700;line-height:1}
   .hs{font-size:14px;color:var(--crystal);margin-top:4px;font-family:'Space Mono',monospace}
-  .fact{background:rgba(0,240,255,.1);border-left:4px solid var(--crystal);border-radius:0 10px 10px 0;padding:10px 14px;font-size:14px;margin:16px 0;text-align:left;line-height:1.45}
+  .fact{background:rgba(0,240,255,.1);border-left:4px solid var(--crystal);border-radius:0 10px 10px 0;padding:10px 14px;font-size:14px;margin:14px 0;text-align:left;line-height:1.45}
+
+  /* tutorial legend */
+  .legend{display:flex;flex-direction:column;gap:10px;margin:6px 0 4px;text-align:left}
+  .leg{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border-radius:14px;padding:9px 12px;border:2px solid transparent}
+  .leg.good{border-color:rgba(255,176,46,.5)}
+  .leg.bad{border-color:rgba(255,71,87,.5)}
+  .leg .ic{display:flex;gap:4px;flex-shrink:0}
+  .leg .ic svg{width:38px;height:38px;display:block}
+  .leg b{font-size:14px}
+  .leg.good b{color:var(--iron)} .leg.bad b{color:var(--signal)}
+  .leg .tx{font-size:13px;color:rgba(240,233,210,.8);line-height:1.35}
 
   /* HUD */
-  #hud{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;z-index:4;pointer-events:none}
-  .hud-pill{background:rgba(8,14,40,.7);border:2px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 14px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:7px}
+  #hud{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;z-index:4;pointer-events:none}
+  .hud-pill{background:rgba(4,18,40,.66);border:2px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 13px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px}
   .hud-pill.cry{border-color:var(--iron);color:var(--iron)}
   .hud-pill.dist{border-color:var(--crystal);color:var(--crystal);font-family:'Space Mono',monospace;font-size:13px}
   #lives{font-size:18px;letter-spacing:2px}
   #hud.hidden{display:none}
-  .toast{position:absolute;left:50%;top:64px;transform:translateX(-50%);background:rgba(8,14,40,.9);border:2px solid var(--crystal);border-radius:12px;padding:8px 16px;font-size:13.5px;z-index:6;opacity:0;transition:opacity .3s, top .3s;pointer-events:none;max-width:88vw;text-align:center}
-  .toast.show{opacity:1;top:74px}
+  .toast{position:absolute;left:50%;top:60px;transform:translateX(-50%);background:rgba(4,18,40,.92);border:2px solid var(--crystal);border-radius:12px;padding:8px 16px;font-size:13.5px;z-index:6;opacity:0;transition:opacity .3s, top .3s;pointer-events:none;max-width:88vw;text-align:center}
+  .toast.show{opacity:1;top:72px}
 </style>
 </head>
 <body>
@@ -50,15 +61,32 @@
   <div class="ov" id="titleScreen">
     <div class="card">
       <h1><span class="a">🧲 MAGNET</span> <span class="b">RUN</span></h1>
-      <p class="sub">You're a tiny <strong>magnet-making bacterium</strong> diving through the ancient ocean. Grab the glowing <strong style="color:var(--iron)">magnetite crystals</strong> and dodge the <strong style="color:var(--signal)">pollution magnets</strong> &amp; rocks. It gets faster… how deep can you go?</p>
-      <button class="btn" id="startBtn">DIVE IN ▶</button>
+      <p class="sub">Dive through the reef as a tiny <strong>magnet-making bacterium</strong>! Switch lanes to grab the good crystals and dodge the bad stuff. It speeds up the deeper you go…</p>
+
+      <div class="legend">
+        <div class="leg good">
+          <span class="ic">
+            <svg viewBox="0 0 40 40"><polygon points="20,3 37,20 20,37 3,20" fill="#ffd23f" stroke="#fff3c0" stroke-width="2"/><polygon points="20,3 37,20 20,20" fill="#fff" opacity=".45"/></svg>
+          </span>
+          <div><b>COLLECT &mdash; Magnetite Crystals</b><div class="tx">Gold glowing gems = points! Grab as many as you can.</div></div>
+        </div>
+        <div class="leg bad">
+          <span class="ic">
+            <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="#3a2030" stroke="#ff4757" stroke-width="3"/><circle cx="20" cy="13" r="3" fill="#ff6b7a"/><circle cx="14" cy="24" r="3" fill="#ff6b7a"/><circle cx="26" cy="24" r="3" fill="#ff6b7a"/></svg>
+            <svg viewBox="0 0 40 40"><polygon points="8,28 12,12 30,10 35,24 18,33" fill="#6b6f7a" stroke="#3a3d45" stroke-width="3"/></svg>
+          </span>
+          <div><b>AVOID &mdash; Pollution Magnets &amp; Rocks</b><div class="tx">Red spiky magnets &amp; gray rocks cost a life. Dodge them!</div></div>
+        </div>
+      </div>
+
+      <button class="btn" id="startBtn" style="margin-top:6px">DIVE IN ▶</button>
       <div class="how">◀ ▶ ARROWS / A-D &nbsp;·&nbsp; TAP LEFT-RIGHT &nbsp;·&nbsp; SWIPE</div>
     </div>
   </div>
 
   <div class="ov hidden" id="overScreen">
     <div class="card">
-      <h1 style="font-size:38px"><span class="b">GAME OVER</span></h1>
+      <h1 style="font-size:36px"><span class="b">GAME OVER</span></h1>
       <div class="big" id="finalDist">0m</div>
       <div class="hs">🧲 <span id="finalCry">0</span> crystals · best: <span id="bestDist">0</span>m</div>
       <div class="fact" id="overFact"></div>
@@ -70,26 +98,22 @@
 <script src="/lessons/sunny.js"></script>
 <script>
 (function(){
-  var cv = document.getElementById('c'), ctx = cv.getContext('2d');
+  var cv=document.getElementById('c'), ctx=cv.getContext('2d');
   var W=0,H=0,DPR=Math.min(window.devicePixelRatio||1,2);
-  function resize(){
-    W=window.innerWidth; H=window.innerHeight;
-    cv.width=W*DPR; cv.height=H*DPR; cv.style.width=W+'px'; cv.style.height=H+'px';
-    ctx.setTransform(DPR,0,0,DPR,0,0);
-  }
+  function resize(){ W=window.innerWidth;H=window.innerHeight; cv.width=W*DPR;cv.height=H*DPR; cv.style.width=W+'px';cv.style.height=H+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
   window.addEventListener('resize',resize); resize();
 
-  // ---- perspective helpers ----
-  function horizonY(){ return H*0.30; }
-  function baseY(){ return H*0.96; }
-  function laneNearX(lane){ var spread=Math.min(W*0.30,230); return W/2 + (lane-1)*spread; }
-  // d: 0 = far (horizon), 1 = near (player)
-  function projY(d){ return horizonY() + (baseY()-horizonY())*d; }
-  function projScale(d){ return 0.16 + 0.94*Math.pow(d,1.7); }
-  function projX(lane,d){ return W/2 + (laneNearX(lane)-W/2)*d; }
+  function rnd(a,b){ return a+Math.random()*(b-a); }
 
-  // ---- game state ----
-  var FACTS = [
+  // ---- perspective ----
+  function horizonY(){ return H*0.32; }
+  function baseY(){ return H*0.97; }
+  function projY(d){ return horizonY()+(baseY()-horizonY())*d; }
+  function projScale(d){ return 0.14+0.96*Math.pow(d,1.7); }
+  function laneNearX(lane){ var spread=Math.min(W*0.28,210); return W/2+(lane-1)*spread; }
+  function projX(lane,d){ return W/2+(laneNearX(lane)-W/2)*d; }
+
+  var FACTS=[
     "Magnetite is Fe₃O₄ — a real magnet your body can build!",
     "Bacteria invented magnet-making 3.5 BILLION years ago.",
     "They use Earth's magnetic field like a compass to swim.",
@@ -98,236 +122,217 @@
     "The substantia nigra has the most magnetite in your brain.",
     "Salmon use the same magnet genes to find their way home."
   ];
-  var S, lastT, running=false, rafId=null;
-  var player={lane:1, laneF:1, hitFlash:0};
-  var keysLock=false;
+  var FISH_COLORS=['#ff8a3c','#ffd23f','#4fd1e0','#ff6fae','#8b7bff','#7be08a'];
+  var CORAL_COLORS=['#ff7eb6','#ff9f43','#a55eff','#36d1b0','#ff6b6b'];
+
+  var S, lastT=0, running=false, rafId=null;
+  var player={lane:1,laneF:1,hitFlash:0};
+
+  function newBubble(){ return {x:rnd(0,W),y:rnd(0,H),r:rnd(1.5,6),sp:rnd(20,70),wob:rnd(0,6),wa:rnd(0.6,1.6)}; }
+  function newFish(side){ var sc=rnd(.35,1.15); var fg=sc>0.78;
+    return {x: side>0?-60:W+60, y:rnd(H*0.12,H*0.82), dir:side, sp:rnd(40,110)*(0.6+sc), sc:sc, col:FISH_COLORS[(Math.random()*FISH_COLORS.length)|0], wob:rnd(0,6), fg:fg }; }
+  function newCoral(d){ var side=Math.random()<0.5?-1:1; var lane= side<0? rnd(-1.35,-1.0): rnd(3.0,3.35);
+    var r=Math.random(); var type= r<0.5?'coral': (r<0.78?'kelp':'rock');
+    return {lane:lane,d:(d==null?0:d),type:type,col:CORAL_COLORS[(Math.random()*CORAL_COLORS.length)|0],seed:rnd(0,10),h:rnd(.8,1.5)}; }
 
   function reset(){
-    S={ objs:[], spawnT:0, speed:0.42, dist:0, crystals:0, lives:3, time:0, factIdx:0, particles:[] };
-    player.lane=1; player.laneF=1; player.hitFlash=0;
+    S={ objs:[],spawnT:0,speed:0.42,dist:0,crystals:0,lives:3,time:0,factIdx:0,particles:[],
+        bubbles:[],fish:[],coral:[] };
+    for(var i=0;i<34;i++) S.bubbles.push(newBubble());
+    for(var f=0;f<8;f++) S.fish.push(newFish(Math.random()<0.5?1:-1));
+    for(var c=0;c<9;c++) S.coral.push(newCoral(Math.random()));
+    player.lane=1;player.laneF=1;player.hitFlash=0;
     updateHUD();
   }
 
   function spawnRow(){
-    // choose 0-2 obstacles + maybe a crystal, always leave a gap
     var lanes=[0,1,2];
-    // shuffle
-    for(var i=lanes.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=lanes[i];lanes[i]=lanes[j];lanes[j]=t;}
-    var obstacles = Math.random()<0.5?1:(Math.random()<0.6?2:0);
+    for(var i=lanes.length-1;i>0;i--){var j=(Math.random()*(i+1))|0;var t=lanes[i];lanes[i]=lanes[j];lanes[j]=t;}
+    var obstacles=Math.random()<0.5?1:(Math.random()<0.6?2:0);
     var used={};
-    for(var k=0;k<obstacles;k++){ var ln=lanes[k]; used[ln]=1;
-      S.objs.push({lane:ln,d:0,type:(Math.random()<0.5?'poll':'rock'),passed:false,spin:Math.random()*6}); }
-    // crystals in a free lane (often)
-    if(Math.random()<0.85){
-      var free=[0,1,2].filter(function(l){return !used[l];});
-      if(free.length){ var fl=free[Math.floor(Math.random()*free.length)];
-        S.objs.push({lane:fl,d:0,type:'cry',passed:false,spin:Math.random()*6}); }
-    }
+    for(var k=0;k<obstacles;k++){var ln=lanes[k];used[ln]=1; S.objs.push({lane:ln,d:0,type:(Math.random()<0.5?'poll':'rock'),passed:false,spin:rnd(0,6)});}
+    if(Math.random()<0.85){ var free=[0,1,2].filter(function(l){return !used[l];}); if(free.length){ var fl=free[(Math.random()*free.length)|0]; S.objs.push({lane:fl,d:0,type:'cry',passed:false,spin:rnd(0,6)}); } }
   }
 
-  function move(dir){
-    if(!running) return;
-    player.lane=Math.max(0,Math.min(2,player.lane+dir));
-  }
+  function move(dir){ if(running) player.lane=Math.max(0,Math.min(2,player.lane+dir)); }
+  function hit(){ S.lives--; player.hitFlash=0.5; if(window.Sunny)try{Sunny.react('bounce');}catch(e){} if(S.lives<=0) gameOver(); updateHUD(); }
+  function collect(){ S.crystals++; updateHUD();
+    for(var i=0;i<10;i++) S.particles.push({x:projX(player.lane,0.86),y:projY(0.86),vx:rnd(-220,220),vy:rnd(-260,-40),life:.6,c:Math.random()<.5?'#ffd23f':'#fff'});
+    if(S.crystals%8===0){ showToast('🧲 '+FACTS[S.factIdx%FACTS.length]); S.factIdx++; } }
 
-  function hit(){
-    S.lives--; player.hitFlash=0.5;
-    if(window.Sunny) try{Sunny.react('bounce');}catch(e){}
-    if(S.lives<=0){ gameOver(); }
-    updateHUD();
-  }
-  function collect(){
-    S.crystals++; updateHUD();
-    // burst particles
-    for(var i=0;i<8;i++){ S.particles.push({x:projX(player.lane,0.86),y:projY(0.86),vx:(Math.random()-.5)*240,vy:(Math.random()-1)*220,life:.6,c:'#ffd23f'}); }
-    if(S.crystals% 8===0){ showToast('🧲 '+FACTS[S.factIdx%FACTS.length]); S.factIdx++; if(window.Sunny) try{Sunny.react('bounce');}catch(e){} }
-  }
+  var toastEl=document.getElementById('toast'),toastTimer=null;
+  function showToast(t){ toastEl.textContent=t; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2600); }
+  function updateHUD(){ document.getElementById('cryCount').textContent=S.crystals; document.getElementById('distCount').textContent=Math.floor(S.dist);
+    var h='';for(var i=0;i<3;i++)h+=i<S.lives?'❤️':'🖤'; document.getElementById('lives').textContent=h; }
 
-  var toastEl=document.getElementById('toast'), toastTimer=null;
-  function showToast(txt){ toastEl.textContent=txt; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2600); }
-
-  function updateHUD(){
-    document.getElementById('cryCount').textContent=S.crystals;
-    document.getElementById('distCount').textContent=Math.floor(S.dist);
-    var h=''; for(var i=0;i<3;i++) h+= i<S.lives?'❤️':'🖤';
-    document.getElementById('lives').textContent=h;
+  // ---- update ----
+  function updateScene(dt){
+    // bubbles rise
+    for(var i=0;i<S.bubbles.length;i++){var b=S.bubbles[i]; b.y-=b.sp*dt; b.wob+=dt*b.wa; if(b.y<-10){b.y=H+10;b.x=rnd(0,W);} }
+    // fish swim
+    for(var f=0;f<S.fish.length;f++){var fi=S.fish[f]; fi.x+=fi.dir*fi.sp*dt; fi.wob+=dt*3; if((fi.dir>0&&fi.x>W+80)||(fi.dir<0&&fi.x<-80)) S.fish[f]=newFish(Math.random()<0.5?1:-1); }
+    // coral scrolls toward viewer
+    for(var c=0;c<S.coral.length;c++){var co=S.coral[c]; co.d+=S.speed*dt; if(co.d>1.25) S.coral[c]=newCoral(0); }
   }
-
-  // ---- loop ----
   function update(dt){
     S.time+=dt;
-    S.speed=Math.min(1.7, 0.42 + S.time*0.018);     // gradual speed-up
-    S.dist += S.speed*38*dt;
+    S.speed=Math.min(1.7,0.42+S.time*0.018);
+    S.dist+=S.speed*38*dt;
     if(player.hitFlash>0) player.hitFlash-=dt;
-
-    // lane tween
-    player.laneF += (player.lane-player.laneF)*Math.min(1,dt*14);
-
-    // spawn pacing tied to speed
-    S.spawnT-=dt;
-    var interval=Math.max(0.42, 0.95 - S.time*0.012);
+    player.laneF+=(player.lane-player.laneF)*Math.min(1,dt*14);
+    updateScene(dt);
+    S.spawnT-=dt; var interval=Math.max(0.42,0.95-S.time*0.012);
     if(S.spawnT<=0){ spawnRow(); S.spawnT=interval; }
-
     var pd=0.86;
-    for(var i=S.objs.length-1;i>=0;i--){
-      var o=S.objs[i]; o.d += S.speed*dt; o.spin+=dt*5;
-      if(!o.passed && o.d>=pd){ o.passed=true;
-        if(o.lane===player.lane){
-          if(o.type==='cry'){ collect(); S.objs.splice(i,1); continue; }
-          else { hit(); S.objs.splice(i,1); if(!running) return; continue; }
-        }
-      }
-      if(o.d>1.18){ S.objs.splice(i,1); }
+    for(var i=S.objs.length-1;i>=0;i--){ var o=S.objs[i]; o.d+=S.speed*dt; o.spin+=dt*5;
+      if(!o.passed&&o.d>=pd){ o.passed=true;
+        if(o.lane===player.lane){ if(o.type==='cry'){collect();S.objs.splice(i,1);continue;} else {hit();S.objs.splice(i,1); if(!running)return; continue;} } }
+      if(o.d>1.18) S.objs.splice(i,1);
     }
-    // particles
-    for(var p=S.particles.length-1;p>=0;p--){ var pt=S.particles[p]; pt.life-=dt; pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; pt.vy+=600*dt; if(pt.life<=0) S.particles.splice(p,1); }
-    if(S.dist>0) document.getElementById('distCount').textContent=Math.floor(S.dist);
+    for(var p=S.particles.length-1;p>=0;p--){var pt=S.particles[p]; pt.life-=dt; pt.x+=pt.vx*dt; pt.y+=pt.vy*dt; pt.vy+=620*dt; if(pt.life<=0)S.particles.splice(p,1);}
   }
 
-  function drawBg(){
+  // ---- drawing ----
+  function drawWater(){
     var g=ctx.createLinearGradient(0,0,0,H);
-    g.addColorStop(0,'#071233'); g.addColorStop(.45,'#0a1c4a'); g.addColorStop(1,'#02060f');
+    g.addColorStop(0,'#1d6fb0'); g.addColorStop(.32,'#12559a'); g.addColorStop(.62,'#0b3e74'); g.addColorStop(1,'#04203f');
     ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
-    // light rays from top
-    ctx.save(); ctx.globalAlpha=.06; ctx.fillStyle='#bfe9ff';
-    for(var r=0;r<5;r++){ var x=W*(0.15+r*0.18); ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x-40,H); ctx.lineTo(x+30,H); ctx.closePath(); ctx.fill(); }
+    // god rays
+    ctx.save(); ctx.globalCompositeOperation='lighter';
+    for(var i=0;i<5;i++){ var bx=W*(0.12+i*0.19)+Math.sin(S.time*0.18+i)*26;
+      var grd=ctx.createLinearGradient(bx,0,bx-70,H*0.9); grd.addColorStop(0,'rgba(170,230,255,0.10)'); grd.addColorStop(1,'rgba(170,230,255,0)');
+      ctx.fillStyle=grd; ctx.beginPath(); ctx.moveTo(bx-26,0); ctx.lineTo(bx+26,0); ctx.lineTo(bx-46,H*0.92); ctx.lineTo(bx-120,H*0.92); ctx.closePath(); ctx.fill(); }
     ctx.restore();
-    // moving lane grid (perspective) — scroll lines toward viewer
-    ctx.strokeStyle='rgba(0,240,255,0.16)'; ctx.lineWidth=2;
+  }
+  function drawFish(fi){
+    var s=fi.sc; ctx.save(); ctx.translate(fi.x,fi.y+Math.sin(fi.wob)*6*s); ctx.scale(fi.dir*s,s);
+    ctx.globalAlpha=fi.fg?0.95:0.5;
+    ctx.fillStyle=fi.col;
+    ctx.beginPath(); ctx.ellipse(0,0,20,11,0,0,7); ctx.fill();              // body
+    ctx.beginPath(); ctx.moveTo(-16,0); ctx.lineTo(-30,-10); ctx.lineTo(-30,10); ctx.closePath(); ctx.fill(); // tail
+    ctx.fillStyle='rgba(255,255,255,.5)'; ctx.beginPath(); ctx.ellipse(2,-2,12,5,0,0,7); ctx.fill(); // belly shine
+    ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(11,-2,3,0,7); ctx.fill();
+    ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(12,-2,1.5,0,7); ctx.fill();
+    ctx.restore(); ctx.globalAlpha=1;
+  }
+  function drawFloor(){
+    var hY=horizonY(),bY=baseY();
+    var lxh=projX(-0.5,0),rxh=projX(2.5,0),lxb=projX(-0.5,1),rxb=projX(2.5,1);
+    var g=ctx.createLinearGradient(0,hY,0,bY);
+    g.addColorStop(0,'#0d3a63'); g.addColorStop(.55,'#2f6f7e'); g.addColorStop(1,'#cdbb86');
+    ctx.fillStyle=g; ctx.beginPath(); ctx.moveTo(lxh,hY); ctx.lineTo(rxh,hY); ctx.lineTo(rxb,bY); ctx.lineTo(lxb,bY); ctx.closePath(); ctx.fill();
     // lane dividers
-    for(var l=0;l<=3;l++){ var laneEdge=l-0.5;
-      ctx.beginPath();
-      ctx.moveTo(projX(laneEdge,0.001), projY(0.001));
-      ctx.lineTo(projX(laneEdge,1), projY(1));
-      ctx.stroke();
-    }
-    // horizontal rungs scrolling
-    ctx.strokeStyle='rgba(120,180,255,0.13)';
-    var off = (S.time*S.speed)%0.12;
-    for(var d=off; d<1; d+=0.12){
-      var dd=d*d; // perspective-ish spacing
-      ctx.globalAlpha=Math.min(1,dd*2);
-      ctx.beginPath(); ctx.moveTo(projX(-0.5,dd),projY(dd)); ctx.lineTo(projX(2.5,dd),projY(dd)); ctx.stroke();
-    }
+    ctx.strokeStyle='rgba(0,240,255,0.16)'; ctx.lineWidth=2;
+    for(var l=0;l<=3;l++){ var e=l-0.5; ctx.beginPath(); ctx.moveTo(projX(e,0.001),projY(0.001)); ctx.lineTo(projX(e,1),projY(1)); ctx.stroke(); }
+    // scrolling rungs
+    ctx.strokeStyle='rgba(255,245,210,0.10)';
+    var off=(S.time*S.speed)%0.12;
+    for(var d=off; d<1; d+=0.12){ var dd=d*d; ctx.globalAlpha=Math.min(1,dd*2.2); ctx.beginPath(); ctx.moveTo(projX(-0.5,dd),projY(dd)); ctx.lineTo(projX(2.5,dd),projY(dd)); ctx.stroke(); }
     ctx.globalAlpha=1;
   }
-
+  function drawCoral(co){
+    var x=projX(co.lane,co.d), y=projY(co.d), s=projScale(co.d)*co.h; if(s<0.05) return;
+    ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
+    if(co.type==='kelp'){
+      ctx.strokeStyle='#3fae5a'; ctx.lineWidth=7; ctx.lineCap='round';
+      for(var k=-1;k<=1;k++){ var sw=Math.sin(S.time*2+co.seed+k); ctx.beginPath(); ctx.moveTo(k*8,0); ctx.quadraticCurveTo(k*8+sw*18,-44,k*8+sw*10,-92); ctx.stroke(); }
+    } else if(co.type==='rock'){
+      ctx.fillStyle='#5b6068'; ctx.strokeStyle='#3a3d45'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.moveTo(-26,8); ctx.lineTo(-16,-20); ctx.lineTo(16,-24); ctx.lineTo(30,-2); ctx.lineTo(20,16); ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else {
+      // coral cluster — rounded branches
+      ctx.fillStyle=co.col;
+      for(var b=0;b<5;b++){ var a=-1.4+b*0.7+Math.sin(co.seed+b)*0.2; var len=44+ (b%2)*16;
+        ctx.save(); ctx.rotate(a); ctx.beginPath(); ctx.moveTo(-8,0); ctx.lineTo(8,0); ctx.lineTo(5,-len); ctx.lineTo(-5,-len); ctx.closePath(); ctx.fill();
+        ctx.beginPath(); ctx.arc(0,-len,8,0,7); ctx.fill(); ctx.restore(); }
+      ctx.fillStyle='rgba(255,255,255,.18)'; ctx.beginPath(); ctx.ellipse(-6,-10,8,16,-.3,0,7); ctx.fill();
+    }
+    ctx.restore();
+  }
   function drawCrystal(x,y,s,spin){
     ctx.save(); ctx.translate(x,y); ctx.rotate(Math.sin(spin)*0.25); ctx.scale(s,s);
-    ctx.shadowColor='#ffcf6a'; ctx.shadowBlur=18;
-    ctx.fillStyle='#ffd23f'; ctx.strokeStyle='#fff3c0'; ctx.lineWidth=2;
+    ctx.shadowColor='#ffcf6a'; ctx.shadowBlur=20; ctx.fillStyle='#ffd23f'; ctx.strokeStyle='#fff3c0'; ctx.lineWidth=2;
     ctx.beginPath(); ctx.moveTo(0,-22); ctx.lineTo(18,0); ctx.lineTo(0,22); ctx.lineTo(-18,0); ctx.closePath(); ctx.fill(); ctx.stroke();
-    ctx.shadowBlur=0; ctx.fillStyle='rgba(255,255,255,.5)';
-    ctx.beginPath(); ctx.moveTo(0,-22); ctx.lineTo(18,0); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
+    ctx.shadowBlur=0; ctx.fillStyle='rgba(255,255,255,.5)'; ctx.beginPath(); ctx.moveTo(0,-22); ctx.lineTo(18,0); ctx.lineTo(0,0); ctx.closePath(); ctx.fill();
     ctx.restore();
   }
   function drawObstacle(x,y,s,type,spin){
     ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
-    if(type==='poll'){
-      ctx.shadowColor='#ff4757'; ctx.shadowBlur=16;
-      ctx.fillStyle='#3a2030'; ctx.strokeStyle='#ff4757'; ctx.lineWidth=3;
-      ctx.beginPath(); ctx.arc(0,0,22,0,7); ctx.fill(); ctx.stroke();
-      ctx.shadowBlur=0; ctx.fillStyle='#ff6b7a';
+    if(type==='poll'){ ctx.shadowColor='#ff4757'; ctx.shadowBlur=18; ctx.fillStyle='#3a2030'; ctx.strokeStyle='#ff4757'; ctx.lineWidth=3;
+      ctx.beginPath(); ctx.arc(0,0,22,0,7); ctx.fill(); ctx.stroke(); ctx.shadowBlur=0; ctx.fillStyle='#ff6b7a';
       for(var i=0;i<5;i++){var a=spin+i*1.25; ctx.beginPath(); ctx.arc(Math.cos(a)*9,Math.sin(a)*9,4,0,7); ctx.fill();}
-    } else {
-      ctx.fillStyle='#6b6f7a'; ctx.strokeStyle='#3a3d45'; ctx.lineWidth=3;
+    } else { ctx.fillStyle='#6b6f7a'; ctx.strokeStyle='#3a3d45'; ctx.lineWidth=3;
       ctx.beginPath(); ctx.moveTo(-20,16); ctx.lineTo(-12,-16); ctx.lineTo(14,-18); ctx.lineTo(22,10); ctx.lineTo(8,20); ctx.closePath(); ctx.fill(); ctx.stroke();
-      ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(-8,-10,10,8);
-    }
+      ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(-8,-10,10,8); }
     ctx.restore();
   }
   function drawPlayer(){
-    var d=0.86, x=projX(player.laneF,d), y=projY(d), s=projScale(d);
-    ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
+    var d=0.86,x=projX(player.laneF,d),y=projY(d),s=projScale(d); ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
     var wob=Math.sin(S.time*12)*3;
-    if(player.hitFlash>0 && Math.floor(S.time*20)%2===0) ctx.globalAlpha=0.35;
-    // body (green capsule bacterium)
-    ctx.shadowColor='#39ff14'; ctx.shadowBlur=16;
-    ctx.fillStyle='#54d65a'; ctx.strokeStyle='#2a8f33'; ctx.lineWidth=3;
-    ctx.beginPath(); ctx.ellipse(0,wob,30,20,0,0,7); ctx.fill(); ctx.stroke();
-    ctx.shadowBlur=0;
-    // magnet chain inside
-    ctx.fillStyle='#ff9f1c';
-    for(var i=-1;i<=1;i++){ ctx.fillRect(i*12-5,wob-7,10,14); }
-    // eyes
+    if(player.hitFlash>0&&((S.time*20)|0)%2===0) ctx.globalAlpha=0.35;
+    ctx.shadowColor='#39ff14'; ctx.shadowBlur=16; ctx.fillStyle='#54d65a'; ctx.strokeStyle='#2a8f33'; ctx.lineWidth=3;
+    ctx.beginPath(); ctx.ellipse(0,wob,30,20,0,0,7); ctx.fill(); ctx.stroke(); ctx.shadowBlur=0;
+    ctx.fillStyle='#ff9f1c'; for(var i=-1;i<=1;i++) ctx.fillRect(i*12-5,wob-7,10,14);
     ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(-9,wob-4,5,0,7); ctx.arc(9,wob-4,5,0,7); ctx.fill();
     ctx.fillStyle='#111'; ctx.beginPath(); ctx.arc(-8,wob-4,2.4,0,7); ctx.arc(10,wob-4,2.4,0,7); ctx.fill();
-    // flagella
-    ctx.strokeStyle='#39d98a'; ctx.lineWidth=3; ctx.beginPath();
-    ctx.moveTo(28,wob); ctx.quadraticCurveTo(46,wob+Math.sin(S.time*20)*8,58,wob); ctx.stroke();
+    ctx.strokeStyle='#39d98a'; ctx.lineWidth=3; ctx.beginPath(); ctx.moveTo(28,wob); ctx.quadraticCurveTo(46,wob+Math.sin(S.time*20)*8,58,wob); ctx.stroke();
     ctx.restore();
   }
-  function drawParticles(){
-    for(var i=0;i<S.particles.length;i++){var p=S.particles[i]; ctx.globalAlpha=Math.max(0,p.life); ctx.fillStyle=p.c; ctx.fillRect(p.x-3,p.y-3,6,6);} ctx.globalAlpha=1;
-  }
+  function drawBubbles(){ ctx.save(); ctx.fillStyle='rgba(200,235,255,0.28)'; ctx.strokeStyle='rgba(220,245,255,0.5)'; ctx.lineWidth=1;
+    for(var i=0;i<S.bubbles.length;i++){var b=S.bubbles[i]; var bx=b.x+Math.sin(b.wob)*10; ctx.beginPath(); ctx.arc(bx,b.y,b.r,0,7); ctx.fill(); ctx.stroke(); } ctx.restore(); }
+  function drawParticles(){ for(var i=0;i<S.particles.length;i++){var p=S.particles[i]; ctx.globalAlpha=Math.max(0,p.life); ctx.fillStyle=p.c; ctx.fillRect(p.x-3,p.y-3,6,6);} ctx.globalAlpha=1; }
+  function drawVignette(){ var g=ctx.createRadialGradient(W/2,H*0.55,H*0.25,W/2,H*0.55,H*0.8); g.addColorStop(0,'rgba(0,0,0,0)'); g.addColorStop(1,'rgba(0,10,25,0.5)'); ctx.fillStyle=g; ctx.fillRect(0,0,W,H); }
 
   function render(){
-    drawBg();
-    // draw objects far->near
-    var sorted=S.objs.slice().sort(function(a,b){return a.d-b.d;});
-    for(var i=0;i<sorted.length;i++){ var o=sorted[i]; var x=projX(o.lane,o.d), y=projY(o.d), s=projScale(o.d);
-      if(o.type==='cry') drawCrystal(x,y,s,o.spin); else drawObstacle(x,y,s,o.type,o.spin); }
+    drawWater();
+    // distant fish (background)
+    for(var i=0;i<S.fish.length;i++) if(!S.fish[i].fg) drawFish(S.fish[i]);
+    drawFloor();
+    // coral + gameplay objects, sorted by depth
+    var sc=S.coral.slice().sort(function(a,b){return a.d-b.d;});
+    for(var c=0;c<sc.length;c++) drawCoral(sc[c]);
+    var so=S.objs.slice().sort(function(a,b){return a.d-b.d;});
+    for(var o=0;o<so.length;o++){ var ob=so[o],x=projX(ob.lane,ob.d),y=projY(ob.d),ss=projScale(ob.d); if(ob.type==='cry') drawCrystal(x,y,ss,ob.spin); else drawObstacle(x,y,ss,ob.type,ob.spin); }
     drawPlayer();
+    // foreground fish + bubbles
+    for(var f=0;f<S.fish.length;f++) if(S.fish[f].fg) drawFish(S.fish[f]);
+    drawBubbles();
     drawParticles();
+    drawVignette();
   }
 
-  function frame(t){
-    if(!running) return;
-    if(!lastT) lastT=t; var dt=Math.min(0.05,(t-lastT)/1000); lastT=t;
-    update(dt); render();
-    rafId=requestAnimationFrame(frame);
-  }
+  function frame(t){ if(!running)return; if(!lastT)lastT=t; var dt=Math.min(0.05,(t-lastT)/1000); lastT=t; update(dt); render(); rafId=requestAnimationFrame(frame); }
 
-  // ---- screens ----
-  function start(){
-    reset(); running=true; lastT=0;
-    document.getElementById('titleScreen').classList.add('hidden');
-    document.getElementById('overScreen').classList.add('hidden');
-    document.getElementById('hud').classList.remove('hidden');
-    if(window.Sunny) try{Sunny.say({text:"Dive, dive! Grab the 🧲 crystals and dodge the bad ones!",mood:'excited'});}catch(e){}
-    rafId=requestAnimationFrame(frame);
-  }
-  function gameOver(){
-    running=false; if(rafId) cancelAnimationFrame(rafId);
+  function start(){ reset(); running=true; lastT=0;
+    document.getElementById('titleScreen').classList.add('hidden'); document.getElementById('overScreen').classList.add('hidden'); document.getElementById('hud').classList.remove('hidden');
+    if(window.Sunny)try{Sunny.say({text:"Dive, dive! Grab the 🧲 gold crystals — dodge the red magnets & rocks!",mood:'excited'});}catch(e){}
+    rafId=requestAnimationFrame(frame); }
+  function gameOver(){ running=false; if(rafId)cancelAnimationFrame(rafId);
     document.getElementById('hud').classList.add('hidden');
-    var dist=Math.floor(S.dist);
-    var best=parseInt(localStorage.getItem('mr_best')||'0',10);
-    var isHi = dist>best;
-    if(isHi){ best=dist; localStorage.setItem('mr_best',String(best)); }
+    var dist=Math.floor(S.dist), best=parseInt(localStorage.getItem('mr_best')||'0',10), isHi=dist>best;
+    if(isHi){best=dist;localStorage.setItem('mr_best',String(best));}
     document.getElementById('finalDist').textContent=dist+'m';
     document.getElementById('finalCry').textContent=S.crystals;
     document.getElementById('bestDist').textContent=best;
-    document.getElementById('overFact').innerHTML='💡 '+FACTS[Math.floor(Math.random()*FACTS.length)];
+    document.getElementById('overFact').innerHTML='💡 '+FACTS[(Math.random()*FACTS.length)|0];
     document.getElementById('overScreen').classList.remove('hidden');
-    if(window.Sunny) try{ if(isHi){ Sunny.celebrate(); Sunny.say({text:"NEW RECORD! "+dist+"m! You're a Magnet Master! 🏆",mood:'celebrate'});} else { Sunny.say({text:"Nice dive — "+dist+"m! Try again to beat it!",mood:'happy'});} }catch(e){}
+    if(window.Sunny)try{ if(isHi){Sunny.celebrate();Sunny.say({text:"NEW RECORD! "+dist+"m! You're a Magnet Master! 🏆",mood:'celebrate'});} else {Sunny.say({text:"Nice dive — "+dist+"m! Try again to beat it!",mood:'happy'});} }catch(e){}
   }
 
-  // ---- input ----
-  document.addEventListener('keydown',function(e){
-    if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A') move(-1);
-    else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D') move(1);
-    else if((e.key===' '||e.key==='Enter') && !running) start();
-  });
-  // touch: swipe or tap-side
-  var tsx=null,tsy=null,tmoved=false;
-  cv.addEventListener('touchstart',function(e){var t=e.changedTouches[0];tsx=t.clientX;tsy=t.clientY;tmoved=false;},{passive:true});
-  cv.addEventListener('touchmove',function(e){var t=e.changedTouches[0];if(tsx!==null&&Math.abs(t.clientX-tsx)>34&&!tmoved){move(t.clientX>tsx?1:-1);tmoved=true;}},{passive:true});
-  cv.addEventListener('touchend',function(e){var t=e.changedTouches[0]; if(!tmoved && tsx!==null){ // tap side
-      if(running) move(t.clientX < window.innerWidth/2 ? -1 : 1); } tsx=null;},{passive:true});
-  // mouse click sides (desktop fallback)
+  document.addEventListener('keydown',function(e){ if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')move(-1); else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')move(1); else if((e.key===' '||e.key==='Enter')&&!running)start(); });
+  var tsx=null,tmoved=false;
+  cv.addEventListener('touchstart',function(e){tsx=e.changedTouches[0].clientX;tmoved=false;},{passive:true});
+  cv.addEventListener('touchmove',function(e){var x=e.changedTouches[0].clientX; if(tsx!==null&&Math.abs(x-tsx)>34&&!tmoved){move(x>tsx?1:-1);tmoved=true;}},{passive:true});
+  cv.addEventListener('touchend',function(e){ if(!tmoved&&tsx!==null&&running) move(e.changedTouches[0].clientX<window.innerWidth/2?-1:1); tsx=null;},{passive:true});
   cv.addEventListener('mousedown',function(e){ if(running) move(e.clientX<window.innerWidth/2?-1:1); });
-
   document.getElementById('startBtn').addEventListener('click',start);
   document.getElementById('againBtn').addEventListener('click',start);
 
-  // idle render of title bg
   reset();
-  (function idle(){ if(!running){ drawBg(); requestAnimationFrame(idle);} })();
+  (function idle(t){ if(!running){ S.time=(t||0)/1000; updateScene(0.016); render(); requestAnimationFrame(idle);} })();
 
-  // Sunny host (bottom-right so it stays clear of controls)
-  if(window.Sunny) try{ Sunny.init({ position:'bottom-right', name:'☀️ Coach Sunny',
-    messages:{ hi:{text:"Ready to dive? Tap DIVE IN! Swipe or tap left/right to switch lanes.",mood:'happy'} },
-    startKey:'hi' }); }catch(e){}
+  if(window.Sunny)try{ Sunny.init({position:'bottom-right',name:'☀️ Coach Sunny',
+    messages:{hi:{text:"Ready to dive? Grab gold crystals, dodge red magnets & rocks. Tap DIVE IN!",mood:'happy'}},startKey:'hi'}); }catch(e){}
 })();
 </script>
 </body>
