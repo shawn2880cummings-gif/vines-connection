@@ -41,6 +41,9 @@
   .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:7;color:var(--crystal);font-family:'Space Mono',monospace}
   /* keep Coach Sunny out of the play area while diving */
   body.mr-playing .sunny-guide{display:none!important;}
+  .snd{position:absolute;left:12px;bottom:12px;z-index:9;width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.28);background:rgba(4,18,40,.6);color:#fff;font-size:21px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:transform .12s}
+  .snd:active{transform:scale(.9)}
+  .snd.off{opacity:.55}
 </style>
 </head>
 <body>
@@ -54,6 +57,7 @@
     <div class="hud-pill dist">▼ <span id="distCount">0</span>m</div>
   </div>
   <div class="toast" id="toast"></div>
+  <button id="sndBtn" class="snd" aria-label="Toggle sound" title="Sound on/off">🔊</button>
 
   <div class="ov hidden" id="titleScreen">
     <div class="card">
@@ -133,6 +137,21 @@ scene.add(new THREE.AmbientLight(0x2c5a82,0.55));
   var s=new THREE.Mesh(new THREE.PlaneGeometry(0.07,300), new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:0.16}));
   s.rotation.x=-Math.PI/2; s.position.set(lx,-1.33,-110); scene.add(s);
 });
+// right-side boundary rail (frames the play area on the right)
+(function(){
+  var x=3.35;
+  // bright glowing rail bar along the right edge
+  var rail=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.12,300),
+    new THREE.MeshStandardMaterial({color:0x00f0ff,emissive:0x33e6ff,emissiveIntensity:1.5,roughness:0.3,metalness:0.2}));
+  rail.position.set(x,-0.35,-110); scene.add(rail);
+  // soft glowing wall under the rail
+  var wall=new THREE.Mesh(new THREE.PlaneGeometry(300,1.1),
+    new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
+  wall.rotation.y=Math.PI/2; wall.position.set(x,-0.9,-110); scene.add(wall);
+  // glowing posts at intervals so the boundary reads clearly in 3D
+  var postMat=new THREE.MeshStandardMaterial({color:0x00c8ff,emissive:0x00d8ff,emissiveIntensity:1.2,roughness:0.4});
+  for(var i=0;i<22;i++){ var po=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.7,8),postMat); po.position.set(x,-0.95,6-i*6); scene.add(po); }
+})();
 // god ray cones
 for(var i=0;i<5;i++){
   var c=new THREE.Mesh(new THREE.ConeGeometry(2.6,20,8,1,true), new THREE.MeshBasicMaterial({color:0xbfeaff,transparent:true,opacity:0.045,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
@@ -214,11 +233,68 @@ function spawnRow(){
     var cm=makeCrystal(); cm.position.set(LANES[fl],0.3,FAR_Z); scene.add(cm); S.objs.push({mesh:cm,lane:fl,type:'cry',passed:false}); } }
 }
 
-function move(d){ if(running) pLane=Math.max(0,Math.min(2,pLane+d)); }
-function moveTo(l){ if(running) pLane=Math.max(0,Math.min(2,l|0)); }
+// ---- audio: synthesized music + sound effects (no external files) ----
+var Audio=(function(){
+  var ctx=null,master=null,musicGain=null,muted=false,musicTimer=null,step=0,noiseBuf=null;
+  try{ muted=localStorage.getItem('mr_muted')==='1'; }catch(e){}
+  function ensure(){
+    if(ctx) return; var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    ctx=new AC();
+    master=ctx.createGain(); master.gain.value=0.85; master.connect(ctx.destination);
+    musicGain=ctx.createGain(); musicGain.gain.value=muted?0:0.16; musicGain.connect(master);
+    var n=ctx.sampleRate*0.4; noiseBuf=ctx.createBuffer(1,n,ctx.sampleRate); var d=noiseBuf.getChannelData(0);
+    for(var i=0;i<n;i++) d[i]=Math.random()*2-1;
+  }
+  function resume(){ ensure(); if(ctx&&ctx.state==='suspended') ctx.resume(); }
+  function tone(freq,dur,type,vol,glideTo,delay,dest){
+    if(!ctx||muted) return; var t0=ctx.currentTime+(delay||0);
+    var o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type||'sine'; o.frequency.setValueAtTime(freq,t0);
+    if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo,t0+dur);
+    g.gain.setValueAtTime(0.0001,t0);
+    g.gain.exponentialRampToValueAtTime(vol||0.22,t0+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g); g.connect(dest||master); o.start(t0); o.stop(t0+dur+0.03);
+  }
+  function thud(dur,vol){
+    if(!ctx||muted||!noiseBuf) return; var t0=ctx.currentTime;
+    var s=ctx.createBufferSource(); s.buffer=noiseBuf;
+    var f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.setValueAtTime(900,t0); f.frequency.exponentialRampToValueAtTime(120,t0+dur);
+    var g=ctx.createGain(); g.gain.setValueAtTime(vol||0.25,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t0); s.stop(t0+dur);
+  }
+  var sfx={
+    move:function(){ tone(520,0.08,'square',0.10,760); },
+    collect:function(){ tone(784,0.10,'triangle',0.18); tone(1047,0.12,'triangle',0.15,null,0.06); tone(1568,0.14,'sine',0.12,null,0.12); },
+    hit:function(){ tone(190,0.30,'sawtooth',0.26,70); thud(0.22,0.22); },
+    over:function(){ tone(440,0.18,'sawtooth',0.18,330,0); tone(330,0.18,'sawtooth',0.18,247,0.16); tone(247,0.5,'sawtooth',0.2,120,0.32); },
+    record:function(){ [523,659,784,1047,1319].forEach(function(f,i){ tone(f,0.2,'triangle',0.18,null,i*0.09); }); },
+    dive:function(){ tone(294,0.16,'triangle',0.16,588); }
+  };
+  // gentle underwater arpeggio loop
+  var sc=[392,440,523,587,659,784,880];
+  var pat=[0,2,4,2,3,5,4,2,0,2,4,5,4,3,2,0];
+  function startMusic(){
+    ensure(); if(!ctx||musicTimer) return; step=0;
+    musicTimer=setInterval(function(){
+      if(!ctx||muted) return;
+      var f=sc[pat[step%pat.length]];
+      tone(f,0.5,'triangle',0.18,null,0,musicGain);
+      if(step%4===0){ tone(f/2,1.7,'sine',0.5,null,0,musicGain); tone(sc[(pat[step%pat.length]+2)%sc.length]/2,1.7,'sine',0.4,null,0,musicGain); }
+      step++;
+    },380);
+  }
+  function setMuted(m){
+    muted=m; try{ localStorage.setItem('mr_muted',m?'1':'0'); }catch(e){}
+    if(musicGain&&ctx) musicGain.gain.setTargetAtTime(m?0:0.16,ctx.currentTime,0.05);
+  }
+  return { resume:resume, startMusic:startMusic, sfx:function(k){ try{ if(sfx[k]) sfx[k](); }catch(e){} }, setMuted:setMuted, isMuted:function(){return muted;} };
+})();
+function move(d){ if(running){ var p=pLane; pLane=Math.max(0,Math.min(2,pLane+d)); if(pLane!==p) Audio.sfx('move'); } }
+function moveTo(l){ if(running){ var p=pLane; pLane=Math.max(0,Math.min(2,l|0)); if(pLane!==p) Audio.sfx('move'); } }
 function laneFromX(x){ var w=window.innerWidth; return x<w/3?0:(x<w*2/3?1:2); }
-function hit(){ S.lives--; hitFlash=0.5; if(window.Sunny)try{Sunny.react('bounce');}catch(e){} if(S.lives<=0) gameOver(); updateHUD(); }
-function collect(){ S.crystals++; updateHUD(); if(S.crystals%8===0){ showToast('🧲 '+FACTS[S.factIdx%FACTS.length]); S.factIdx++; } }
+function hit(){ S.lives--; hitFlash=0.5; Audio.sfx('hit'); if(window.Sunny)try{Sunny.react('bounce');}catch(e){} if(S.lives<=0) gameOver(); updateHUD(); }
+function collect(){ S.crystals++; Audio.sfx('collect'); updateHUD(); if(S.crystals%8===0){ showToast('🧲 '+FACTS[S.factIdx%FACTS.length]); S.factIdx++; } }
 var toastEl=document.getElementById('toast'),toastTimer=null;
 function showToast(t){ toastEl.textContent=t; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2600); }
 function updateHUD(){ document.getElementById('cryCount').textContent=S.crystals; document.getElementById('distCount').textContent=Math.floor(S.dist);
@@ -267,6 +343,7 @@ function tick(t){
 
 function clearObjs(){ if(S&&S.objs){ S.objs.forEach(function(o){scene.remove(o.mesh);}); S.objs=[]; } }
 function start(){ clearObjs(); S={objs:[],spawnT:0,speed:14,dist:0,crystals:0,lives:3,time:0,factIdx:0}; pLane=1;pLaneF=1;hitFlash=0; running=true;
+  Audio.resume(); Audio.startMusic(); Audio.sfx('dive');
   document.body.classList.add('mr-playing');
   document.getElementById('titleScreen').classList.add('hidden'); document.getElementById('overScreen').classList.add('hidden'); document.getElementById('hud').classList.remove('hidden');
   updateHUD();
@@ -282,6 +359,7 @@ function gameOver(){ running=false;
   document.getElementById('bestDist').textContent=best;
   document.getElementById('overFact').innerHTML='💡 '+FACTS[(Math.random()*FACTS.length)|0];
   document.getElementById('overScreen').classList.remove('hidden');
+  Audio.sfx('over'); if(isHi) Audio.sfx('record');
   if(window.Sunny)try{ if(isHi){Sunny.celebrate();Sunny.say({text:"NEW RECORD! "+dist+"m! You're a Magnet Master! 🏆",mood:'celebrate'});} else {Sunny.say({text:"Nice dive — "+dist+"m! Try again to beat it!",mood:'happy'});} }catch(e){}
 }
 
@@ -294,6 +372,11 @@ canvas.addEventListener('touchend',function(e){ if(!tmoved&&tsx!==null&&running)
 canvas.addEventListener('mousedown',function(e){ if(running) moveTo(laneFromX(e.clientX)); });
 document.getElementById('startBtn').addEventListener('click',start);
 document.getElementById('againBtn').addEventListener('click',start);
+// sound toggle
+var sndBtn=document.getElementById('sndBtn');
+function refreshSnd(){ var m=Audio.isMuted(); sndBtn.textContent=m?'🔇':'🔊'; sndBtn.classList.toggle('off',m); }
+refreshSnd();
+sndBtn.addEventListener('click',function(e){ e.stopPropagation(); Audio.resume(); Audio.setMuted(!Audio.isMuted()); if(!Audio.isMuted()) Audio.startMusic(); refreshSnd(); });
 
 // boot
 S={objs:[],spawnT:0,speed:14,dist:0,crystals:0,lives:3,time:0,factIdx:0};
