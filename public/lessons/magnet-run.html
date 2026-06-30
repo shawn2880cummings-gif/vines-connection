@@ -137,20 +137,21 @@ scene.add(new THREE.AmbientLight(0x2c5a82,0.55));
   var s=new THREE.Mesh(new THREE.PlaneGeometry(0.07,300), new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:0.16}));
   s.rotation.x=-Math.PI/2; s.position.set(lx,-1.33,-110); scene.add(s);
 });
-// right-side boundary rail (frames the play area on the right)
+// boundary rails (frame the play area on both sides)
 (function(){
-  var x=3.35;
-  // bright glowing rail bar along the right edge
-  var rail=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.12,300),
-    new THREE.MeshStandardMaterial({color:0x00f0ff,emissive:0x33e6ff,emissiveIntensity:1.5,roughness:0.3,metalness:0.2}));
-  rail.position.set(x,-0.35,-110); scene.add(rail);
-  // soft glowing wall under the rail
-  var wall=new THREE.Mesh(new THREE.PlaneGeometry(300,1.1),
-    new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
-  wall.rotation.y=Math.PI/2; wall.position.set(x,-0.9,-110); scene.add(wall);
-  // glowing posts at intervals so the boundary reads clearly in 3D
+  var railMat=new THREE.MeshStandardMaterial({color:0x00f0ff,emissive:0x33e6ff,emissiveIntensity:1.5,roughness:0.3,metalness:0.2});
   var postMat=new THREE.MeshStandardMaterial({color:0x00c8ff,emissive:0x00d8ff,emissiveIntensity:1.2,roughness:0.4});
-  for(var i=0;i<22;i++){ var po=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.7,8),postMat); po.position.set(x,-0.95,6-i*6); scene.add(po); }
+  [3.35,-3.35].forEach(function(x){
+    // bright glowing rail bar along the edge
+    var rail=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.12,300),railMat);
+    rail.position.set(x,-0.35,-110); scene.add(rail);
+    // soft glowing wall under the rail
+    var wall=new THREE.Mesh(new THREE.PlaneGeometry(300,1.1),
+      new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
+    wall.rotation.y=Math.PI/2; wall.position.set(x,-0.9,-110); scene.add(wall);
+    // glowing posts at intervals so the boundary reads clearly in 3D
+    for(var i=0;i<22;i++){ var po=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.7,8),postMat); po.position.set(x,-0.95,6-i*6); scene.add(po); }
+  });
 })();
 // god ray cones
 for(var i=0;i<5;i++){
@@ -230,7 +231,9 @@ function spawnRow(){
     var m=typ==='poll'?makePollution():makeRock(); m.position.set(LANES[ln], typ==='rock'?-0.5:0.25, FAR_Z); scene.add(m);
     S.objs.push({mesh:m,lane:ln,type:typ,passed:false}); }
   if(Math.random()<0.85){ var free=[0,1,2].filter(function(l){return !used[l];}); if(free.length){ var fl=free[(Math.random()*free.length)|0];
-    var cm=makeCrystal(); cm.position.set(LANES[fl],0.3,FAR_Z); scene.add(cm); S.objs.push({mesh:cm,lane:fl,type:'cry',passed:false}); } }
+    // sometimes a whole group of crystals (a string you collect in a row)
+    var grp=Math.random()<0.32?(3+(Math.random()*3|0)):1;
+    for(var gi=0;gi<grp;gi++){ var cm=makeCrystal(); cm.position.set(LANES[fl],0.3,FAR_Z-gi*2.6); scene.add(cm); S.objs.push({mesh:cm,lane:fl,type:'cry',passed:false}); } } }
 }
 
 // ---- audio: synthesized music + sound effects (no external files) ----
@@ -324,8 +327,8 @@ function tick(t){
   camera.lookAt(pLaneF*0.3,0.7,-12);
 
   if(running){
-    S.time+=dt; S.speed=Math.min(40,14+S.time*0.7); S.dist+=S.speed*0.55*dt;
-    S.spawnT-=dt; var interval=Math.max(0.45,0.95-S.time*0.012);
+    S.time+=dt; S.speed=Math.min(30,12+S.time*0.32); S.dist+=S.speed*0.55*dt;
+    S.spawnT-=dt; var interval=Math.max(0.5,1.05-S.time*0.007);
     if(S.spawnT<=0){ spawnRow(); S.spawnT=interval; }
     for(var i=S.objs.length-1;i>=0;i--){ var o=S.objs[i]; o.mesh.position.z+=S.speed*dt;
       if(o.type==='cry'){ o.mesh.rotation.y+=dt*2.5; o.mesh.rotation.x+=dt*1.2; }
@@ -342,7 +345,7 @@ function tick(t){
 }
 
 function clearObjs(){ if(S&&S.objs){ S.objs.forEach(function(o){scene.remove(o.mesh);}); S.objs=[]; } }
-function start(){ clearObjs(); S={objs:[],spawnT:0,speed:14,dist:0,crystals:0,lives:3,time:0,factIdx:0}; pLane=1;pLaneF=1;hitFlash=0; running=true;
+function start(){ clearObjs(); S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0}; pLane=1;pLaneF=1;hitFlash=0; running=true;
   Audio.resume(); Audio.startMusic(); Audio.sfx('dive');
   document.body.classList.add('mr-playing');
   document.getElementById('titleScreen').classList.add('hidden'); document.getElementById('overScreen').classList.add('hidden'); document.getElementById('hud').classList.remove('hidden');
@@ -379,7 +382,7 @@ refreshSnd();
 sndBtn.addEventListener('click',function(e){ e.stopPropagation(); Audio.resume(); Audio.setMuted(!Audio.isMuted()); if(!Audio.isMuted()) Audio.startMusic(); refreshSnd(); });
 
 // boot
-S={objs:[],spawnT:0,speed:14,dist:0,crystals:0,lives:3,time:0,factIdx:0};
+S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0};
 document.getElementById('loading').style.display='none';
 document.getElementById('titleScreen').classList.remove('hidden');
 requestAnimationFrame(tick);
