@@ -11,6 +11,7 @@ const navLinks = [
   { href: "/#research", label: "Research" },
   { href: "/university", label: "Etheric University" },
   { href: "/architects", label: "Architects" },
+  { href: "/lessons", label: "Kids" },
   { href: "/about", label: "About" },
 ];
 
