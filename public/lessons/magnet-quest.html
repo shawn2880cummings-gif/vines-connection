@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🧲 TINY MAGNETS IN YOUR BRAIN! ✨ — Magnet Quest for Kids</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&family=Fredoka:wght@400;600&display=swap');
+
+  :root {
+    --bg: #0a0f2e;
+    --panel: #161b33;
+    --border: rgba(255,255,255,0.1);
+    --iron: #ff9f1c;
+    --crystal: #00f0ff;
+    --signal: #ff4757;
+    --green: #2ed573;
+    --purple: #a55eff;
+    --cream: #f0e9d2;
+    --muted: rgba(240,233,210,0.65);
+    --neon-pink: #ff00aa;
+    --neon-cyan: #00ffff;
+    --neon-yellow: #ffeb3b;
+    --neon-lime: #39ff14;
+    --nav-bg: rgba(10,15,46,0.95);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  h1, h2, .ch-title { font-family: 'Fredoka', sans-serif; font-weight: 700; }
+
+  /* ===== STICKY QUEST NAV ===== */
+  .quest-nav {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--nav-bg);
+    backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--crystal);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .nav-left { display: flex; align-items: center; gap: 12px; }
+  .nav-logo {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--crystal);
+    text-shadow: 0 0 10px rgba(0,240,255,0.5);
+  }
+  .nav-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--iron);
+  }
+  .progress-bar {
+    width: 160px;
+    height: 8px;
+    background: #222a4a;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--crystal), var(--neon-lime));
+    width: 0%;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 8px var(--crystal);
+  }
+  .crystal-count {
+    background: var(--panel);
+    border: 2px solid var(--iron);
+    padding: 4px 14px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--iron);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px 80px;
+    position: relative;
+    background: radial-gradient(ellipse 85% 65% at 50% 35%, #1a1433 0%, #0a0f2e 75%);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22 fill=%22none%22%3E%3Cpath fill-rule=%22evenodd%22 clip-rule=%22evenodd%22 d=%22M150 0l30 60-30 30-30-30 30-60zM0 150l60-30 30 30-30 60-60-30zM300 150l-60 30-30-30 30-60 60 30zM150 300l-30-60 30-30 30 30-30 60z%22 fill=%22%2300f0ff%22 fill-opacity=%22006%22/%3E%3C/svg%27') repeat;
+    background-size: 180px 180px;
+    opacity: 0.15;
+    animation: bgFloat 25s linear infinite;
+  }
+  @keyframes bgFloat {
+    from { transform: translate(0,0); }
+    to { transform: translate(-90px, -90px); }
+  }
+
+  .crystal-hero {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 24px;
+    animation: spin 18s linear infinite, crystalGlow 3s ease-in-out infinite alternate;
+    filter: drop-shadow(0 0 25px rgba(0,240,255,0.6));
+  }
+  @keyframes crystalGlow {
+    from { filter: drop-shadow(0 0 15px rgba(0,240,255,0.4)); }
+    to { filter: drop-shadow(0 0 40px rgba(255,159,28,0.7)); }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,159,28,0.15);
+    border: 2px solid var(--iron);
+    border-radius: 999px;
+    padding: 6px 18px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: var(--iron);
+    margin-bottom: 16px;
+  }
+
+  .hero-title {
+    font-size: clamp(42px, 9vw, 86px);
+    font-weight: 800;
+    line-height: 0.95;
+    margin-bottom: 16px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .hero-title .magnet {
+    color: var(--iron);
+    display: inline-block;
+    animation: magnetBounce 1.5s ease infinite;
+  }
+  .hero-title .brain {
+    color: var(--crystal);
+  }
+  @keyframes magnetBounce {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .hero-sub {
+    max-width: 620px;
+    font-size: clamp(17px, 2.8vw, 20px);
+    color: var(--cream);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(90deg, var(--iron), #ff6b00);
+    color: #111;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 16px 36px;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 8px 25px rgba(255,159,28,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+  .hero-cta:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(255,159,28,0.5);
+  }
+
+  .scroll-hint {
+    margin-top: 50px;
+    font-size: 13px;
+    color: var(--muted);
+    animation: nudge 2.2s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  /* ===== CHAPTERS ===== */
+  .chapter {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 70px 24px;
+  }
+
+  .ch-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .ch-level {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    background: var(--panel);
+    border: 2px solid var(--crystal);
+    color: var(--crystal);
+    padding: 4px 14px;
+    border-radius: 6px;
+    letter-spacing: 1.5px;
+  }
+  .ch-title {
+    font-size: clamp(26px, 5vw, 40px);
+    line-height: 1.1;
+    color: var(--cream);
+  }
+
+  p { margin-bottom: 18px; font-size: 17px; }
+  p:last-child { margin-bottom: 0; }
+
+  .hi-iron   { color: var(--iron); font-weight: 700; }
+  .hi-blue   { color: var(--crystal); font-weight: 700; }
+  .hi-crystal{ color: var(--crystal); font-weight: 700; }
+  .hi-red    { color: var(--signal); font-weight: 700; }
+  .hi-green  { color: var(--green); font-weight: 700; }
+  .hi-purple { color: var(--purple); font-weight: 700; }
+  .hi-neon   { color: var(--neon-pink); font-weight: 700; }
+
+  /* ===== FACT CARDS (NOW COLLECTIBLE!) ===== */
+  .fact-card {
+    background: var(--panel);
+    border: 3px solid var(--border);
+    border-radius: 18px;
+    padding: 26px 26px 26px;
+    margin: 26px 0;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.23,1,0.32,1), 
+                box-shadow 0.3s, border-color 0.3s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  .fact-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.4);
+  }
+  .fact-card.collected {
+    border-color: var(--neon-lime);
+    box-shadow: 0 0 0 4px rgba(57,255,20,0.15);
+  }
+  .fact-card::before {
+    content: attr(data-icon);
+    position: absolute;
+    right: 22px;
+    top: 18px;
+    font-size: 52px;
+    opacity: 0.15;
+    line-height: 1;
+  }
+  .fact-card-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .fact-card.iron   { border-color: rgba(255,159,28,0.5); }
+  .fact-card.blue   { border-color: rgba(0,240,255,0.45); }
+  .fact-card.green  { border-color: rgba(46,213,115,0.45); }
+  .fact-card.red    { border-color: rgba(255,71,87,0.45); }
+  .fact-card.purple { border-color: rgba(165,94,255,0.45); }
+
+  .fact-card.iron   .fact-card-title { color: var(--iron); }
+  .fact-card.blue   .fact-card-title { color: var(--crystal); }
+  .fact-card.green  .fact-card-title { color: var(--green); }
+  .fact-card.red    .fact-card-title { color: var(--signal); }
+  .fact-card.purple .fact-card-title { color: var(--purple); }
+
+  .collect-btn {
+    position: absolute;
+    bottom: 18px;
+    right: 22px;
+    background: linear-gradient(90deg, var(--iron), #ff6b00);
+    color: #111;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 15px rgba(255,159,28,0.4);
+    transition: all 0.2s;
+  }
+  .collect-btn:hover { transform: scale(1.05); }
+  .collect-btn.collected {
+    background: var(--green);
+    color: #111;
+    pointer-events: none;
+  }
+
+  /* ===== ILLUSTRATIONS ===== */
+  .illustration {
+    margin: 32px 0;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 3px solid var(--border);
+    background: #0f1433;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+  }
+  .illustration svg { display: block; width: 100%; height: auto; }
+
+  /* ===== PATHWAY STEPS ===== */
+  .pathway {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 32px 0;
+  }
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 22px 0;
+    border-left: 4px solid var(--crystal);
+    padding-left: 28px;
+    position: relative;
+  }
+  .step::before {
+    content: '';
+    position: absolute;
+    left: -11px;
+    top: 28px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--iron);
+    border: 4px solid var(--bg);
+    box-shadow: 0 0 0 4px rgba(255,159,28,0.3);
+  }
+  .step-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--iron);
+    min-width: 100px;
+    padding-top: 3px;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  .step-body { font-size: 16px; line-height: 1.65; color: var(--cream); }
+
+  /* ===== GENE CARDS ===== */
+  .gene-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin: 28px 0;
+  }
+  .gene-tile {
+    background: linear-gradient(145deg, #1f2544, var(--panel));
+    border: 2px solid var(--purple);
+    border-radius: 16px;
+    padding: 20px 18px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .gene-tile:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 30px rgba(165,94,255,0.2);
+  }
+  .gene-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--neon-pink);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .gene-job { font-size: 14.5px; color: var(--cream); line-height: 1.55; }
+
+  /* ===== VS BOXES ===== */
+  .vs-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 18px;
+    align-items: stretch;
+    margin: 32px 0;
+  }
+  @media (max-width: 620px) {
+    .vs-row { grid-template-columns: 1fr; }
+    .vs-label { display: none; }
+  }
+  .vs-box {
+    background: var(--panel);
+    border-radius: 16px;
+    padding: 24px 20px;
+    text-align: center;
+    border: 3px solid;
+    transition: transform 0.3s;
+  }
+  .vs-box.good { border-color: var(--green); }
+  .vs-box.bad  { border-color: var(--signal); }
+  .vs-box:hover { transform: scale(1.02); }
+  .vs-box-title {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    display: inline-block;
+  }
+  .vs-box.good .vs-box-title { background: rgba(46,213,115,0.15); color: var(--green); }
+  .vs-box.bad  .vs-box-title { background: rgba(255,71,87,0.15); color: var(--signal); }
+  .vs-label {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--muted);
+    align-self: center;
+    text-align: center;
+  }
+  .vs-desc { font-size: 14.5px; color: var(--cream); line-height: 1.6; }
+
+  /* ===== FINALE ===== */
+  .finale {
+    text-align: center;
+    padding: 90px 24px 110px;
+    background: radial-gradient(ellipse 75% 55% at 50% 45%, #1a1433 0%, #0a0f2e 70%);
+    position: relative;
+    overflow: hidden;
+  }
+  .finale::after {
+    content: '🧲 ✨ 🧲 ✨ 🧲';
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 22px;
+    opacity: 0.15;
+    letter-spacing: 30px;
+  }
+  .finale-title {
+    font-size: clamp(30px, 6vw, 54px);
+    font-weight: 800;
+    color: var(--iron);
+    line-height: 1.1;
+    margin-bottom: 22px;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .finale-sub {
+    font-size: 18px;
+    color: var(--cream);
+    max-width: 620px;
+    margin: 0 auto 28px;
+    line-height: 1.6;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin: 36px auto 0;
+    max-width: 720px;
+  }
+  .tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    border: 2px solid rgba(255,159,28,0.5);
+    border-radius: 999px;
+    padding: 8px 18px;
+    color: var(--iron);
+    background: rgba(255,159,28,0.08);
+  }
+
+  .doi {
+    margin-top: 60px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.7;
+    line-height: 1.5;
+  }
+
+  /* ===== QUIZ ===== */
+  .quiz-section {
+    max-width: 720px;
+    margin: 60px auto 40px;
+    background: var(--panel);
+    border: 3px solid var(--crystal);
+    border-radius: 24px;
+    padding: 32px;
+  }
+  .quiz-title {
+    text-align: center;
+    font-size: 26px;
+    margin-bottom: 24px;
+    color: var(--crystal);
+  }
+  .question {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .question:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .q-text { font-weight: 600; margin-bottom: 12px; font-size: 17px; }
+  .options label {
+    display: block;
+    margin: 8px 0;
+    padding: 12px 16px;
+    background: #222a4a;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+  }
+  .options label:hover { background: #2a3358; border-color: var(--crystal); }
+  .options input { margin-right: 10px; }
+  .quiz-result {
+    text-align: center;
+    padding: 24px;
+    margin-top: 20px;
+    border-radius: 16px;
+    display: none;
+  }
+  .quiz-result.show { display: block; }
+  .score-text { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+
+  /* ===== EXTRA FUN ===== */
+  .wow-callout {
+    background: linear-gradient(90deg, rgba(255,0,170,0.15), rgba(0,240,255,0.1));
+    border-left: 6px solid var(--neon-pink);
+    padding: 14px 20px;
+    margin: 22px 0;
+    border-radius: 0 12px 12px 0;
+    font-size: 15.5px;
+  }
+  .rule { max-width: 820px; margin: 0 auto; padding: 0 24px; }
+  .rule hr { border: none; border-top: 2px dashed var(--border); }
+
+  .mini-icon { font-size: 1.3em; vertical-align: middle; }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ QUEST NAV ═══════════════════════════════ -->
+<nav class="quest-nav">
+  <div class="nav-left">
+    <div class="nav-logo">🧲 MAGNET QUEST</div>
+    <div class="nav-progress">
+      <span>JOURNEY</span>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span id="progressText">0/11</span>
+    </div>
+  </div>
+  <div class="crystal-count" id="crystalCount">
+    🧲 <span id="countNum">0</span>/11 Crystals Collected
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+<div class="hero">
+  <svg class="crystal-hero" viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Enhanced glowing octahedron -->
+    <defs>
+      <linearGradient id="crystalGrad" x1="20" y1="20" x2="120" y2="120" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#00f0ff"/>
+        <stop offset="50%" stop-color="#ff9f1c"/>
+        <stop offset="100%" stop-color="#00f0ff"/>
+      </linearGradient>
+    </defs>
+    <polygon points="70,12 120,55 70,105 20,55" fill="none" stroke="#ff9f1c" stroke-width="2.5" opacity="0.95"/>
+    <polygon points="70,12 120,55 70,62" fill="url(#crystalGrad)" stroke="#00f0ff" stroke-width="1.5" opacity="0.7"/>
+    <polygon points="70,12 20,55 70,62" fill="#00f0ff" stroke="#00f0ff" stroke-width="1.5" opacity="0.25"/>
+    <polygon points="120,55 70,105 70,62" fill="#ff9f1c" stroke="#ff9f1c" stroke-width="1.5" opacity="0.35"/>
+    <polygon points="20,55 70,105 70,62" fill="#00f0ff" stroke="#00f0ff" stroke-width="1.5" opacity="0.2"/>
+    <!-- Sparkles -->
+    <circle cx="70" cy="12" r="5" fill="#fff"/>
+    <circle cx="120" cy="55" r="4.5" fill="#fff"/>
+    <circle cx="70" cy="105" r="5" fill="#fff"/>
+    <circle cx="20" cy="55" r="4.5" fill="#fff"/>
+    <circle cx="70" cy="62" r="3" fill="#fff" opacity="0.6"/>
+    <!-- Orbiting particles -->
+    <circle cx="95" cy="35" r="3" fill="#ff9f1c">
+      <animate attributeName="cx" values="95;105;95" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="35;42;35" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="45" cy="85" r="2.5" fill="#00f0ff">
+      <animate attributeName="cx" values="45;38;45" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="85;78;85" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+  </svg>
+
+  <div class="hero-badge">
+    <span>⭐ BASED ON RESEARCH BY VINE</span>
+  </div>
+  
+  <h1 class="hero-title">
+    <span class="magnet">🧲 TINY MAGNETS</span><br>
+    <span class="brain">IN YOUR BRAIN!</span>
+  </h1>
+  <p class="hero-sub">
+    Your brain builds REAL working magnets — and this super-power started 3.5 BILLION years ago with tiny bacteria! 
+    Ready for the most mind-blowing science adventure ever? Let's go! ✨
+  </p>
+
+  <button onclick="beginQuest()" class="hero-cta">
+    BEGIN THE QUEST <span style="font-size:22px;">→</span>
+  </button>
+
+  <p class="scroll-hint">↓ Scroll to explore the ancient secret ↓</p>
+</div>
+
+<!-- ═══════════════════════════════ CHAPTER 1 ═══════════════════════════════ -->
+<section class="chapter" id="ch1" data-chapter="1">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 1 • THE DISCOVERY</div>
+  </div>
+  <h2 class="ch-title">Wait... Your Brain Makes <span class="hi-iron">REAL MAGNETS</span>?!</h2>
+
+  <p>For ages, scientists thought iron in the brain was just floating around doing nothing special. Then they used an insanely sensitive machine called a <span class="hi-blue">SQUID magnetometer</span> — it can detect the tiniest magnetic whispers.</p>
+
+  <div class="wow-callout">
+    <strong>🤯 MIND BLOWN MOMENT:</strong> It found actual magnetic crystals growing inside human brain tissue! Not fake. Not a metaphor. <strong>REAL tiny magnets your body built on purpose.</strong>
+  </div>
+
+  <div class="fact-card iron" data-icon="🧲" data-collect="1">
+    <div class="fact-card-title">🧲 WHAT THEY FOUND</div>
+    <p>The magnetic stuff is called <span class="hi-iron">magnetite</span> (Fe₃O₄). These are perfect little crystal magnets — some brains have <strong>over 100 million</strong> of them per gram in the protective layers around the brain!</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 1)">COLLECT 🧲</button>
+  </div>
+
+  <div class="fact-card blue" data-icon="🔬" data-collect="2">
+    <div class="fact-card-title">🔬 HOW THEY KNEW IT WAS REAL</div>
+    <p>Using a super microscope (HRTEM), they saw the crystals have sharp, perfect shapes — like tiny gemstones cut by an expert. Nature doesn't make shapes this perfect by accident. Biology built them on purpose!</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 2)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ ILLUSTRATION: BACTERIA ═══════════════════════════════ -->
+<section class="chapter" style="padding-top:20px; padding-bottom:20px;">
+  <div class="illustration">
+    <svg viewBox="0 0 820 260" xmlns="http://www.w3.org/2000/svg">
+      <!-- Archean ocean background -->
+      <defs>
+        <linearGradient id="ocean" x1="0" y1="0" x2="0" y2="260" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#0a2540"/>
+          <stop offset="100%" stop-color="#051428"/>
+        </linearGradient>
+      </defs>
+      <rect width="820" height="260" fill="url(#ocean)"/>
+      
+      <!-- Sun rays -->
+      <circle cx="650" cy="60" r="38" fill="#ffeb3b" opacity="0.25"/>
+      <g opacity="0.15">
+        <line x1="650" y1="98" x2="650" y2="220" stroke="#ffeb3b" stroke-width="4"/>
+        <line x1="620" y1="95" x2="580" y2="200" stroke="#ffeb3b" stroke-width="3"/>
+        <line x1="680" y1="95" x2="720" y2="200" stroke="#ffeb3b" stroke-width="3"/>
+      </g>
+
+      <!-- Cute magnetotactic bacteria -->
+      <!-- Bacteria 1 -->
+      <g>
+        <ellipse cx="180" cy="130" rx="48" ry="22" fill="#2ed573" opacity="0.9"/>
+        <!-- Magnet chain inside -->
+        <rect x="145" y="122" width="12" height="16" rx="2" fill="#ff9f1c"/>
+        <rect x="162" y="122" width="12" height="16" rx="2" fill="#ff9f1c"/>
+        <rect x="179" y="122" width="12" height="16" rx="2" fill="#ff9f1c"/>
+        <!-- Flagella -->
+        <path d="M228 125 Q250 115 265 130" fill="none" stroke="#39d98a" stroke-width="3.5" stroke-linecap="round">
+          <animate attributeName="d" values="M228 125 Q250 115 265 130;M228 125 Q255 135 265 125" dur="0.8s" repeatCount="indefinite"/>
+        </path>
+        <circle cx="145" cy="130" r="6" fill="#ff9f1c"/>
+      </g>
+
+      <!-- Bacteria 2 -->
+      <g>
+        <ellipse cx="420" cy="95" rx="42" ry="19" fill="#00f0ff" opacity="0.85"/>
+        <rect x="392" y="88" width="10" height="14" rx="2" fill="#ff9f1c"/>
+        <rect x="407" y="88" width="10" height="14" rx="2" fill="#ff9f1c"/>
+        <rect x="422" y="88" width="10" height="14" rx="2" fill="#ff9f1c"/>
+        <path d="M462 92 Q485 82 505 95" fill="none" stroke="#00f0ff" stroke-width="3" stroke-linecap="round">
+          <animate attributeName="d" values="M462 92 Q485 82 505 95;M462 92 Q490 100 505 88" dur="1.1s" repeatCount="indefinite"/>
+        </path>
+      </g>
+
+      <!-- Bacteria 3 -->
+      <g>
+        <ellipse cx="620" cy="165" rx="52" ry="24" fill="#a55eff" opacity="0.85"/>
+        <rect x="585" y="156" width="13" height="18" rx="2" fill="#ff9f1c"/>
+        <rect x="603" y="156" width="13" height="18" rx="2" fill="#ff9f1c"/>
+        <rect x="621" y="156" width="13" height="18" rx="2" fill="#ff9f1c"/>
+        <path d="M672 160 Q700 148 725 165" fill="none" stroke="#a55eff" stroke-width="4" stroke-linecap="round">
+          <animate attributeName="d" values="M672 160 Q700 148 725 165;M672 160 Q705 172 725 155" dur="0.9s" repeatCount="indefinite"/>
+        </path>
+      </g>
+
+      <!-- Labels -->
+      <text x="180" y="175" fill="#f0e9d2" font-size="13" font-family="Space Grotesk" text-anchor="middle">Magnet Chain Inside!</text>
+      <text x="420" y="55" fill="#f0e9d2" font-size="12" font-family="Space Grotesk" text-anchor="middle">3.5 BILLION years old!</text>
+      <text x="620" y="210" fill="#f0e9d2" font-size="12" font-family="Space Grotesk" text-anchor="middle">Living Compass 🧭</text>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ CHAPTER 2 ═══════════════════════════════ -->
+<section class="chapter" id="ch2" data-chapter="2">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 2 • ANCIENT ORIGINS</div>
+  </div>
+  <h2 class="ch-title">This Superpower Is <span class="hi-crystal">3.5 Billion Years Old</span>!</h2>
+
+  <p>The first living things that built magnets were tiny bacteria in the ancient oceans — way before dinosaurs, before trees, even before most other life!</p>
+
+  <div class="fact-card blue" data-icon="🧭" data-collect="3">
+    <div class="fact-card-title">🧭 WHY BACTERIA NEEDED MAGNETS</div>
+    <p>They lived in water and needed to find the perfect layer with just the right amount of oxygen and iron. Earth's magnetic field points slightly downward. By using their tiny magnets like a compass, they could swim straight down to the perfect spot — saving tons of energy!</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 3)">COLLECT 🧲</button>
+  </div>
+
+  <div class="fact-card iron" data-icon="⚡" data-collect="4">
+    <div class="fact-card-title">⚡ MAGNETS WERE PART OF THEIR ENERGY SYSTEM</div>
+    <p>Scientists discovered the genes for making magnets are wired directly into the bacteria's "carbon fixing" system — how they turn CO₂ into food. Magnetite wasn't a side hobby. It was central to how early life survived!</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 4)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ CHAPTER 3 ═══════════════════════════════ -->
+<section class="chapter" id="ch3" data-chapter="3">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 3 • THE BLUEPRINT</div>
+  </div>
+  <h2 class="ch-title">The Magnetosome Island:<br>The Original Recipe Card</h2>
+
+  <p>Inside these bacteria is a special chunk of DNA called the <span class="hi-purple">Magnetosome Island (MAI)</span> — basically the instruction manual for building magnets. It's huge (up to 130,000 letters long) and has four main teams of genes working together.</p>
+
+  <div class="pathway">
+    <div class="step">
+      <div class="step-label">mamAB</div>
+      <div class="step-body"><strong>The boss team.</strong> This is the minimum set needed to build any magnet at all. It pokes a pocket in the cell, pumps iron in, and starts the crystal growing.</div>
+    </div>
+    <div class="step">
+      <div class="step-label">mms6</div>
+      <div class="step-body"><strong>The shape controller.</strong> It forces the crystal to grow into the perfect cubo-octahedral shape and has built-in "stop growing" signals so the magnet stays the perfect size for maximum strength!</div>
+    </div>
+    <div class="step">
+      <div class="step-label">mamGFDC</div>
+      <div class="step-body">Fine-tunes the size so it's exactly right to be a powerful <strong>single-domain magnet</strong> (the strongest kind).</div>
+    </div>
+    <div class="step">
+      <div class="step-label">mamXY</div>
+      <div class="step-body">Finishes the job by sealing the tiny bubble (vesicle) around the finished crystal.</div>
+    </div>
+  </div>
+
+  <div class="fact-card purple" data-icon="🛑" data-collect="5">
+    <div class="fact-card-title">🛑 THE VOLUME GOVERNOR (SUPER IMPORTANT!)</div>
+    <p>If certain genes are missing, crystals grow too big and become weak multi-domain magnets. Bacteria evolved a smart "stop signal" so magnets stay perfectly sized. Scientists are now looking for the human version of this stop signal — because in Parkinson's, magnetite that grows wrong is part of the problem.</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 5)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ CHAPTER 4 + ILLUSTRATION ═══════════════════════════════ -->
+<section class="chapter" id="ch4" data-chapter="4">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 4 • SURVIVED EVERYTHING</div>
+  </div>
+  <h2 class="ch-title">These Genes Are in <span class="hi-green">EVERY LIVING THING</span>!</h2>
+
+  <p>Scientists compared the bacterial magnet genes to every major branch of life. They found <span class="hi-green">11 core versions</span> that exist in animals, plants, fungi — even in us! Evolution kept them because they were too useful to lose.</p>
+
+  <div class="illustration" style="margin:30px 0 10px;">
+    <svg viewBox="0 0 820 180" xmlns="http://www.w3.org/2000/svg">
+      <rect width="820" height="180" fill="#0f1433"/>
+      <!-- Timeline -->
+      <line x1="60" y1="90" x2="760" y2="90" stroke="#00f0ff" stroke-width="4" stroke-linecap="round"/>
+      
+      <!-- Points -->
+      <circle cx="100" cy="90" r="14" fill="#ff9f1c"/>
+      <text x="100" y="130" fill="#f0e9d2" font-size="12" text-anchor="middle" font-family="Space Grotesk">3.5B yrs ago</text>
+      <text x="100" y="60" fill="#ff9f1c" font-size="11" text-anchor="middle" font-weight="700">BACTERIA</text>
+
+      <circle cx="280" cy="90" r="14" fill="#2ed573"/>
+      <text x="280" y="130" fill="#f0e9d2" font-size="12" text-anchor="middle" font-family="Space Grotesk">2B yrs ago</text>
+      <text x="280" y="60" fill="#2ed573" font-size="11" text-anchor="middle" font-weight="700">COMPLEX LIFE</text>
+
+      <circle cx="460" cy="90" r="14" fill="#a55eff"/>
+      <text x="460" y="130" fill="#f0e9d2" font-size="12" text-anchor="middle" font-family="Space Grotesk">500M yrs ago</text>
+      <text x="460" y="60" fill="#a55eff" font-size="11" text-anchor="middle" font-weight="700">ANIMALS</text>
+
+      <circle cx="640" cy="90" r="14" fill="#00f0ff"/>
+      <text x="640" y="130" fill="#f0e9d2" font-size="12" text-anchor="middle" font-family="Space Grotesk">TODAY</text>
+      <text x="640" y="60" fill="#00f0ff" font-size="11" text-anchor="middle" font-weight="700">YOU!</text>
+
+      <!-- Arrows -->
+      <polygon points="160,90 175,82 175,98" fill="#00f0ff"/>
+      <polygon points="340,90 355,82 355,98" fill="#00f0ff"/>
+      <polygon points="520,90 535,82 535,98" fill="#00f0ff"/>
+      <polygon points="700,90 715,82 715,98" fill="#00f0ff"/>
+    </svg>
+  </div>
+
+  <div class="fact-card green" data-icon="🐟" data-collect="6">
+    <div class="fact-card-title">🐟 PROOF IN SALMON</div>
+    <p>Salmon use magnetic sensing to navigate rivers. Scientists found the exact magnetosome-like genes are <strong>highly active</strong> in the salmon's nose cells that detect magnetic fields. The genes aren't just sitting there — they're working!</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 6)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ CHAPTER 5 ═══════════════════════════════ -->
+<section class="chapter" id="ch5" data-chapter="5">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 5 • YOUR DNA</div>
+  </div>
+  <h2 class="ch-title">Your DNA Has the Same Recipe!</h2>
+
+  <p>Scientists matched the bacterial genes to human genes. Four teams in your DNA do exactly the same jobs as the ancient bacteria's magnet recipe.</p>
+
+  <div class="gene-grid">
+    <div class="gene-tile">
+      <div class="gene-name">🚚 TEAM 1: METAL TRANSPORTERS</div>
+      <div class="gene-job"><strong>SLC30A4, SLC30A8, SLC30A9</strong><br>Pump iron into the crystal-building bubble.<br><br><strong>SLC39A3, SLC39A4</strong><br>Bring iron to the loading dock.</div>
+    </div>
+    <div class="gene-tile">
+      <div class="gene-name">🏗️ TEAM 2: SCAFFOLD BUILDERS</div>
+      <div class="gene-job"><strong>HTRA1–4</strong><br>Build the protein scaffold inside the bubble so iron crystallizes perfectly instead of turning into useless rust.</div>
+    </div>
+    <div class="gene-tile">
+      <div class="gene-name">📦 TEAM 3: VESICLE FACTORY</div>
+      <div class="gene-job"><strong>PEX5, ANAPC7, CDC23...</strong><br>Build and organize the tiny bubble (vesicle) that keeps the chemistry controlled and safe.</div>
+    </div>
+    <div class="gene-tile">
+      <div class="gene-name">⚡ TEAM 4: IRON CHARGE CONTROL</div>
+      <div class="gene-job"><strong>STEAP2, STEAP3</strong><br>Control the exact electrical charge iron needs to become perfect magnetite. STEAP3 works specifically in dopamine neurons!</div>
+    </div>
+  </div>
+
+  <div class="fact-card purple" data-icon="🔬" data-collect="7">
+    <div class="fact-card-title">🔬 WHY WE KNOW THESE ARE THE REAL MATCHES</div>
+    <p>Scientists didn't just compare letters in the DNA. They compared the 3D shapes of the proteins — and found they fold exactly the same way at the atomic level. This proves they are evolutionary descendants of the original bacterial magnet genes!</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 7)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ CHAPTER 6 + BRAIN ILLUSTRATION ═══════════════════════════════ -->
+<section class="chapter" id="ch6" data-chapter="6">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 6 • WHERE IN THE BRAIN</div>
+  </div>
+  <h2 class="ch-title">Deep in the Ancient Brain:<br>Substantia Nigra & Red Nucleus</h2>
+
+  <p>The magnets aren't in the thinking outer layer of your brain. They're concentrated in deep, ancient structures that evolved hundreds of millions of years ago.</p>
+
+  <div class="illustration">
+    <img src="/lessons/img/brain-anatomy.webp" alt="Anatomically labeled human brain: side view showing the cerebrum, cerebellum, midbrain, pons and medulla oblongata, plus a detailed brain-stem view marking the substantia nigra and locus coeruleus" style="display:block;width:100%;height:auto;background:#fff" loading="lazy" />
+    <div style="background:#0f1433;color:#9fb4ff;font-size:12.5px;line-height:1.4;padding:9px 14px;font-family:'Space Grotesk',sans-serif">🧠 The <strong style="color:#ffb84d">brain stem</strong> &mdash; midbrain &middot; pons &middot; medulla &mdash; sits deep beneath the cerebrum, home to the magnetite hot-spots like the <strong style="color:#ff9f1c">substantia nigra</strong>.</div>
+  </div>
+
+  <div class="fact-card iron" data-icon="🧠" data-collect="8">
+    <div class="fact-card-title">🧠 THE TWO HOTSPOTS</div>
+    <p><strong>Substantia Nigra</strong> ("black substance") — gets its dark color from neuromelanin. Controls smooth movement. First to be damaged in Parkinson's.<br><br><strong>Red Nucleus</strong> — a major motor relay station. One of the most iron-rich places in the entire brain.</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 8)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ CHAPTER 7-8 ═══════════════════════════════ -->
+<section class="chapter" id="ch7" data-chapter="7">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 7 • HOW IT WORKS</div>
+  </div>
+  <h2 class="ch-title">The Cell Builds Magnets on a Real Assembly Line</h2>
+
+  <p>This isn't random rust forming. Your cells have an active, controlled factory for making perfect magnetite crystals.</p>
+
+  <div class="fact-card green" data-icon="🔬" data-collect="9">
+    <div class="fact-card-title">🔬 PROOF: STEM CELLS BUILD THEM FROM SCRATCH</div>
+    <p>When scientists gave human stem cells foreign magnetic particles, the cells broke them down... and then built brand new, perfectly shaped magnetite crystals using the iron! The assembly line is real and ready to run whenever needed.</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 9)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<section class="chapter" id="ch8" data-chapter="8">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 8 • THE MC1R CONNECTION ★ NEW DISCOVERY</div>
+  </div>
+  <h2 class="ch-title">The Same Gene That Controls Skin Color Controls Your Brain's Magnets!</h2>
+
+  <div class="wow-callout">
+    <strong>🌟 THIS IS THE BRAND NEW FINDING:</strong> The MC1R gene (famous for red hair and fair skin) also controls how much neuromelanin your brainstem makes. And neuromelanin acts as the perfect scaffold for growing organized, strong magnetite crystals!
+  </div>
+
+  <p>More neuromelanin = better organized magnets = stronger, healthier magnetic architecture in your brain. MC1R genotype directly influences how well your brain builds and organizes its tiny magnets. This is a brand-new understanding of human biology!</p>
+
+  <div class="fact-card purple" data-icon="🧬" data-collect="10">
+    <div class="fact-card-title">🧬 WHY THIS MATTERS</div>
+    <p>Populations with different MC1R versions may have different neuromelanin levels, which affects how efficiently they organize iron into safe magnetite crystals vs. leaving dangerous free iron around. This gives scientists a completely new way to understand brain health differences.</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 10)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ CHAPTER 9 ═══════════════════════════════ -->
+<section class="chapter" id="ch9" data-chapter="9">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 9 • TWO KINDS OF MAGNETS</div>
+  </div>
+  <h2 class="ch-title">Good Magnets vs. Pollution Magnets</h2>
+
+  <p>Not all magnetite in brains is the same. There are two very different kinds with very different effects.</p>
+
+  <div class="vs-row">
+    <div class="vs-box good">
+      <div class="vs-box-title">✅ YOUR BODY'S OWN MAGNETS</div>
+      <div class="vs-desc">
+        Built by your SLC/HTRA/STEAP genes<br><br>
+        <strong>Sharp, perfect crystal shapes</strong><br>
+        Precisely sized for max power<br>
+        Acts as a detox system — locks bad iron into safe crystals
+      </div>
+    </div>
+    <div class="vs-label">VS</div>
+    <div class="vs-box bad">
+      <div class="vs-box-title">❌ POLLUTION MAGNETS</div>
+      <div class="vs-desc">
+        From car exhaust & factories<br><br>
+        <strong>Rounded, melted-looking spheres</strong><br>
+        Tiny enough to fly up your nose straight into brain<br>
+        Attracts more iron and causes toxic clusters
+      </div>
+    </div>
+  </div>
+
+  <div class="fact-card red" data-icon="⚠️" data-collect="11">
+    <div class="fact-card-title">⚠️ WHY POLLUTION MAGNETS ARE DANGEROUS</div>
+    <p>They sneak into the brain through the nose, travel to the ancient iron-rich areas, and magnetically pull the body's own iron into toxic clumps. Combined with disrupted natural magnetite building, this is linked to faster Parkinson's and Alzheimer's progression.</p>
+    <button class="collect-btn" onclick="collectCrystal(this, 11)">COLLECT 🧲</button>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ CHAPTER 10 ═══════════════════════════════ -->
+<section class="chapter" id="ch10" data-chapter="10">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 10 • WHEN THINGS GO WRONG</div>
+  </div>
+  <h2 class="ch-title">Magnetite & Neurodegeneration</h2>
+
+  <p>In a healthy brain, the magnetite system is a hero — it grabs loose iron and locks it safely into crystals. When the system gets disrupted, it can turn destructive.</p>
+
+  <div class="fact-card red" data-icon="🔴">
+    <div class="fact-card-title">🔴 ALZHEIMER'S CONNECTION</div>
+    <p>The HTRA1 gene tries to clean up sticky amyloid plaques. As it works, iron gets funneled into the crystal pathway. The plaque can become an out-of-control magnet factory, creating reactive oxygen that damages cells.</div>
+  </div>
+
+  <div class="fact-card red" data-icon="🔴">
+    <div class="fact-card-title">🔴 PARKINSON'S CONNECTION</div>
+    <p>In the substantia nigra, neuromelanin normally helps organize magnetite growth. When it breaks down, iron forms chaotic toxic clusters instead of nice crystals. This damages the dopamine neurons that control movement. MC1R variations may influence risk through neuromelanin differences.</div>
+  </div>
+
+  <div class="fact-card iron" data-icon="💡">
+    <div class="fact-card-title">💡 NEW HOPE: A FRESH THERAPEUTIC TARGET</div>
+    <p>Now that we know the exact genes running the magnetite assembly line (SLC30A, HTRA, STEAP3), scientists have brand new targets for drugs or therapies that could help keep magnetite production healthy and organized — potentially slowing neurodegeneration before symptoms appear.</div>
+  </div>
+</section>
+
+<div class="rule"><hr></div>
+
+<!-- ═══════════════════════════════ CHAPTER 11: THE FULL CHAIN ═══════════════════════════════ -->
+<section class="chapter" id="ch11" data-chapter="11">
+  <div class="ch-header">
+    <div class="ch-level">LEVEL 11 • THE COMPLETE STORY</div>
+  </div>
+  <h2 class="ch-title">The Epic Chain From Ancient Bacteria to You</h2>
+
+  <div class="pathway">
+    <div class="step">
+      <div class="step-label">3.5 BILLION YEARS AGO</div>
+      <div class="step-body">Tiny bacteria in Earth's early oceans invent the Magnetosome Island — a full genetic toolkit for building magnets, tied into their energy system.</div>
+    </div>
+    <div class="step">
+      <div class="step-label">BILLIONS OF YEARS</div>
+      <div class="step-body">The recipe gets passed into the ancestors of all complex life through ancient microbes. Evolution keeps it in fish, mammals... and humans.</div>
+    </div>
+    <div class="step">
+      <div class="step-label">SALMON PROOF</div>
+      <div class="step-body">18 of the core magnet genes are actively working in salmon nose cells that sense magnetic fields. The system is still alive and useful in vertebrates!</div>
+    </div>
+    <div class="step">
+      <div class="step-label">YOUR DNA</div>
+      <div class="step-body">Four gene teams (SLC, HTRA, vesicle, STEAP) run the same four steps bacteria invented billions of years ago.</div>
+    </div>
+    <div class="step">
+      <div class="step-label">IN YOUR BRAINSTEM</div>
+      <div class="step-body">These genes work hardest in the substantia nigra and red nucleus — the iron-rich, ancient parts of your brain with the most neuromelanin.</div>
+    </div>
+    <div class="step">
+      <div class="step-label">MC1R CONTROLS IT</div>
+      <div class="step-body">The same gene that influences skin pigmentation also controls neuromelanin levels — which directly organizes how well your brain builds strong, healthy magnetite crystals. Brand new discovery!</div>
+    </div>
+    <div class="step">
+      <div class="step-label">HEALTH & DISEASE</div>
+      <div class="step-body">Pollution magnets + disrupted natural building = toxic iron clusters linked to Parkinson's and Alzheimer's. But knowing the genes gives us powerful new ways to protect brain health.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ QUIZ TIME! ═══════════════════════════════ -->
+<section class="chapter" style="padding-bottom: 40px;">
+  <div class="quiz-section">
+    <h2 class="quiz-title">🧠 TEST YOUR MAGNET POWERS! 🧲</h2>
+    <p style="text-align:center; margin-bottom:24px; color:var(--muted);">Answer these 4 quick questions and see how much you learned!</p>
+
+    <div id="quiz">
+      <div class="question">
+        <div class="q-text">1. How old is the ability to build magnetite crystals?</div>
+        <div class="options">
+          <label><input type="radio" name="q1" value="a"> About 65 million years (dinosaur time)</label>
+          <label><input type="radio" name="q1" value="b"> 3.5 billion years — from the very first bacteria!</label>
+          <label><input type="radio" name="q1" value="c"> Only in humans, about 300,000 years</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text">2. What is the "Magnetosome Island"?</div>
+        <div class="options">
+          <label><input type="radio" name="q2" value="a"> A real island where scientists found magnets</label>
+          <label><input type="radio" name="q2" value="b"> A big chunk of DNA with the instructions for building magnets</label>
+          <label><input type="radio" name="q2" value="c"> A special part of the ocean floor</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text">3. Which gene controls both skin/hair color AND how organized your brain's magnets are?</div>
+        <div class="options">
+          <label><input type="radio" name="q3" value="a"> MC1R</label>
+          <label><input type="radio" name="q3" value="b"> SLC30A</label>
+          <label><input type="radio" name="q3" value="c"> STEAP3</label>
+        </div>
+      </div>
+      <div class="question">
+        <div class="q-text">4. Where in the brain are most of the magnetite crystals found?</div>
+        <div class="options">
+          <label><input type="radio" name="q4" value="a"> The thinking outer layer (neocortex)</label>
+          <label><input type="radio" name="q4" value="b"> Deep ancient structures like the substantia nigra & red nucleus</label>
+          <label><input type="radio" name="q4" value="c"> Only in the left side of the brain</label>
+        </div>
+      </div>
+    </div>
+
+    <button onclick="checkQuiz()" style="display:block; margin: 24px auto 0; background: linear-gradient(90deg, var(--crystal), var(--neon-lime)); color:#111; border:none; padding:14px 40px; font-size:17px; font-weight:700; border-radius:999px; cursor:pointer;">CHECK MY ANSWERS! ✨</button>
+
+    <div id="quizResult" class="quiz-result"></div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════ FINALE ═══════════════════════════════ -->
+<div class="finale" id="finale">
+  <h2 class="finale-title">Your Brain Has Been Building Magnets Since Before the Dinosaurs! 🦕🧲</h2>
+  <p class="finale-sub">
+    That incredible ability came from bacteria living in ancient oceans 3.5 billion years ago. The genes survived every mass extinction because they were too important to lose. They are still working inside you right now — in the deep iron-rich parts of your brainstem — building tiny perfect crystals that may help explain how brains interact with magnetic fields.
+  </p>
+  <p class="finale-sub">
+    And the MC1R gene — the same one involved in skin and hair color — directly helps organize how strong and healthy those crystals are. This is a completely new chapter in understanding human biology!
+  </p>
+
+  <div class="tag-row">
+    <span class="tag">Fe₃O₄ Magnetite</span>
+    <span class="tag">Magnetosome Island</span>
+    <span class="tag">SLC30A / HTRA / STEAP</span>
+    <span class="tag">Substantia Nigra</span>
+    <span class="tag">Red Nucleus</span>
+    <span class="tag">MC1R Gene</span>
+    <span class="tag">Neuromelanin</span>
+    <span class="tag">3.5 Billion Years</span>
+    <span class="tag">Parkinson's Research</span>
+    <span class="tag">Alzheimer's Research</span>
+  </div>
+
+  <p class="doi">
+    Created by Vine · ORCID: 0009-0006-4312-526X<br>
+    Based on: "The Genetic and Molecular Basis of Magnetite Biomineralization in the Human Brain Stem" DOI: 10.5281/zenodo.19037863<br>
+    Enhanced interactive version for young explorers • June 2026
+  </p>
+
+  <button onclick="celebrateAndReset()" style="margin-top: 30px; background: linear-gradient(90deg, var(--neon-pink), var(--crystal)); color: white; border: none; padding: 16px 36px; font-size: 17px; font-weight: 700; border-radius: 999px; cursor: pointer; box-shadow: 0 8px 25px rgba(255,0,170,0.4);">
+    🎉 I COLLECTED ALL THE CRYSTALS! CELEBRATE!
+  </button>
+</div>
+
+<script>
+// ===== CRYSTAL COLLECTOR SYSTEM =====
+let collected = new Set();
+
+function updateProgress() {
+  const totalChapters = 11;
+  let completed = 0;
+  
+  for (let i = 1; i <= totalChapters; i++) {
+    const ch = document.getElementById('ch' + i);
+    if (ch) {
+      const rect = ch.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.6) {
+        completed = i;
+      }
+    }
+  }
+  
+  const percent = Math.round((completed / totalChapters) * 100);
+  document.getElementById('progressFill').style.width = percent + '%';
+  document.getElementById('progressText').textContent = completed + '/11';
+}
+
+function collectCrystal(btn, id) {
+  if (collected.has(id)) return;
+  
+  collected.add(id);
+  btn.classList.add('collected');
+  btn.innerHTML = 'COLLECTED! ✨';
+  btn.style.background = 'var(--green)';
+  
+  // Update count
+  document.getElementById('countNum').textContent = collected.size;
+  
+  // Visual feedback
+  const card = btn.closest('.fact-card');
+  card.classList.add('collected');
+  
+  // Sparkle effect
+  createSparkles(btn);
+
+  // Sunny does a happy hop on each collect
+  if (window.Sunny) Sunny.react('bounce');
+
+  // Check if all collected
+  if (collected.size === 11) {
+    fireConfetti();
+    if (window.Sunny) Sunny.celebrate();
+    setTimeout(() => {
+      const finale = document.getElementById('finale');
+      finale.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      showCompletionMessage();
+    }, 800);
+  }
+}
+
+function createSparkles(element) {
+  const rect = element.getBoundingClientRect();
+  const container = document.body;
+  
+  for (let i = 0; i < 8; i++) {
+    const sparkle = document.createElement('div');
+    sparkle.textContent = '✨';
+    sparkle.style.position = 'fixed';
+    sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+    sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+    sparkle.style.fontSize = '14px';
+    sparkle.style.pointerEvents = 'none';
+    sparkle.style.zIndex = '9999';
+    sparkle.style.transition = 'all 0.6s ease-out';
+    container.appendChild(sparkle);
+    
+    setTimeout(() => {
+      sparkle.style.transform = `translateY(-${30 + Math.random()*40}px)`;
+      sparkle.style.opacity = '0';
+      setTimeout(() => sparkle.remove(), 300);
+    }, 50);
+  }
+}
+
+function showCompletionMessage() {
+  const msg = document.createElement('div');
+  msg.style.cssText = 'position:fixed; bottom:30px; left:50%; transform:translateX(-50%); background:#111a33; border:3px solid var(--neon-lime); padding:16px 28px; border-radius:16px; font-size:15px; box-shadow:0 10px 40px rgba(0,0,0,0.5); z-index:99999; text-align:center;';
+  msg.innerHTML = '🎉 <strong>YOU COLLECTED ALL 11 CRYSTALS!</strong><br>You are now a certified Magnet Master! 🧲✨';
+  document.body.appendChild(msg);
+  
+  setTimeout(() => {
+    msg.style.transition = 'all 0.4s ease';
+    msg.style.opacity = '0';
+    setTimeout(() => msg.remove(), 400);
+  }, 4200);
+}
+
+// ===== SIMPLE QUIZ =====
+function checkQuiz() {
+  const answers = {
+    q1: 'b',
+    q2: 'b',
+    q3: 'a',
+    q4: 'b'
+  };
+  
+  let score = 0;
+  let total = 4;
+  
+  for (let q in answers) {
+    const selected = document.querySelector(`input[name="${q}"]:checked`);
+    if (selected && selected.value === answers[q]) {
+      score++;
+    }
+  }
+  
+  const resultDiv = document.getElementById('quizResult');
+  resultDiv.classList.add('show');
+  resultDiv.style.background = score >= 3 ? 'rgba(46,213,115,0.15)' : 'rgba(255,159,28,0.15)';
+  resultDiv.style.border = score >= 3 ? '2px solid var(--green)' : '2px solid var(--iron)';
+  
+  let message = '';
+  if (score === 4) {
+    message = `🏆 PERFECT SCORE! You are a true Magnet Master! You understood everything about the ancient bacteria, the genes, and the new MC1R discovery. Amazing work!`;
+  } else if (score === 3) {
+    message = `🌟 Great job! You got ${score}/4 correct. You really understand how your brain builds magnets! Keep exploring!`;
+  } else if (score === 2) {
+    message = `👍 Good effort! You got ${score}/4. The ancient bacteria story and the MC1R connection are the trickiest parts — you’re getting it!`;
+  } else {
+    message = `🔄 You got ${score}/4. No worries! Re-read the levels about the 3.5 billion year old bacteria and the MC1R gene — then try again!`;
+  }
+  
+  resultDiv.innerHTML = `
+    <div class="score-text">You scored ${score} out of ${total}!</div>
+    <p style="margin-top:8px; font-size:15.5px; line-height:1.5;">${message}</p>
+    <button onclick="resetQuiz()" style="margin-top:16px; background:#222a4a; color:#f0e9d2; border:2px solid var(--crystal); padding:8px 20px; border-radius:999px; cursor:pointer;">Try Again</button>
+  `;
+}
+
+function resetQuiz() {
+  document.querySelectorAll('#quiz input[type="radio"]').forEach(r => r.checked = false);
+  document.getElementById('quizResult').classList.remove('show');
+  document.getElementById('quizResult').innerHTML = '';
+}
+
+// ===== PROGRESS TRACKING =====
+function startQuest() {
+  // Mark first chapter as started
+  updateProgress();
+}
+
+// Robust "Begin the Quest" — reliably scrolls into Level 1 (mobile-safe)
+function beginQuest() {
+  var t = document.getElementById('ch1');
+  if (t) {
+    var y = t.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop) - 8;
+    try { window.scrollTo({ top: y, behavior: 'smooth' }); }
+    catch (e) { window.scrollTo(0, y); }
+  }
+  try { startQuest(); } catch (e) {}
+  if (window.Sunny) { try { Sunny.say('ch1'); Sunny.react('bounce'); } catch (e) {} }
+}
+
+window.addEventListener('scroll', () => {
+  updateProgress();
+});
+
+// Initial progress check
+setTimeout(() => {
+  updateProgress();
+  // Easter egg: auto-collect first crystal hint
+}, 1200);
+
+// Keyboard support for fun
+document.addEventListener('keydown', function(e) {
+  if (e.key === "?") {
+    const countEl = document.getElementById('countNum');
+    countEl.style.transition = 'transform 0.2s';
+    countEl.style.transform = 'scale(1.6)';
+    setTimeout(() => {
+      countEl.style.transform = 'scale(1)';
+    }, 180);
+  }
+});
+
+// Full-screen confetti that stays visible the whole fall
+function fireConfetti() {
+  const emojis = ['🧲','✨','🔬','🧬','🧠','🎉','⭐','🏆'];
+  for (let i = 0; i < 100; i++) {
+    setTimeout(() => {
+      const piece = document.createElement('div');
+      piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      piece.style.position = 'fixed';
+      piece.style.left = (Math.random() * 100) + 'vw';
+      piece.style.top = '-50px';
+      piece.style.fontSize = (18 + Math.random() * 24) + 'px';
+      piece.style.zIndex = '999999';
+      piece.style.pointerEvents = 'none';
+      piece.style.willChange = 'transform, opacity';
+      const dur = 3 + Math.random() * 2.5;
+      // fade only at the very END of the fall, so it's visible the whole way down
+      piece.style.transition = 'transform ' + dur + 's linear, opacity 0.7s ease ' + (dur - 0.7) + 's';
+      document.body.appendChild(piece);
+
+      requestAnimationFrame(() => {
+        const drift = (Math.random() * 2 - 1) * 140;
+        const spin = Math.random() * 720 - 360;
+        piece.style.transform = 'translate(' + drift + 'px, ' + (window.innerHeight + 100) + 'px) rotate(' + spin + 'deg)';
+        piece.style.opacity = '0';
+      });
+
+      setTimeout(() => piece.remove(), (dur + 1.2) * 1000);
+    }, i * 22);
+  }
+}
+
+// Finale celebrate button: banner + confetti, then reset for replay
+function celebrateAndReset() {
+  showCompletionMessage();
+  fireConfetti();
+
+  // Reset collector for replay fun (after the confetti has fallen)
+  setTimeout(() => {
+    collected.clear();
+    document.getElementById('countNum').textContent = '0';
+    document.querySelectorAll('.collect-btn').forEach(b => {
+      b.classList.remove('collected');
+      b.innerHTML = 'COLLECT 🧲';
+      b.style.background = '';
+    });
+    document.querySelectorAll('.fact-card').forEach(c => c.classList.remove('collected'));
+  }, 7000);
+}
+
+// Make sure progress updates on load
+window.onload = function() {
+  setTimeout(updateProgress, 800);
+  // Friendly hint
+  console.log('%c[Magnet Quest] Enhanced interactive lesson ready. Try clicking the COLLECT buttons!', 'color:#555');
+};
+</script>
+
+<!-- ☀️ Sunny — official Vines Connection kids mascot (reusable) -->
+<script src="/lessons/mc-world.js"></script>
+<script src="/lessons/kids-fx.js"></script>
+<script src="/lessons/sunny.js"></script>
+<script>
+  Sunny.init({
+    name: "☀️ Sunny says",
+    sections: [
+      ['.hero','hero'], ['#ch1','ch1'], ['#ch2','ch2'], ['#ch3','ch3'],
+      ['#ch4','ch4'], ['#ch5','ch5'], ['#ch6','ch6'], ['#ch7','ch7'],
+      ['#ch8','ch8'], ['#ch9','ch9'], ['#ch10','ch10'], ['#ch11','ch11'],
+      ['#finale','finale']
+    ],
+    messages: {
+      hero:   { text: "Hi! I'm <strong>Sunny</strong> ☀️ your magnet guide! Tap <strong>Begin the Quest</strong> and let's explore the tiny magnets in your brain!", mood: "happy" },
+      ch1:    { text: "Whoa! Scientists found <strong>REAL magnets</strong> growing inside human brains. Tap the 🧲 COLLECT buttons as we go!", mood: "wow" },
+      ch2:    { text: "These magnet-makers are <strong>3.5 BILLION years old</strong> — older than dinosaurs, trees, almost everything!", mood: "excited" },
+      ch3:    { text: "Every magnet needs a recipe. Meet the <strong>Magnetosome Island</strong> — the instruction manual!", mood: "happy" },
+      ch4:    { text: "These genes are SO useful that evolution kept them in almost <strong>every living thing</strong> — even YOU!", mood: "excited" },
+      ch5:    { text: "Your <strong>DNA</strong> has the same recipe! Four gene teams build your magnets.", mood: "happy" },
+      ch6:    { text: "Here's a real brain stem! The magnets gather deep down in the <strong>substantia nigra</strong> and <strong>red nucleus</strong>.", mood: "excited" },
+      ch7:    { text: "Your cells build magnets on a real <strong>assembly line</strong> — not by accident!", mood: "happy" },
+      ch8:    { text: "Big discovery! The same gene for <strong>red hair</strong> also helps organize your brain's magnets. Wow!", mood: "wow" },
+      ch9:    { text: "Careful — <strong>pollution magnets</strong> are sneaky troublemakers. Not all magnets are good!", mood: "wow" },
+      ch10:   { text: "When the magnet system breaks, it's linked to brain diseases — but scientists have <strong>new ways to help</strong>!", mood: "think" },
+      ch11:   { text: "Here's the whole epic story — from tiny ocean bacteria all the way to <strong>YOU</strong>!", mood: "excited" },
+      finale: { text: "You did it, explorer! 🎉 You're a <strong>Magnet Master</strong>! Press the celebrate button!", mood: "celebrate" }
+    }
+  });
+</script>
+
+</body>
+</html>
