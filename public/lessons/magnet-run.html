@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>🧲 Magnet Run — Vines Connection Kids</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Space+Mono:wght@700&display=swap');
+  :root{ --iron:#ffb02e; --crystal:#00f0ff; --green:#39ff14; --signal:#ff4757; --cream:#f0e9d2; }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;background:#02101f;font-family:'Fredoka',sans-serif;color:var(--cream)}
+  #mr{position:fixed;inset:0;touch-action:none}
+  canvas{display:block;width:100%;height:100%}
+  .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px;z-index:5;overflow-y:auto}
+  .ov.hidden{display:none}
+  .card{background:rgba(4,18,40,.8);border:3px solid var(--crystal);border-radius:22px;padding:24px 22px;max-width:460px;width:100%;margin:auto;backdrop-filter:blur(8px);box-shadow:0 20px 60px rgba(0,0,0,.55)}
+  h1{font-size:clamp(32px,9vw,54px);line-height:1;margin-bottom:8px}
+  h1 .a{color:var(--iron)} h1 .b{color:var(--crystal)}
+  .sub{font-size:15px;color:rgba(240,233,210,.82);margin-bottom:16px;line-height:1.45}
+  .btn{display:inline-block;background:linear-gradient(90deg,var(--iron),#ff7a00);color:#111;font-weight:700;font-size:20px;padding:14px 40px;border:none;border-radius:999px;cursor:pointer;box-shadow:0 8px 24px rgba(255,159,28,.45);transition:transform .15s}
+  .btn:active{transform:scale(.96)}
+  .how{font-family:'Space Mono',monospace;font-size:12px;color:rgba(240,233,210,.6);margin-top:14px;line-height:1.7;letter-spacing:.4px}
+  .big{font-size:clamp(40px,11vw,68px);color:var(--iron);font-weight:700;line-height:1}
+  .hs{font-size:14px;color:var(--crystal);margin-top:4px;font-family:'Space Mono',monospace}
+  .fact{background:rgba(0,240,255,.1);border-left:4px solid var(--crystal);border-radius:0 10px 10px 0;padding:10px 14px;font-size:14px;margin:14px 0;text-align:left;line-height:1.45}
+  .legend{display:flex;flex-direction:column;gap:10px;margin:6px 0 4px;text-align:left}
+  .leg{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.04);border-radius:14px;padding:9px 12px;border:2px solid transparent}
+  .leg.good{border-color:rgba(255,176,46,.5)} .leg.bad{border-color:rgba(255,71,87,.5)}
+  .leg .ic{display:flex;gap:4px;flex-shrink:0}
+  .leg .ic svg{width:38px;height:38px;display:block}
+  .leg b{font-size:14px} .leg.good b{color:var(--iron)} .leg.bad b{color:var(--signal)}
+  .leg .tx{font-size:13px;color:rgba(240,233,210,.8);line-height:1.35}
+  #hud{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;z-index:4;pointer-events:none}
+  .hud-pill{background:rgba(4,18,40,.66);border:2px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 13px;font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px}
+  .hud-pill.cry{border-color:var(--iron);color:var(--iron)}
+  .hud-pill.dist{border-color:var(--crystal);color:var(--crystal);font-family:'Space Mono',monospace;font-size:13px}
+  #lives{font-size:18px;letter-spacing:2px}
+  #hud.hidden{display:none}
+  .toast{position:absolute;left:50%;top:60px;transform:translateX(-50%);background:rgba(4,18,40,.92);border:2px solid var(--crystal);border-radius:12px;padding:8px 16px;font-size:13.5px;z-index:6;opacity:0;transition:opacity .3s, top .3s;pointer-events:none;max-width:88vw;text-align:center}
+  .toast.show{opacity:1;top:72px}
+  .loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:7;color:var(--crystal);font-family:'Space Mono',monospace}
+  /* keep Coach Sunny out of the play area while diving */
+  body.mr-playing .sunny-guide{display:none!important;}
+  .snd{position:absolute;left:12px;bottom:12px;z-index:9;width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.28);background:rgba(4,18,40,.6);color:#fff;font-size:21px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:transform .12s}
+  .snd:active{transform:scale(.9)}
+  .snd.off{opacity:.55}
+  /* MAGNET letter tracker */
+  #magBar{position:absolute;top:52px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:4;pointer-events:none}
+  #magBar.hidden{display:none}
+  #magBar span{width:26px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:rgba(255,255,255,.32);background:rgba(4,18,40,.55);border:2px solid rgba(255,255,255,.14);transition:all .2s}
+  #magBar span.on{color:#1a1206;background:linear-gradient(180deg,#ffe98a,#ff9f1c);border-color:#fff3c0;box-shadow:0 0 14px rgba(255,159,28,.7);transform:translateY(-2px) scale(1.06)}
+  /* invincibility badge */
+  #invBadge{position:absolute;top:92px;left:50%;transform:translateX(-50%);z-index:5;background:rgba(4,30,48,.85);border:2px solid #7df9ff;color:#d8ffff;border-radius:999px;padding:5px 14px;font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px;box-shadow:0 0 18px rgba(125,249,255,.6);animation:invpulse .8s ease-in-out infinite}
+  #invBadge.hidden{display:none}
+  @keyframes invpulse{0%,100%{box-shadow:0 0 14px rgba(125,249,255,.5)}50%{box-shadow:0 0 26px rgba(125,249,255,.95)}}
+</style>
+</head>
+<body>
+<div id="mr">
+  <canvas id="c"></canvas>
+  <div class="loading" id="loading">Loading the reef…</div>
+
+  <div id="hud" class="hidden">
+    <div class="hud-pill cry">🧲 <span id="cryCount">0</span></div>
+    <div id="lives">❤️❤️❤️</div>
+    <div class="hud-pill dist">▼ <span id="distCount">0</span>m</div>
+  </div>
+  <div id="magBar" class="hidden"><span data-l="M">M</span><span data-l="A">A</span><span data-l="G">G</span><span data-l="N">N</span><span data-l="E">E</span><span data-l="T">T</span></div>
+  <div id="invBadge" class="hidden">🛡 <span id="invTime">10</span>s</div>
+  <div class="toast" id="toast"></div>
+  <button id="sndBtn" class="snd" aria-label="Toggle sound" title="Sound on/off">🔊</button>
+
+  <div class="ov hidden" id="titleScreen">
+    <div class="card">
+      <h1><span class="a">🧲 MAGNET</span> <span class="b">RUN</span></h1>
+      <p class="sub">Dive through a 3D reef as a tiny <strong>magnet-making bacterium</strong>! Switch lanes to grab the good crystals and dodge the bad stuff. It speeds up the deeper you go…</p>
+      <div class="legend">
+        <div class="leg good">
+          <span class="ic"><svg viewBox="0 0 40 40"><polygon points="20,3 37,20 20,37 3,20" fill="#ffd23f" stroke="#fff3c0" stroke-width="2"/><polygon points="20,3 37,20 20,20" fill="#fff" opacity=".45"/></svg></span>
+          <div><b>COLLECT &mdash; Magnetite Crystals</b><div class="tx">Gold glowing gems = points! Grab as many as you can.</div></div>
+        </div>
+        <div class="leg bad">
+          <span class="ic">
+            <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="#3a2030" stroke="#ff4757" stroke-width="3"/><circle cx="20" cy="13" r="3" fill="#ff6b7a"/><circle cx="14" cy="24" r="3" fill="#ff6b7a"/><circle cx="26" cy="24" r="3" fill="#ff6b7a"/></svg>
+            <svg viewBox="0 0 40 40"><polygon points="8,28 12,12 30,10 35,24 18,33" fill="#6b6f7a" stroke="#3a3d45" stroke-width="3"/></svg>
+          </span>
+          <div><b>AVOID &mdash; Pollution Magnets &amp; Rocks</b><div class="tx">Red spiky magnets &amp; gray rocks cost a life. Dodge them!</div></div>
+        </div>
+        <div class="leg good">
+          <span class="ic"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="16" fill="#16234a" stroke="#ffd23f" stroke-width="3"/><text x="20" y="27" font-size="20" font-weight="800" text-anchor="middle" fill="#ffe98a">M</text></svg></span>
+          <div><b>BONUS &mdash; M·A·G·N·E·T Letters &amp; ★ Shields</b><div class="tx">Spell <b>MAGNET</b> for a big bonus! Grab a ★ for 10s of invincibility. Every 100 crystals = an extra ❤️.</div></div>
+        </div>
+      </div>
+      <button class="btn" id="startBtn" style="margin-top:6px">DIVE IN ▶</button>
+      <div class="how">◀ ▶ ARROWS / A-D &nbsp;·&nbsp; TAP LEFT-RIGHT &nbsp;·&nbsp; SWIPE</div>
+    </div>
+  </div>
+
+  <div class="ov hidden" id="overScreen">
+    <div class="card">
+      <h1 style="font-size:36px"><span class="b">GAME OVER</span></h1>
+      <div class="big" id="finalDist">0m</div>
+      <div class="hs">🧲 <span id="finalCry">0</span> crystals · best: <span id="bestDist">0</span>m</div>
+      <div class="hs" id="finalBonus" style="display:none">✨ MAGNET spelled <span id="finalWords">0</span>×</div>
+      <div class="fact" id="overFact"></div>
+      <button class="btn" id="againBtn">PLAY AGAIN ↻</button>
+    </div>
+  </div>
+</div>
+
+<script src="/lessons/sunny.js"></script>
+<script type="module">
+import * as THREE from '/vendor/three.module.min.js';
+
+var FACTS=[
+  "Magnetite is Fe₃O₄ — a real magnet your body can build!",
+  "Bacteria invented magnet-making 3.5 BILLION years ago.",
+  "They use Earth's magnetic field like a compass to swim.",
+  "Your brain stem stores millions of tiny magnetite crystals.",
+  "Pollution magnets are the bad kind — dodge them!",
+  "The substantia nigra has the most magnetite in your brain.",
+  "Salmon use the same magnet genes to find their way home."
+];
+var LANES=[-2.1,0,2.1], PLAYER_Z=3.2, FAR_Z=-72;
+
+var canvas=document.getElementById('c');
+var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+
+var scene=new THREE.Scene();
+var WATER=new THREE.Color(0x0c4d80);
+scene.background=WATER; scene.fog=new THREE.FogExp2(0x0c4d80,0.042);
+var camera=new THREE.PerspectiveCamera(62,1,0.1,260);
+camera.position.set(0,2.6,7); camera.lookAt(0,0.7,-12);
+function resize(){ var w=window.innerWidth,h=window.innerHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+window.addEventListener('resize',resize); resize();
+
+scene.add(new THREE.HemisphereLight(0xaee6ff,0x1f4a2a,1.05));
+var sun=new THREE.DirectionalLight(0xffffff,1.2); sun.position.set(5,12,6); scene.add(sun);
+scene.add(new THREE.AmbientLight(0x2c5a82,0.55));
+
+// seabed with dunes
+(function(){
+  var g=new THREE.PlaneGeometry(90,300,28,60), pos=g.attributes.position;
+  for(var i=0;i<pos.count;i++){ var x=pos.getX(i),y=pos.getY(i); pos.setZ(i, Math.sin(x*0.25)*0.35+Math.cos(y*0.18)*0.28); }
+  g.computeVertexNormals();
+  var floor=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:0xcdb985,roughness:1}));
+  floor.rotation.x=-Math.PI/2; floor.position.set(0,-1.35,-110); scene.add(floor);
+})();
+// lane glow strips
+[-1.05,1.05,3.15,-3.15].forEach(function(lx){
+  var s=new THREE.Mesh(new THREE.PlaneGeometry(0.07,300), new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:0.16}));
+  s.rotation.x=-Math.PI/2; s.position.set(lx,-1.33,-110); scene.add(s);
+});
+// boundary rails (frame the play area on both sides)
+(function(){
+  var railMat=new THREE.MeshStandardMaterial({color:0x00f0ff,emissive:0x33e6ff,emissiveIntensity:1.5,roughness:0.3,metalness:0.2});
+  var postMat=new THREE.MeshStandardMaterial({color:0x00c8ff,emissive:0x00d8ff,emissiveIntensity:1.2,roughness:0.4});
+  [3.35,-3.35].forEach(function(x){
+    // bright glowing rail bar along the edge
+    var rail=new THREE.Mesh(new THREE.BoxGeometry(0.12,0.12,300),railMat);
+    rail.position.set(x,-0.35,-110); scene.add(rail);
+    // soft glowing wall under the rail
+    var wall=new THREE.Mesh(new THREE.PlaneGeometry(300,1.1),
+      new THREE.MeshBasicMaterial({color:0x00f0ff,transparent:true,opacity:0.12,side:THREE.DoubleSide,depthWrite:false,blending:THREE.AdditiveBlending}));
+    wall.rotation.y=Math.PI/2; wall.position.set(x,-0.9,-110); scene.add(wall);
+    // glowing posts at intervals so the boundary reads clearly in 3D
+    for(var i=0;i<22;i++){ var po=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,0.7,8),postMat); po.position.set(x,-0.95,6-i*6); scene.add(po); }
+  });
+})();
+// god ray cones
+for(var i=0;i<5;i++){
+  var c=new THREE.Mesh(new THREE.ConeGeometry(2.6,20,8,1,true), new THREE.MeshBasicMaterial({color:0xbfeaff,transparent:true,opacity:0.045,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending}));
+  c.position.set(-8+i*4,8,-20-i*5); c.rotation.z=0.18; scene.add(c);
+}
+// bubbles
+var bubbles;
+(function(){
+  var N=180, g=new THREE.BufferGeometry(), p=new Float32Array(N*3);
+  for(var i=0;i<N;i++){ p[i*3]=THREE.MathUtils.randFloatSpread(28); p[i*3+1]=THREE.MathUtils.randFloat(-2,18); p[i*3+2]=THREE.MathUtils.randFloat(-70,6); }
+  g.setAttribute('position',new THREE.BufferAttribute(p,3));
+  bubbles=new THREE.Points(g,new THREE.PointsMaterial({color:0xcdeeff,size:0.17,transparent:true,opacity:0.5,depthWrite:false}));
+  scene.add(bubbles);
+})();
+
+// shared geos/mats
+var crystalGeo=new THREE.OctahedronGeometry(0.5,0);
+var crystalMat=new THREE.MeshStandardMaterial({color:0xffd23f,metalness:0.4,roughness:0.16,emissive:0xff9f1c,emissiveIntensity:0.55});
+var rockGeo=new THREE.IcosahedronGeometry(0.62,0);
+var rockMat=new THREE.MeshStandardMaterial({color:0x73777f,roughness:1,flatShading:true});
+function makeCrystal(){ return new THREE.Mesh(crystalGeo,crystalMat); }
+function makeRock(){ var m=new THREE.Mesh(rockGeo,rockMat); m.scale.set(1,THREE.MathUtils.randFloat(.8,1.2),1); m.rotation.set(Math.random(),Math.random(),Math.random()); return m; }
+function makePollution(){
+  var g=new THREE.Group();
+  g.add(new THREE.Mesh(new THREE.SphereGeometry(0.45,16,16), new THREE.MeshStandardMaterial({color:0x2a1622,roughness:.5,metalness:.3,emissive:0x5a1020,emissiveIntensity:.45})));
+  var sm=new THREE.MeshStandardMaterial({color:0xff4757,emissive:0xff2030,emissiveIntensity:.55,roughness:.4});
+  for(var i=0;i<11;i++){ var sp=new THREE.Mesh(new THREE.ConeGeometry(0.12,0.34,6),sm); var a=Math.random()*Math.PI*2,b=Math.acos(2*Math.random()-1); sp.position.setFromSphericalCoords(0.5,b,a); sp.lookAt(0,0,0); sp.rotateX(Math.PI/2); g.add(sp); }
+  return g;
+}
+function makeBacterium(){
+  var g=new THREE.Group();
+  var body=new THREE.Mesh(new THREE.CapsuleGeometry(0.42,0.5,8,16), new THREE.MeshStandardMaterial({color:0x5ad15f,roughness:.35,emissive:0x1d5a22,emissiveIntensity:.4}));
+  body.rotation.z=Math.PI/2; g.add(body); g.userData.body=body;
+  var mm=new THREE.MeshStandardMaterial({color:0xff9f1c,emissive:0xff7a00,emissiveIntensity:.45,roughness:.4});
+  for(var k=-1;k<=1;k++){ var mg=new THREE.Mesh(new THREE.BoxGeometry(0.17,0.26,0.26),mm); mg.position.x=k*0.26; g.add(mg); }
+  var ew=new THREE.MeshStandardMaterial({color:0xffffff}), eb=new THREE.MeshBasicMaterial({color:0x111111});
+  [-0.18,0.18].forEach(function(x){ var e=new THREE.Mesh(new THREE.SphereGeometry(0.12,12,12),ew); e.position.set(x,0.16,0.34); g.add(e); var pp=new THREE.Mesh(new THREE.SphereGeometry(0.055,8,8),eb); pp.position.set(x,0.16,0.44); g.add(pp); });
+  var tail=new THREE.Mesh(new THREE.ConeGeometry(0.16,0.5,8), new THREE.MeshStandardMaterial({color:0x39d98a,roughness:.5})); tail.position.set(0,0,-0.55); tail.rotation.x=-Math.PI/2; g.add(tail); g.userData.tail=tail;
+  return g;
+}
+function makeCoral(){
+  var g=new THREE.Group();
+  var hue=Math.random()<.5? THREE.MathUtils.randFloat(0.88,0.98): THREE.MathUtils.randFloat(0.02,0.12);
+  var mat=new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(hue,0.72,0.6),roughness:.65});
+  var n=3+(Math.random()*3|0);
+  for(var i=0;i<n;i++){ var br=new THREE.Mesh(new THREE.ConeGeometry(0.2,1.0+Math.random()*0.9,6),mat); br.position.set((Math.random()-.5)*0.9,0.5,(Math.random()-.5)*0.9); br.rotation.z=(Math.random()-.5)*0.5; g.add(br); var ball=new THREE.Mesh(new THREE.SphereGeometry(0.2,8,8),mat); ball.position.set(br.position.x,br.position.y+0.55,br.position.z); g.add(ball); }
+  return g;
+}
+function makeFish(){
+  var g=new THREE.Group();
+  var mat=new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(Math.random(),0.7,0.6),roughness:.5});
+  var body=new THREE.Mesh(new THREE.SphereGeometry(0.3,12,12),mat); body.scale.set(1.7,1,0.7); g.add(body);
+  var tail=new THREE.Mesh(new THREE.ConeGeometry(0.24,0.42,4),mat); tail.position.x=-0.62; tail.rotation.z=Math.PI/2; g.add(tail);
+  return g;
+}
+
+// label coins (MAGNET letters + power-ups) drawn with a canvas texture
+function makeLabelCoin(text,o){
+  var cv=document.createElement('canvas'); cv.width=cv.height=128; var c=cv.getContext('2d');
+  c.clearRect(0,0,128,128);
+  c.fillStyle=o.bg; c.beginPath(); c.arc(64,64,58,0,Math.PI*2); c.fill();
+  c.lineWidth=9; c.strokeStyle=o.ring; c.stroke();
+  c.fillStyle=o.fg; c.font='bold '+(o.size||74)+'px Arial,Helvetica,sans-serif'; c.textAlign='center'; c.textBaseline='middle';
+  c.fillText(text,64,70);
+  var tex=new THREE.CanvasTexture(cv); tex.anisotropy=4;
+  var g=new THREE.Group();
+  var disc=new THREE.Mesh(new THREE.CircleGeometry(0.52,40), new THREE.MeshBasicMaterial({map:tex,transparent:true}));
+  var back=new THREE.Mesh(new THREE.CircleGeometry(0.52,40), new THREE.MeshBasicMaterial({map:tex,transparent:true})); back.rotation.y=Math.PI;
+  g.add(disc); g.add(back);
+  var glow=new THREE.Mesh(new THREE.CircleGeometry(0.78,40), new THREE.MeshBasicMaterial({color:o.glow,transparent:true,opacity:0.34,depthWrite:false,blending:THREE.AdditiveBlending}));
+  glow.position.z=-0.02; g.add(glow);
+  return g;
+}
+function makeLetter(ch){ return makeLabelCoin(ch,{bg:'#16234a',ring:'#ffd23f',fg:'#ffe98a',glow:0xffb733}); }
+function makeShield(){ return makeLabelCoin('★',{bg:'#073a52',ring:'#7df9ff',fg:'#eaffff',glow:0x7df9ff,size:80}); }
+
+// player
+var player=makeBacterium(); player.position.set(0,0,PLAYER_Z); scene.add(player);
+// invincibility bubble around the player (hidden until active)
+var playerShield=new THREE.Mesh(new THREE.SphereGeometry(0.95,20,20),
+  new THREE.MeshBasicMaterial({color:0x7df9ff,transparent:true,opacity:0.22,depthWrite:false,blending:THREE.AdditiveBlending}));
+playerShield.visible=false; player.add(playerShield);
+
+// decor: corals along edges + fish
+var corals=[], fishes=[];
+function spawnCoral(z){ var g=makeCoral(); var side=Math.random()<.5?-1:1; g.position.set(side*THREE.MathUtils.randFloat(4.2,7.5),-1.3,(z==null?THREE.MathUtils.randFloat(FAR_Z,4):z)); g.scale.setScalar(THREE.MathUtils.randFloat(0.8,1.6)); scene.add(g); corals.push(g); }
+function spawnFish(){ var f=makeFish(); var dir=Math.random()<.5?1:-1; f.position.set(dir>0?-16:16, THREE.MathUtils.randFloat(-0.5,4), THREE.MathUtils.randFloat(FAR_Z,-4)); f.userData={dir:dir,sp:THREE.MathUtils.randFloat(2,5),wob:Math.random()*6}; f.scale.x=dir; scene.add(f); fishes.push(f); }
+for(var ci=0;ci<14;ci++) spawnCoral();
+for(var fi2=0;fi2<10;fi2++) spawnFish();
+
+// ---- state ----
+var S, lastT=0, running=false;
+var pLane=1, pLaneF=1, hitFlash=0;
+
+function spawnRow(){
+  var lanes=[0,1,2];
+  for(var i=lanes.length-1;i>0;i--){var j=(Math.random()*(i+1))|0,t=lanes[i];lanes[i]=lanes[j];lanes[j]=t;}
+  var obstacles=Math.random()<0.5?1:(Math.random()<0.6?2:0), used={};
+  for(var k=0;k<obstacles;k++){ var ln=lanes[k]; used[ln]=1; var typ=Math.random()<0.5?'poll':'rock';
+    var m=typ==='poll'?makePollution():makeRock(); m.position.set(LANES[ln], typ==='rock'?-0.5:0.25, FAR_Z); scene.add(m);
+    S.objs.push({mesh:m,lane:ln,type:typ,passed:false}); }
+  var free=[0,1,2].filter(function(l){return !used[l];});
+  function take(){ return free.splice((Math.random()*free.length)|0,1)[0]; }
+  // power-up: 10s invincibility star (rare, only if not already active)
+  if(free.length && S.invT<=0 && Math.random()<0.05){ var sl=take(); var sm=makeShield(); sm.position.set(LANES[sl],0.45,FAR_Z); scene.add(sm); S.objs.push({mesh:sm,lane:sl,type:'shield',passed:false}); }
+  // bonus: a MAGNET letter (favor letters you still need)
+  if(free.length && Math.random()<0.18){ var ll=take(); var ch=pickLetter(); var lm=makeLetter(ch); lm.position.set(LANES[ll],0.45,FAR_Z); scene.add(lm); S.objs.push({mesh:lm,lane:ll,type:'letter',letter:ch,passed:false}); }
+  // crystals (single or a group string) in a remaining free lane
+  if(free.length && Math.random()<0.85){ var fl=take();
+    var grp=Math.random()<0.32?(3+(Math.random()*3|0)):1;
+    for(var gi=0;gi<grp;gi++){ var cm=makeCrystal(); cm.position.set(LANES[fl],0.3,FAR_Z-gi*2.6); scene.add(cm); S.objs.push({mesh:cm,lane:fl,type:'cry',passed:false}); } }
+}
+var WORD=['M','A','G','N','E','T'];
+function pickLetter(){ var need=WORD.filter(function(c){return !S.letters[c];}); var pool=need.length?need:WORD; return pool[(Math.random()*pool.length)|0]; }
+
+// ---- audio: synthesized music + sound effects (no external files) ----
+var Audio=(function(){
+  var ctx=null,master=null,musicGain=null,muted=false,musicTimer=null,step=0,noiseBuf=null;
+  try{ muted=localStorage.getItem('mr_muted')==='1'; }catch(e){}
+  function ensure(){
+    if(ctx) return; var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+    ctx=new AC();
+    master=ctx.createGain(); master.gain.value=0.85; master.connect(ctx.destination);
+    musicGain=ctx.createGain(); musicGain.gain.value=muted?0:0.16; musicGain.connect(master);
+    var n=ctx.sampleRate*0.4; noiseBuf=ctx.createBuffer(1,n,ctx.sampleRate); var d=noiseBuf.getChannelData(0);
+    for(var i=0;i<n;i++) d[i]=Math.random()*2-1;
+  }
+  function resume(){ ensure(); if(ctx&&ctx.state==='suspended') ctx.resume(); }
+  function tone(freq,dur,type,vol,glideTo,delay,dest){
+    if(!ctx||muted) return; var t0=ctx.currentTime+(delay||0);
+    var o=ctx.createOscillator(),g=ctx.createGain();
+    o.type=type||'sine'; o.frequency.setValueAtTime(freq,t0);
+    if(glideTo) o.frequency.exponentialRampToValueAtTime(glideTo,t0+dur);
+    g.gain.setValueAtTime(0.0001,t0);
+    g.gain.exponentialRampToValueAtTime(vol||0.22,t0+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g); g.connect(dest||master); o.start(t0); o.stop(t0+dur+0.03);
+  }
+  function thud(dur,vol){
+    if(!ctx||muted||!noiseBuf) return; var t0=ctx.currentTime;
+    var s=ctx.createBufferSource(); s.buffer=noiseBuf;
+    var f=ctx.createBiquadFilter(); f.type='lowpass'; f.frequency.setValueAtTime(900,t0); f.frequency.exponentialRampToValueAtTime(120,t0+dur);
+    var g=ctx.createGain(); g.gain.setValueAtTime(vol||0.25,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    s.connect(f); f.connect(g); g.connect(master); s.start(t0); s.stop(t0+dur);
+  }
+  var sfx={
+    move:function(){ tone(520,0.08,'square',0.10,760); },
+    collect:function(){ tone(784,0.10,'triangle',0.18); tone(1047,0.12,'triangle',0.15,null,0.06); tone(1568,0.14,'sine',0.12,null,0.12); },
+    hit:function(){ tone(190,0.30,'sawtooth',0.26,70); thud(0.22,0.22); },
+    over:function(){ tone(440,0.18,'sawtooth',0.18,330,0); tone(330,0.18,'sawtooth',0.18,247,0.16); tone(247,0.5,'sawtooth',0.2,120,0.32); },
+    record:function(){ [523,659,784,1047,1319].forEach(function(f,i){ tone(f,0.2,'triangle',0.18,null,i*0.09); }); },
+    dive:function(){ tone(294,0.16,'triangle',0.16,588); },
+    letter:function(){ tone(880,0.10,'square',0.14,1175); tone(1318,0.12,'triangle',0.12,null,0.05); },
+    word:function(){ [523,659,784,1047,1319,1568].forEach(function(f,i){ tone(f,0.22,'square',0.16,null,i*0.07); }); },
+    life:function(){ tone(659,0.14,'triangle',0.18,988); tone(1318,0.22,'sine',0.16,null,0.10); },
+    power:function(){ tone(330,0.5,'sawtooth',0.16,1320); tone(660,0.4,'triangle',0.12,null,0.08); },
+    bounce:function(){ tone(900,0.07,'square',0.10,1400); }
+  };
+  // gentle underwater arpeggio loop
+  var sc=[392,440,523,587,659,784,880];
+  var pat=[0,2,4,2,3,5,4,2,0,2,4,5,4,3,2,0];
+  function startMusic(){
+    ensure(); if(!ctx||musicTimer) return; step=0;
+    musicTimer=setInterval(function(){
+      if(!ctx||muted) return;
+      var f=sc[pat[step%pat.length]];
+      tone(f,0.5,'triangle',0.18,null,0,musicGain);
+      if(step%4===0){ tone(f/2,1.7,'sine',0.5,null,0,musicGain); tone(sc[(pat[step%pat.length]+2)%sc.length]/2,1.7,'sine',0.4,null,0,musicGain); }
+      step++;
+    },380);
+  }
+  function setMuted(m){
+    muted=m; try{ localStorage.setItem('mr_muted',m?'1':'0'); }catch(e){}
+    if(musicGain&&ctx) musicGain.gain.setTargetAtTime(m?0:0.16,ctx.currentTime,0.05);
+  }
+  return { resume:resume, startMusic:startMusic, sfx:function(k){ try{ if(sfx[k]) sfx[k](); }catch(e){} }, setMuted:setMuted, isMuted:function(){return muted;} };
+})();
+function move(d){ if(running){ var p=pLane; pLane=Math.max(0,Math.min(2,pLane+d)); if(pLane!==p) Audio.sfx('move'); } }
+function moveTo(l){ if(running){ var p=pLane; pLane=Math.max(0,Math.min(2,l|0)); if(pLane!==p) Audio.sfx('move'); } }
+function laneFromX(x){ var w=window.innerWidth; return x<w/3?0:(x<w*2/3?1:2); }
+function hit(){ S.lives--; hitFlash=0.5; Audio.sfx('hit'); if(window.Sunny)try{Sunny.react('bounce');}catch(e){} if(S.lives<=0) gameOver(); updateHUD(); }
+var MAXLIVES=5;
+function addCrystals(n){ S.crystals+=n;
+  // every 100 crystals → an extra heart (up to MAXLIVES)
+  while(S.crystals>=S.nextLife){ if(S.lives<MAXLIVES){ S.lives++; Audio.sfx('life'); showToast('💖 EXTRA LIFE! ('+S.nextLife+' crystals)'); } S.nextLife+=100; }
+  updateHUD();
+}
+function collect(){ addCrystals(1); Audio.sfx('collect'); if(S.crystals%8===0){ showToast('🧲 '+FACTS[S.factIdx%FACTS.length]); S.factIdx++; } }
+function collectLetter(ch){ Audio.sfx('letter');
+  if(!S.letters[ch]){ S.letters[ch]=1; addCrystals(5); updateMagnetHUD();
+    if(WORD.every(function(c){return S.letters[c];})){ S.magnetBonuses=(S.magnetBonuses||0)+1; addCrystals(50); Audio.sfx('word'); showToast('✨ MAGNET COMPLETE! +50 BONUS ✨'); S.letters={}; updateMagnetHUD(); }
+    else { showToast('🔠 Got "'+ch+'" — spell MAGNET for a bonus!'); }
+  } else { addCrystals(2); }
+}
+function activateInv(){ S.invT=10; Audio.sfx('power'); playerShield.visible=true; updateInvHUD(); showToast('🛡 INVINCIBLE for 10s — smash through anything!'); }
+var toastEl=document.getElementById('toast'),toastTimer=null;
+function showToast(t){ toastEl.textContent=t; toastEl.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){toastEl.classList.remove('show');},2600); }
+function updateHUD(){ document.getElementById('cryCount').textContent=S.crystals; document.getElementById('distCount').textContent=Math.floor(S.dist);
+  var h='';for(var i=0;i<S.lives;i++)h+='❤️'; document.getElementById('lives').textContent=h; }
+function updateMagnetHUD(){ var sp=document.querySelectorAll('#magBar span'); for(var i=0;i<sp.length;i++){ sp[i].classList.toggle('on', !!S.letters[sp[i].getAttribute('data-l')]); } }
+function updateInvHUD(){ var b=document.getElementById('invBadge'); if(S.invT>0){ b.classList.remove('hidden'); document.getElementById('invTime').textContent=Math.ceil(S.invT); } else b.classList.add('hidden'); }
+
+// ---- loop ----
+function tick(t){
+  requestAnimationFrame(tick);
+  if(!lastT)lastT=t; var dt=Math.min(0.05,(t-lastT)/1000); lastT=t;
+  var time=(t/1000);
+  // ambient decor always animates
+  var sp = running? S.speed : 6;
+  for(var ci=corals.length-1;ci>=0;ci--){ var co=corals[ci]; co.position.z+=sp*dt; if(co.position.z>8){ scene.remove(co); corals.splice(ci,1); spawnCoral(FAR_Z); } }
+  for(var fi=0;fi<fishes.length;fi++){ var f=fishes[fi]; f.userData.wob+=dt*3; f.position.x+=f.userData.dir*f.userData.sp*dt; f.position.y+=Math.sin(f.userData.wob)*0.01; if((f.userData.dir>0&&f.position.x>17)||(f.userData.dir<0&&f.position.x<-17)){ scene.remove(f); fishes.splice(fi,1); spawnFish(); } }
+  var bp=bubbles.geometry.attributes.position;
+  for(var bi=0;bi<bp.count;bi++){ var y=bp.getY(bi)+ (0.8+sp*0.03)*dt; var z=bp.getZ(bi)+sp*dt*0.4; if(y>18)y=-2; if(z>6){z-=76;} bp.setY(bi,y); bp.setZ(bi,z); } bp.needsUpdate=true;
+
+  // player bob + lane
+  pLaneF += (LANES[pLane]-pLaneF)*Math.min(1,dt*14);
+  player.position.x=pLaneF;
+  player.position.y=Math.sin(time*7)*0.07 + (hitFlash>0?Math.sin(time*40)*0.05:0);
+  player.rotation.z=(LANES[pLane]-pLaneF)*0.25;
+  if(player.userData.tail) player.userData.tail.rotation.z=Math.sin(time*18)*0.4;
+  if(hitFlash>0){ hitFlash-=dt; player.userData.body.material.emissiveIntensity = (((time*20)|0)%2)?0.1:0.4; } else player.userData.body.material.emissiveIntensity=0.4;
+  // invincibility shield bubble
+  if(running && S.invT>0){ playerShield.visible=true; playerShield.scale.setScalar(1+Math.sin(time*10)*0.07); playerShield.material.opacity=0.16+Math.abs(Math.sin(time*10))*0.14; player.userData.body.material.emissiveIntensity=0.5+Math.abs(Math.sin(time*14))*0.4; } else { playerShield.visible=false; }
+  // camera sway
+  camera.position.x += (pLaneF*0.32 - camera.position.x)*Math.min(1,dt*5);
+  camera.lookAt(pLaneF*0.3,0.7,-12);
+
+  if(running){
+    S.time+=dt; S.speed=Math.min(30,12+S.time*0.32); S.dist+=S.speed*0.55*dt;
+    // invincibility countdown
+    if(S.invT>0){ var prev=Math.ceil(S.invT); S.invT-=dt; if(S.invT<0)S.invT=0; if(Math.ceil(S.invT)!==prev) updateInvHUD(); if(S.invT===0){ updateInvHUD(); Audio.sfx('bounce'); } }
+    S.spawnT-=dt; var interval=Math.max(0.5,1.05-S.time*0.007);
+    if(S.spawnT<=0){ spawnRow(); S.spawnT=interval; }
+    for(var i=S.objs.length-1;i>=0;i--){ var o=S.objs[i]; o.mesh.position.z+=S.speed*dt;
+      if(o.type==='cry'){ o.mesh.rotation.y+=dt*2.5; o.mesh.rotation.x+=dt*1.2; }
+      else if(o.type==='poll'){ o.mesh.rotation.y+=dt*1.8; }
+      else if(o.type==='letter'||o.type==='shield'){ o.mesh.rotation.y+=dt*1.6; o.mesh.position.y=0.45+Math.sin(time*3+o.mesh.position.x)*0.12; }
+      else { o.mesh.rotation.x+=dt*1.0; }
+      if(!o.passed && o.mesh.position.z>=PLAYER_Z){ o.passed=true;
+        if(o.lane===pLane){
+          if(o.type==='cry'){ collect(); scene.remove(o.mesh); S.objs.splice(i,1); continue; }
+          if(o.type==='letter'){ collectLetter(o.letter); scene.remove(o.mesh); S.objs.splice(i,1); continue; }
+          if(o.type==='shield'){ activateInv(); scene.remove(o.mesh); S.objs.splice(i,1); continue; }
+          // obstacle: harmless while invincible
+          if(S.invT>0){ Audio.sfx('bounce'); scene.remove(o.mesh); S.objs.splice(i,1); continue; }
+          hit(); scene.remove(o.mesh); S.objs.splice(i,1); if(!running) return; continue;
+        } }
+      if(o.mesh.position.z>7){ scene.remove(o.mesh); S.objs.splice(i,1); }
+    }
+    if(S.dist) document.getElementById('distCount').textContent=Math.floor(S.dist);
+  }
+  renderer.render(scene,camera);
+}
+
+function clearObjs(){ if(S&&S.objs){ S.objs.forEach(function(o){scene.remove(o.mesh);}); S.objs=[]; } }
+function start(){ clearObjs(); S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0,letters:{},invT:0,nextLife:100,magnetBonuses:0}; pLane=1;pLaneF=1;hitFlash=0; running=true;
+  playerShield.visible=false;
+  Audio.resume(); Audio.startMusic(); Audio.sfx('dive');
+  document.body.classList.add('mr-playing');
+  document.getElementById('titleScreen').classList.add('hidden'); document.getElementById('overScreen').classList.add('hidden'); document.getElementById('hud').classList.remove('hidden');
+  document.getElementById('magBar').classList.remove('hidden');
+  updateHUD(); updateMagnetHUD(); updateInvHUD();
+  if(window.Sunny)try{Sunny.say({text:"Dive, dive! Grab the 🧲 gold crystals — dodge the red magnets & rocks!",mood:'excited'});}catch(e){}
+}
+function gameOver(){ running=false;
+  document.body.classList.remove('mr-playing');
+  playerShield.visible=false; S.invT=0; updateInvHUD();
+  document.getElementById('hud').classList.add('hidden');
+  document.getElementById('magBar').classList.add('hidden');
+  var dist=Math.floor(S.dist), best=parseInt(localStorage.getItem('mr_best')||'0',10), isHi=dist>best;
+  if(isHi){best=dist;localStorage.setItem('mr_best',String(best));}
+  document.getElementById('finalDist').textContent=dist+'m';
+  document.getElementById('finalCry').textContent=S.crystals;
+  document.getElementById('bestDist').textContent=best;
+  var fb=document.getElementById('finalBonus'); if(S.magnetBonuses>0){ document.getElementById('finalWords').textContent=S.magnetBonuses; fb.style.display=''; } else fb.style.display='none';
+  document.getElementById('overFact').innerHTML='💡 '+FACTS[(Math.random()*FACTS.length)|0];
+  document.getElementById('overScreen').classList.remove('hidden');
+  Audio.sfx('over'); if(isHi) Audio.sfx('record');
+  if(window.Sunny)try{ if(isHi){Sunny.celebrate();Sunny.say({text:"NEW RECORD! "+dist+"m! You're a Magnet Master! 🏆",mood:'celebrate'});} else {Sunny.say({text:"Nice dive — "+dist+"m! Try again to beat it!",mood:'happy'});} }catch(e){}
+}
+
+// input
+document.addEventListener('keydown',function(e){ if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')move(-1); else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')move(1); else if((e.key===' '||e.key==='Enter')&&!running)start(); });
+var tsx=null,tmoved=false;
+canvas.addEventListener('touchstart',function(e){tsx=e.changedTouches[0].clientX;tmoved=false;},{passive:true});
+canvas.addEventListener('touchmove',function(e){var x=e.changedTouches[0].clientX; if(tsx!==null&&Math.abs(x-tsx)>34&&!tmoved){move(x>tsx?1:-1);tmoved=true;}},{passive:true});
+canvas.addEventListener('touchend',function(e){ if(!tmoved&&tsx!==null&&running) moveTo(laneFromX(e.changedTouches[0].clientX)); tsx=null;},{passive:true});
+canvas.addEventListener('mousedown',function(e){ if(running) moveTo(laneFromX(e.clientX)); });
+document.getElementById('startBtn').addEventListener('click',start);
+document.getElementById('againBtn').addEventListener('click',start);
+// sound toggle
+var sndBtn=document.getElementById('sndBtn');
+function refreshSnd(){ var m=Audio.isMuted(); sndBtn.textContent=m?'🔇':'🔊'; sndBtn.classList.toggle('off',m); }
+refreshSnd();
+sndBtn.addEventListener('click',function(e){ e.stopPropagation(); Audio.resume(); Audio.setMuted(!Audio.isMuted()); if(!Audio.isMuted()) Audio.startMusic(); refreshSnd(); });
+
+// boot
+S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0,letters:{},invT:0,nextLife:100,magnetBonuses:0};
+document.getElementById('loading').style.display='none';
+document.getElementById('titleScreen').classList.remove('hidden');
+requestAnimationFrame(tick);
+if(window.Sunny)try{ Sunny.init({position:'bottom-right',name:'☀️ Coach Sunny', messages:{hi:{text:"Ready to dive? Grab gold crystals, dodge red magnets & rocks. Tap DIVE IN!",mood:'happy'}},startKey:'hi'}); }catch(e){}
+</script>
+</body>
+</html>

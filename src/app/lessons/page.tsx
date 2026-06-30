@@ -17,6 +17,16 @@ const lessons = [
     level: "Ages 8+",
     accent: "#00f0ff",
   },
+  {
+    title: "Magnet Run",
+    emoji: "🏃",
+    tagline: "Endless Ocean Dash!",
+    description:
+      "Play a tiny magnet-making bacterium diving through the ancient ocean. Switch lanes to grab magnetite crystals and dodge pollution magnets — it speeds up the deeper you go!",
+    href: "/lessons/magnet-run.html",
+    level: "Game · Ages 6+",
+    accent: "#ff9f1c",
+  },
 ];
 
 export default function LessonsPage() {
