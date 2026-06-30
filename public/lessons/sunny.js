@@ -35,7 +35,7 @@
     ".sunny-rays{transform-box:fill-box;transform-origin:center;animation:sunnySpin 22s linear infinite}",
     "@keyframes sunnySpin{to{transform:rotate(360deg)}}",
     ".sunny-char[data-mood='excited'] .sunny-rays,.sunny-char[data-mood='celebrate'] .sunny-rays{animation:sunnySpin 6s linear infinite}",
-    ".sunny-bubble{position:relative;background:#fff;color:#1a1433;border-radius:16px;padding:12px 16px;border:3px solid #ff9f1c;font-family:'Fredoka','Space Grotesk',system-ui,sans-serif;font-size:14.5px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .25s cubic-bezier(.23,1,.32,1)}",
+    ".sunny-bubble{position:relative;width:max-content;min-width:160px;max-width:min(290px,66vw);background:#fff;color:#1a1433;border-radius:16px;padding:12px 16px;border:3px solid #ff9f1c;font-family:'Fredoka','Space Grotesk',system-ui,sans-serif;font-size:14.5px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.45);transition:transform .25s cubic-bezier(.23,1,.32,1)}",
     ".sunny-bottom-left .sunny-bubble::after{content:'';position:absolute;left:-13px;bottom:20px;border:8px solid transparent;border-right-color:#ff9f1c}",
     ".sunny-bottom-right .sunny-bubble::after{content:'';position:absolute;right:-13px;bottom:20px;border:8px solid transparent;border-left-color:#ff9f1c}",
     ".sunny-bubble strong{color:#ff4757}",
