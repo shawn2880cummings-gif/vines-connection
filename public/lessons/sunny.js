@@ -23,10 +23,10 @@
   if (window.Sunny && window.Sunny._inited) return;
 
   var CSS = [
-    ".sunny-guide{position:fixed;z-index:1500;display:flex;align-items:flex-end;gap:12px;max-width:min(380px,86vw)}",
+    ".sunny-guide{position:fixed;z-index:1500;display:flex;align-items:flex-end;gap:12px;max-width:min(380px,86vw);pointer-events:none}",
     ".sunny-bottom-left{left:16px;bottom:16px}",
     ".sunny-bottom-right{right:16px;bottom:16px;flex-direction:row-reverse}",
-    ".sunny-char{width:80px;height:80px;flex-shrink:0;cursor:pointer;filter:drop-shadow(0 0 16px rgba(255,200,60,.65));animation:sunnyBob 3.2s ease-in-out infinite}",
+    ".sunny-char{width:80px;height:80px;flex-shrink:0;cursor:pointer;pointer-events:auto;filter:drop-shadow(0 0 16px rgba(255,200,60,.65));animation:sunnyBob 3.2s ease-in-out infinite}",
     "@keyframes sunnyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}",
     ".sunny-char.sunny-bounce{animation:sunnyBounce .6s ease}",
     "@keyframes sunnyBounce{0%{transform:translateY(0) scale(1)}30%{transform:translateY(-16px) scale(1.08)}55%{transform:translateY(2px) scale(.95)}100%{transform:translateY(0) scale(1)}}",
@@ -40,7 +40,7 @@
     ".sunny-bottom-right .sunny-bubble::after{content:'';position:absolute;right:-13px;bottom:20px;border:8px solid transparent;border-left-color:#ff9f1c}",
     ".sunny-bubble strong{color:#ff4757}",
     ".sunny-name{display:block;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1.5px;color:#ff9f1c;text-transform:uppercase;margin-bottom:3px}",
-    ".sunny-voice,.sunny-min{position:absolute;top:-12px;width:30px;height:30px;border-radius:50%;border:2px solid #ff9f1c;background:#161b33;color:#ff9f1c;font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center}",
+    ".sunny-voice,.sunny-min{position:absolute;top:-12px;width:30px;height:30px;border-radius:50%;border:2px solid #ff9f1c;background:#161b33;color:#ff9f1c;font-size:14px;line-height:1;cursor:pointer;pointer-events:auto;display:flex;align-items:center;justify-content:center}",
     ".sunny-voice{right:-10px}",
     ".sunny-min{right:24px;border-color:rgba(255,255,255,.2);color:rgba(240,233,210,.65);font-size:13px}",
     ".sunny-min-on .sunny-bubble{display:none}",
