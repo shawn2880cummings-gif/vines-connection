@@ -11,6 +11,7 @@
   html,body{height:100%;overflow:hidden;background:#02101f;font-family:'Fredoka',sans-serif;color:var(--cream)}
   #mr{position:fixed;inset:0;touch-action:none}
   canvas{display:block;width:100%;height:100%}
+  .vig{position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(125% 100% at 50% 40%,transparent 52%,rgba(2,12,30,.5) 100%)}
   .ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;padding:16px;z-index:5;overflow-y:auto}
   .ov.hidden{display:none}
   .card{background:rgba(4,18,40,.8);border:3px solid var(--crystal);border-radius:22px;padding:24px 22px;max-width:460px;width:100%;margin:auto;backdrop-filter:blur(8px);box-shadow:0 20px 60px rgba(0,0,0,.55)}
@@ -58,6 +59,7 @@
 <body>
 <div id="mr">
   <canvas id="c"></canvas>
+  <div class="vig"></div>
   <div class="loading" id="loading">Loading the reef…</div>
 
   <div id="hud" class="hidden">
@@ -127,6 +129,8 @@ var canvas=document.getElementById('c');
 var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
 renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.15;
 
 var scene=new THREE.Scene();
 var WATER=new THREE.Color(0x0c4d80);
@@ -147,6 +151,18 @@ scene.add(new THREE.AmbientLight(0x2c5a82,0.55));
   g.computeVertexNormals();
   var floor=new THREE.Mesh(g,new THREE.MeshStandardMaterial({color:0xcdb985,roughness:1}));
   floor.rotation.x=-Math.PI/2; floor.position.set(0,-1.35,-110); scene.add(floor);
+})();
+// animated caustic light dancing on the seabed
+var caustic;
+(function(){
+  var cv=document.createElement('canvas'); cv.width=cv.height=256; var c=cv.getContext('2d');
+  c.fillStyle='#000'; c.fillRect(0,0,256,256); c.globalCompositeOperation='lighter';
+  for(var i=0;i<30;i++){ var x=Math.random()*256,y=Math.random()*256,r=16+Math.random()*44;
+    var gg=c.createRadialGradient(x,y,0,x,y,r); gg.addColorStop(0,'rgba(140,225,255,0.55)'); gg.addColorStop(1,'rgba(140,225,255,0)');
+    c.fillStyle=gg; c.beginPath(); c.arc(x,y,r,0,7); c.fill(); }
+  var tex=new THREE.CanvasTexture(cv); tex.wrapS=tex.wrapT=THREE.RepeatWrapping; tex.repeat.set(6,10);
+  caustic=new THREE.Mesh(new THREE.PlaneGeometry(90,300), new THREE.MeshBasicMaterial({map:tex,color:0x8fe3ff,transparent:true,opacity:0.16,depthWrite:false,blending:THREE.AdditiveBlending}));
+  caustic.rotation.x=-Math.PI/2; caustic.position.set(0,-1.31,-110); scene.add(caustic);
 })();
 // lane glow strips
 [-1.05,1.05,3.15,-3.15].forEach(function(lx){
@@ -183,13 +199,55 @@ var bubbles;
   bubbles=new THREE.Points(g,new THREE.PointsMaterial({color:0xcdeeff,size:0.17,transparent:true,opacity:0.5,depthWrite:false}));
   scene.add(bubbles);
 })();
+// drifting golden plankton for depth + atmosphere
+var spores;
+(function(){
+  var N=90, g=new THREE.BufferGeometry(), p=new Float32Array(N*3);
+  for(var i=0;i<N;i++){ p[i*3]=THREE.MathUtils.randFloatSpread(30); p[i*3+1]=THREE.MathUtils.randFloat(-1,12); p[i*3+2]=THREE.MathUtils.randFloat(-70,4); }
+  g.setAttribute('position',new THREE.BufferAttribute(p,3));
+  spores=new THREE.Points(g,new THREE.PointsMaterial({color:0xffe0a0,size:0.1,transparent:true,opacity:0.55,depthWrite:false,blending:THREE.AdditiveBlending}));
+  scene.add(spores);
+})();
+
+// ---- glow (fake bloom) + burst FX ----
+function radialTex(stops){
+  var cv=document.createElement('canvas'); cv.width=cv.height=64; var c=cv.getContext('2d');
+  var g=c.createRadialGradient(32,32,0,32,32,32);
+  stops.forEach(function(s){ g.addColorStop(s[0],s[1]); });
+  c.fillStyle=g; c.fillRect(0,0,64,64);
+  var t=new THREE.CanvasTexture(cv); return t;
+}
+var GLOW_WARM=radialTex([[0,'rgba(255,226,150,0.95)'],[0.4,'rgba(255,170,50,0.5)'],[1,'rgba(255,150,30,0)']]);
+var GLOW_CYAN=radialTex([[0,'rgba(200,250,255,0.95)'],[0.4,'rgba(90,220,255,0.5)'],[1,'rgba(40,200,255,0)']]);
+var GLOW_GREEN=radialTex([[0,'rgba(160,255,180,0.85)'],[0.5,'rgba(70,210,120,0.35)'],[1,'rgba(40,180,90,0)']]);
+function glowSprite(tex,size,op){ var s=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,opacity:op==null?0.8:op,depthWrite:false,blending:THREE.AdditiveBlending})); s.scale.set(size,size,1); return s; }
+var crystalGlowMat=new THREE.SpriteMaterial({map:GLOW_WARM,transparent:true,opacity:0.6,depthWrite:false,blending:THREE.AdditiveBlending});
+// transient burst/ring sprites, updated each frame
+var fx=[];
+function addFx(o){ o.t=0; scene.add(o.spr); fx.push(o); }
+function updateFx(dt){
+  for(var i=fx.length-1;i>=0;i--){ var f=fx[i]; f.t+=dt; var k=f.t/f.ttl;
+    if(k>=1){ scene.remove(f.spr); f.spr.material.dispose(); fx.splice(i,1); continue; }
+    if(f.vx!=null){ f.spr.position.x+=f.vx*dt; f.spr.position.y+=f.vy*dt; f.spr.position.z+=f.vz*dt; }
+    var s=f.s0+(f.s1-f.s0)*k; f.spr.scale.set(s,s,1);
+    f.spr.material.opacity=(f.op0)*(1-k)*(1-k);
+  }
+}
+var _burstV=new THREE.Vector3();
+function collectBurst(pos){
+  var ring=glowSprite(GLOW_WARM,1,0.9); ring.position.copy(pos);
+  addFx({spr:ring,ttl:0.42,s0:0.6,s1:3.2,op0:0.85});
+  for(var i=0;i<7;i++){ var sp=glowSprite(GLOW_WARM,0.55,0.9); sp.position.copy(pos);
+    var a=Math.random()*Math.PI*2, r=2.6+Math.random()*2.4;
+    addFx({spr:sp,ttl:0.5+Math.random()*0.2,s0:0.55,s1:0.12,op0:0.95, vx:Math.cos(a)*r, vy:1.6+Math.random()*2.2, vz:Math.sin(a)*r}); }
+}
 
 // shared geos/mats
 var crystalGeo=new THREE.OctahedronGeometry(0.5,0);
-var crystalMat=new THREE.MeshStandardMaterial({color:0xffd23f,metalness:0.4,roughness:0.16,emissive:0xff9f1c,emissiveIntensity:0.55});
+var crystalMat=new THREE.MeshStandardMaterial({color:0xffd23f,metalness:0.5,roughness:0.12,emissive:0xff9f1c,emissiveIntensity:0.75});
 var rockGeo=new THREE.IcosahedronGeometry(0.62,0);
 var rockMat=new THREE.MeshStandardMaterial({color:0x73777f,roughness:1,flatShading:true});
-function makeCrystal(){ return new THREE.Mesh(crystalGeo,crystalMat); }
+function makeCrystal(){ var m=new THREE.Mesh(crystalGeo,crystalMat); var s=new THREE.Sprite(crystalGlowMat); s.scale.set(1.7,1.7,1); m.add(s); return m; }
 function makeRock(){ var m=new THREE.Mesh(rockGeo,rockMat); m.scale.set(1,THREE.MathUtils.randFloat(.8,1.2),1); m.rotation.set(Math.random(),Math.random(),Math.random()); return m; }
 function makePollution(){
   var g=new THREE.Group();
@@ -243,10 +301,12 @@ function makeLabelCoin(text,o){
   return g;
 }
 function makeLetter(ch){ return makeLabelCoin(ch,{bg:'#16234a',ring:'#ffd23f',fg:'#ffe98a',glow:0xffb733}); }
-function makeShield(){ return makeLabelCoin('★',{bg:'#073a52',ring:'#7df9ff',fg:'#eaffff',glow:0x7df9ff,size:80}); }
+function makeShield(){ var g=makeLabelCoin('★',{bg:'#073a52',ring:'#7df9ff',fg:'#eaffff',glow:0x7df9ff,size:80}); var gl=glowSprite(GLOW_CYAN,2.0,0.7); g.add(gl); return g; }
 
 // player
 var player=makeBacterium(); player.position.set(0,0,PLAYER_Z); scene.add(player);
+// soft green aura behind the player
+var playerGlow=glowSprite(GLOW_GREEN,1.9,0.36); playerGlow.position.set(0,0,-0.1); player.add(playerGlow);
 // invincibility bubble around the player (hidden until active)
 var playerShield=new THREE.Mesh(new THREE.SphereGeometry(0.95,20,20),
   new THREE.MeshBasicMaterial({color:0x7df9ff,transparent:true,opacity:0.22,depthWrite:false,blending:THREE.AdditiveBlending}));
@@ -356,7 +416,7 @@ function addCrystals(n){ S.crystals+=n;
   while(S.crystals>=S.nextLife){ if(S.lives<MAXLIVES){ S.lives++; Audio.sfx('life'); showToast('💖 +1 LIFE!'); } S.nextLife+=100; }
   updateHUD();
 }
-function collect(){ addCrystals(1); Audio.sfx('collect'); }
+function collect(){ addCrystals(1); Audio.sfx('collect'); _burstV.set(player.position.x,0.3,PLAYER_Z-0.4); collectBurst(_burstV); }
 function collectLetter(ch){ Audio.sfx('letter');
   if(!S.letters[ch]){ S.letters[ch]=1; addCrystals(5); updateMagnetHUD();
     if(WORD.every(function(c){return S.letters[c];})){ S.magnetBonuses=(S.magnetBonuses||0)+1; addCrystals(50); Audio.sfx('word'); showToast('✨ MAGNET! +50 ✨'); S.letters={}; updateMagnetHUD(); }
@@ -382,6 +442,14 @@ function tick(t){
   for(var fi=0;fi<fishes.length;fi++){ var f=fishes[fi]; f.userData.wob+=dt*3; f.position.x+=f.userData.dir*f.userData.sp*dt; f.position.y+=Math.sin(f.userData.wob)*0.01; if((f.userData.dir>0&&f.position.x>17)||(f.userData.dir<0&&f.position.x<-17)){ scene.remove(f); fishes.splice(fi,1); spawnFish(); } }
   var bp=bubbles.geometry.attributes.position;
   for(var bi=0;bi<bp.count;bi++){ var y=bp.getY(bi)+ (0.8+sp*0.03)*dt; var z=bp.getZ(bi)+sp*dt*0.4; if(y>18)y=-2; if(z>6){z-=76;} bp.setY(bi,y); bp.setZ(bi,z); } bp.needsUpdate=true;
+  // drifting plankton
+  var xp=spores.geometry.attributes.position;
+  for(var si=0;si<xp.count;si++){ var sz=xp.getZ(si)+sp*dt*0.7; var sy=xp.getY(si)+Math.sin(time*0.8+si)*0.004; if(sz>5){sz-=74;} xp.setZ(si,sz); xp.setY(si,sy); } xp.needsUpdate=true;
+  spores.material.opacity=0.4+Math.abs(Math.sin(time*1.3))*0.25;
+  // caustic light scroll + crystal shimmer + FX
+  if(caustic){ caustic.material.map.offset.y=(caustic.material.map.offset.y+dt*(0.05+sp*0.006))%1; }
+  crystalGlowMat.opacity=0.45+Math.abs(Math.sin(time*3))*0.3;
+  updateFx(dt);
 
   // player bob + lane
   pLaneF += (LANES[pLane]-pLaneF)*Math.min(1,dt*14);
