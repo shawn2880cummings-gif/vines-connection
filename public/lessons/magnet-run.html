@@ -323,26 +323,51 @@ for(var fi2=0;fi2<10;fi2++) spawnFish();
 var S, lastT=0, running=false;
 var pLane=1, pLaneF=1, hitFlash=0;
 
+function placeObstacle(ln){ var typ=Math.random()<0.5?'poll':'rock';
+  var m=typ==='poll'?makePollution():makeRock(); m.position.set(LANES[ln], typ==='rock'?-0.5:0.25, FAR_Z); scene.add(m);
+  S.objs.push({mesh:m,lane:ln,type:typ,passed:false}); }
 function spawnRow(){
-  var lanes=[0,1,2];
-  for(var i=lanes.length-1;i>0;i--){var j=(Math.random()*(i+1))|0,t=lanes[i];lanes[i]=lanes[j];lanes[j]=t;}
-  var obstacles=Math.random()<0.5?1:(Math.random()<0.6?2:0), used={};
-  for(var k=0;k<obstacles;k++){ var ln=lanes[k]; used[ln]=1; var typ=Math.random()<0.5?'poll':'rock';
-    var m=typ==='poll'?makePollution():makeRock(); m.position.set(LANES[ln], typ==='rock'?-0.5:0.25, FAR_Z); scene.add(m);
-    S.objs.push({mesh:m,lane:ln,type:typ,passed:false}); }
+  if(S.safeLane==null) S.safeLane=1;
+  var used={};
+  // the "safe" lane is always open and only drifts one lane per row, so
+  // there is always a weavable path — a wall can never fully trap you.
+  var drift=[-1,0,1][(Math.random()*3)|0];
+  S.safeLane=Math.max(0,Math.min(2,S.safeLane+drift));
+  var safe=S.safeLane;
+  var roll=Math.random();
+  var obstacles = roll<0.55?1:(roll<0.8?2:0);
+  if(obstacles>=2){
+    // only the safe lane is open
+    for(var l=0;l<3;l++){ if(l!==safe){ used[l]=1; placeObstacle(l); } }
+  } else if(obstacles===1){
+    // block one lane that isn't the safe lane (safe + one more stay open)
+    var opts=[0,1,2].filter(function(l){return l!==safe;});
+    var ln=opts[(Math.random()*opts.length)|0]; used[ln]=1; placeObstacle(ln);
+  }
   var free=[0,1,2].filter(function(l){return !used[l];});
   function take(){ return free.splice((Math.random()*free.length)|0,1)[0]; }
   // power-up: 10s invincibility star (rare, only if not already active)
   if(free.length && S.invT<=0 && Math.random()<0.05){ var sl=take(); var sm=makeShield(); sm.position.set(LANES[sl],0.45,FAR_Z); scene.add(sm); S.objs.push({mesh:sm,lane:sl,type:'shield',passed:false}); }
-  // bonus: a MAGNET letter (favor letters you still need)
-  if(free.length && Math.random()<0.18){ var ll=take(); var ch=pickLetter(); var lm=makeLetter(ch); lm.position.set(LANES[ll],0.45,FAR_Z); scene.add(lm); S.objs.push({mesh:lm,lane:ll,type:'letter',letter:ch,passed:false}); }
+  // bonus: a MAGNET letter (shuffled so letters don't repeat)
+  if(free.length && Math.random()<0.18){ var ch=pickLetter(); if(ch){ var ll=take(); var lm=makeLetter(ch); lm.position.set(LANES[ll],0.45,FAR_Z); scene.add(lm); S.objs.push({mesh:lm,lane:ll,type:'letter',letter:ch,passed:false}); } }
   // crystals (single or a group string) in a remaining free lane
   if(free.length && Math.random()<0.85){ var fl=take();
     var grp=Math.random()<0.32?(3+(Math.random()*3|0)):1;
     for(var gi=0;gi<grp;gi++){ var cm=makeCrystal(); cm.position.set(LANES[fl],0.3,FAR_Z-gi*2.6); scene.add(cm); S.objs.push({mesh:cm,lane:fl,type:'cry',passed:false}); } }
 }
 var WORD=['M','A','G','N','E','T'];
-function pickLetter(){ var need=WORD.filter(function(c){return !S.letters[c];}); var pool=need.length?need:WORD; return pool[(Math.random()*pool.length)|0]; }
+function lettersOnScreen(){ var s={}; for(var i=0;i<S.objs.length;i++){ var o=S.objs[i]; if(o.type==='letter') s[o.letter]=1; } return s; }
+function pickLetter(){
+  var need=WORD.filter(function(c){return !S.letters[c];});
+  if(!need.length) return null;
+  // keep a shuffled "bag" of the letters you still need; dispense without
+  // repeats until the bag empties, and never spawn one already on screen.
+  S.letterBag=(S.letterBag||[]).filter(function(c){return need.indexOf(c)>=0;});
+  if(!S.letterBag.length){ var b=need.slice(); for(var i=b.length-1;i>0;i--){var j=(Math.random()*(i+1))|0,t=b[i];b[i]=b[j];b[j]=t;} S.letterBag=b; }
+  var on=lettersOnScreen();
+  for(var k=0;k<S.letterBag.length;k++){ if(!on[S.letterBag[k]]) return S.letterBag.splice(k,1)[0]; }
+  return null; // all still-needed letters are already on screen — wait
+}
 
 // ---- audio: synthesized music + sound effects (no external files) ----
 var Audio=(function(){
@@ -419,7 +444,7 @@ function addCrystals(n){ S.crystals+=n;
 function collect(){ addCrystals(1); Audio.sfx('collect'); _burstV.set(player.position.x,0.3,PLAYER_Z-0.4); collectBurst(_burstV); }
 function collectLetter(ch){ Audio.sfx('letter');
   if(!S.letters[ch]){ S.letters[ch]=1; addCrystals(5); updateMagnetHUD();
-    if(WORD.every(function(c){return S.letters[c];})){ S.magnetBonuses=(S.magnetBonuses||0)+1; addCrystals(50); Audio.sfx('word'); showToast('✨ MAGNET! +50 ✨'); S.letters={}; updateMagnetHUD(); }
+    if(WORD.every(function(c){return S.letters[c];})){ S.magnetBonuses=(S.magnetBonuses||0)+1; addCrystals(50); Audio.sfx('word'); showToast('✨ MAGNET! +50 ✨'); S.letters={}; S.letterBag=[]; updateMagnetHUD(); }
     else { showToast('🔠 '+ch+'!'); }
   } else { addCrystals(2); }
 }
@@ -492,7 +517,7 @@ function tick(t){
 }
 
 function clearObjs(){ if(S&&S.objs){ S.objs.forEach(function(o){scene.remove(o.mesh);}); S.objs=[]; } }
-function start(){ clearObjs(); S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0,letters:{},invT:0,nextLife:100,magnetBonuses:0}; pLane=1;pLaneF=1;hitFlash=0; running=true;
+function start(){ clearObjs(); S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0,letters:{},invT:0,nextLife:100,magnetBonuses:0,safeLane:1,letterBag:[]}; pLane=1;pLaneF=1;hitFlash=0; running=true;
   playerShield.visible=false;
   Audio.resume(); Audio.startMusic(); Audio.sfx('dive');
   document.body.classList.add('mr-playing');
@@ -535,7 +560,7 @@ refreshSnd();
 sndBtn.addEventListener('click',function(e){ e.stopPropagation(); Audio.resume(); Audio.setMuted(!Audio.isMuted()); if(!Audio.isMuted()) Audio.startMusic(); refreshSnd(); });
 
 // boot
-S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0,letters:{},invT:0,nextLife:100,magnetBonuses:0};
+S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0,letters:{},invT:0,nextLife:100,magnetBonuses:0,safeLane:1,letterBag:[]};
 document.getElementById('loading').style.display='none';
 document.getElementById('titleScreen').classList.remove('hidden');
 requestAnimationFrame(tick);
