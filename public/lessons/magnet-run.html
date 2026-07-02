@@ -50,6 +50,22 @@
   #magBar.hidden{display:none}
   #magBar span{width:26px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;color:rgba(255,255,255,.32);background:rgba(4,18,40,.55);border:2px solid rgba(255,255,255,.14);transition:all .2s}
   #magBar span.on{color:#1a1206;background:linear-gradient(180deg,#ffe98a,#ff9f1c);border-color:#fff3c0;box-shadow:0 0 14px rgba(255,159,28,.7);transform:translateY(-2px) scale(1.06)}
+  /* leaderboard */
+  .lb{margin:10px auto 4px;width:100%;max-width:280px;text-align:left}
+  .lb h3{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2.5px;color:var(--iron);text-align:center;margin-bottom:7px}
+  .lb .row{display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:14px;padding:6px 12px;border-radius:10px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);margin-bottom:4px}
+  .lb .row .nm{flex:1;letter-spacing:2px}
+  .lb .row .sc{color:var(--crystal)}
+  .lb .row.me{background:rgba(255,159,28,.16);border-color:var(--iron);color:#ffe98a}
+  .lb .empty{font-size:13px;color:rgba(240,233,210,.65);text-align:center;padding:6px 0}
+  /* claim-your-spot initials entry */
+  #claimWrap{margin-top:10px}
+  #claimWrap.hidden{display:none}
+  .claim-t{font-weight:700;color:var(--iron);font-size:15px;margin-bottom:8px}
+  .claim{display:flex;gap:8px;justify-content:center;align-items:center}
+  .claim input{width:96px;text-align:center;font-family:'Space Mono',monospace;font-weight:700;font-size:20px;letter-spacing:5px;text-transform:uppercase;background:rgba(255,255,255,.08);border:2px solid var(--iron);border-radius:10px;color:#ffe98a;padding:9px 4px;outline:none}
+  .claim button{background:linear-gradient(90deg,var(--iron),#ff7a00);color:#111;font-weight:700;font-size:15px;padding:11px 20px;border:none;border-radius:999px;cursor:pointer}
+  .claim button:disabled{opacity:.5}
   /* invincibility badge */
   #invBadge{position:absolute;top:92px;left:50%;transform:translateX(-50%);z-index:5;background:rgba(4,30,48,.85);border:2px solid #7df9ff;color:#d8ffff;border-radius:999px;padding:5px 14px;font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px;box-shadow:0 0 18px rgba(125,249,255,.6);animation:invpulse .8s ease-in-out infinite}
   #invBadge.hidden{display:none}
@@ -93,6 +109,7 @@
           <div><b>BONUS &mdash; M·A·G·N·E·T Letters &amp; ★ Shields</b><div class="tx">Spell <b>MAGNET</b> for a big bonus! Grab a ★ for 10s of invincibility. Every 100 crystals = an extra ❤️.</div></div>
         </div>
       </div>
+      <div class="lb" id="lbTitle"></div>
       <button class="btn" id="startBtn" style="margin-top:6px">DIVE IN ▶</button>
       <div class="how">◀ ▶ ARROWS / A-D &nbsp;·&nbsp; TAP LEFT-RIGHT &nbsp;·&nbsp; SWIPE</div>
     </div>
@@ -105,6 +122,14 @@
       <div class="big" id="finalDist">0m</div>
       <div class="hs">🧲 <span id="finalCry">0</span> crystals · best: <span id="bestDist">0</span>m</div>
       <div class="hs" id="finalBonus" style="display:none">✨ MAGNET spelled <span id="finalWords">0</span>×</div>
+      <div id="claimWrap" class="hidden">
+        <div class="claim-t">🎉 TOP 3 SCORE! Enter your initials:</div>
+        <div class="claim">
+          <input id="initials" maxlength="3" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false">
+          <button id="saveScore">SAVE ⭐</button>
+        </div>
+      </div>
+      <div class="lb" id="lbOver"></div>
       <div class="fact" id="overFact"></div>
       <button class="btn" id="againBtn">PLAY AGAIN ↻</button>
     </div>
@@ -581,10 +606,65 @@ function gameOver(){ running=false;
   document.getElementById('overFact').innerHTML='💡 '+FACTS[(Math.random()*FACTS.length)|0];
   document.getElementById('overScreen').classList.remove('hidden');
   Audio.sfx('over'); if(isHi) Audio.sfx('record');
+  offerClaim(dist);
 }
 
+// ---- global leaderboard (top divers) ----
+var LB={list:[],pending:0,savedAs:null};
+function fetchScores(cb){
+  fetch('/api/scores',{cache:'no-store'}).then(function(r){return r.json();}).then(function(d){
+    LB.list=(d&&d.scores)||[]; renderLb(); if(cb)cb(true);
+  }).catch(function(){ renderLb(); if(cb)cb(false); });
+}
+function lbRowsHTML(){
+  var medals=['🥇','🥈','🥉'];
+  var top=LB.list.slice(0,3), h='<h3>🏆 TOP DIVERS</h3>';
+  if(!top.length) return h+'<div class="empty">No divers yet — be the first on the board!</div>';
+  for(var i=0;i<top.length;i++){
+    var e=top[i], me=(LB.savedAs && e.n===LB.savedAs.n && e.s===LB.savedAs.s)?' me':'';
+    h+='<div class="row'+me+'"><span>'+medals[i]+'</span><span class="nm">'+e.n+'</span><span class="sc">'+e.s+'m</span></div>';
+  }
+  return h;
+}
+function renderLb(){
+  var t=document.getElementById('lbTitle'), o=document.getElementById('lbOver');
+  if(t) t.innerHTML=lbRowsHTML(); if(o) o.innerHTML=lbRowsHTML();
+}
+function qualifies(d){ if(d<1) return false; var top=LB.list.slice(0,3); return top.length<3 || d>top[2].s; }
+function offerClaim(dist){
+  LB.pending=dist; LB.savedAs=null;
+  var wrap=document.getElementById('claimWrap'); wrap.classList.add('hidden');
+  fetchScores(function(){
+    if(qualifies(dist)){
+      wrap.classList.remove('hidden');
+      var inp=document.getElementById('initials');
+      inp.value=localStorage.getItem('mr_init')||'';
+      document.getElementById('saveScore').disabled=false;
+    }
+  });
+}
+document.getElementById('initials').addEventListener('input',function(){
+  this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
+});
+document.getElementById('saveScore').addEventListener('click',function(){
+  var btn=this, inp=document.getElementById('initials');
+  var n=inp.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,3);
+  if(!n){ inp.focus(); return; }
+  btn.disabled=true; btn.textContent='SAVING…';
+  fetch('/api/scores',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n:n,s:LB.pending})})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      btn.textContent='SAVE ⭐';
+      if(d&&d.ok){ localStorage.setItem('mr_init',n); LB.savedAs={n:n,s:LB.pending}; LB.list=d.scores||LB.list;
+        document.getElementById('claimWrap').classList.add('hidden'); renderLb();
+        showToast(d.rank&&d.rank<=3 ? '🏆 #'+d.rank+' TOP DIVER!' : '🏆 On the board!'); Audio.sfx('record');
+      } else { btn.disabled=false; showToast(d&&d.error?d.error:'Could not save — try again!'); }
+    })
+    .catch(function(){ btn.disabled=false; btn.textContent='SAVE ⭐'; showToast('Could not save — try again!'); });
+});
+
 // input
-document.addEventListener('keydown',function(e){ if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')move(-1); else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')move(1); else if((e.key===' '||e.key==='Enter')&&!running)start(); });
+document.addEventListener('keydown',function(e){ if(document.activeElement&&document.activeElement.tagName==='INPUT')return; if(e.key==='ArrowLeft'||e.key==='a'||e.key==='A')move(-1); else if(e.key==='ArrowRight'||e.key==='d'||e.key==='D')move(1); else if((e.key===' '||e.key==='Enter')&&!running)start(); });
 var tsx=null,tmoved=false,touchActive=false,touchClear=null;
 canvas.addEventListener('touchstart',function(e){tsx=e.changedTouches[0].clientX;tmoved=false;touchActive=true;clearTimeout(touchClear);},{passive:true});
 canvas.addEventListener('touchmove',function(e){var x=e.changedTouches[0].clientX; if(tsx!==null&&Math.abs(x-tsx)>34&&!tmoved){move(x>tsx?1:-1);tmoved=true;}},{passive:true});
@@ -604,6 +684,7 @@ sndBtn.addEventListener('click',function(e){ e.stopPropagation(); Audio.resume()
 S={objs:[],spawnT:0,speed:12,dist:0,crystals:0,lives:3,time:0,factIdx:0,letters:{},invT:0,nextLife:100,magnetBonuses:0,safeLane:1,letterBag:[]};
 document.getElementById('loading').style.display='none';
 document.getElementById('titleScreen').classList.remove('hidden');
+fetchScores();
 requestAnimationFrame(tick);
 </script>
 </body>
