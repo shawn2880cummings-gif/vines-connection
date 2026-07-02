@@ -123,7 +123,7 @@ var FACTS=[
   "The substantia nigra has the most magnetite in your brain.",
   "Salmon use the same magnet genes to find their way home."
 ];
-var LANES=[-2.1,0,2.1], PLAYER_Z=3.2, FAR_Z=-72;
+var LANES=[-2.1,0,2.1], PLAYER_Z=1.4, FAR_Z=-72;
 
 var canvas=document.getElementById('c');
 var renderer=new THREE.WebGLRenderer({canvas:canvas,antialias:true});
@@ -277,9 +277,46 @@ function makeCoral(){
 }
 function makeFish(){
   var g=new THREE.Group();
-  var mat=new THREE.MeshStandardMaterial({color:new THREE.Color().setHSL(Math.random(),0.7,0.6),roughness:.5});
-  var body=new THREE.Mesh(new THREE.SphereGeometry(0.3,12,12),mat); body.scale.set(1.7,1,0.7); g.add(body);
-  var tail=new THREE.Mesh(new THREE.ConeGeometry(0.24,0.42,4),mat); tail.position.x=-0.62; tail.rotation.z=Math.PI/2; g.add(tail);
+  // tropical palettes: [body, belly, fins]
+  var PALS=[
+    [0xff7a2e,0xffe9cf,0xff9a4d],  // clownfish orange
+    [0x2f7fe8,0xcfe8ff,0x5aa4ff],  // blue tang
+    [0xffd23f,0xfff3c0,0xffdf70],  // yellow tang
+    [0xff5f7a,0xffdce3,0xff8aa0],  // pink anthias
+    [0x58d68d,0xe0ffe9,0x84e6ad],  // green chromis
+    [0x9f7cff,0xe9dfff,0xbb9fff]   // purple dottyback
+  ];
+  var pal=PALS[(Math.random()*PALS.length)|0];
+  var bodyMat=new THREE.MeshStandardMaterial({color:pal[0],roughness:.4,metalness:.2});
+  var finMat=new THREE.MeshStandardMaterial({color:pal[2],roughness:.5,transparent:true,opacity:.88,side:THREE.DoubleSide});
+  // torpedo body with lighter belly
+  var body=new THREE.Mesh(new THREE.SphereGeometry(0.32,20,16),bodyMat); body.scale.set(1.8,0.95,0.5); g.add(body);
+  var belly=new THREE.Mesh(new THREE.SphereGeometry(0.3,16,12), new THREE.MeshStandardMaterial({color:pal[1],roughness:.55}));
+  belly.scale.set(1.62,0.78,0.44); belly.position.y=-0.085; g.add(belly);
+  // forked caudal tail on a pivot so it can swish
+  var tailPivot=new THREE.Group(); tailPivot.position.x=-0.52; g.add(tailPivot); g.userData.tail=tailPivot;
+  [0.16,-0.16].forEach(function(dy){
+    var lobe=new THREE.Mesh(new THREE.ConeGeometry(0.13,0.34,6),finMat);
+    lobe.scale.z=0.22; lobe.position.set(-0.16,dy*0.55,0);
+    lobe.rotation.z=Math.PI/2 + dy*2.1; tailPivot.add(lobe);
+  });
+  // dorsal fin (top, swept back)
+  var dorsal=new THREE.Mesh(new THREE.ConeGeometry(0.17,0.3,6),finMat);
+  dorsal.scale.z=0.2; dorsal.position.set(-0.05,0.3,0); dorsal.rotation.z=0.55; g.add(dorsal);
+  // pectoral fins (sides), stored for gentle flapping
+  g.userData.pecs=[];
+  [1,-1].forEach(function(s){
+    var pec=new THREE.Mesh(new THREE.ConeGeometry(0.1,0.22,6),finMat);
+    pec.scale.z=0.25; pec.position.set(0.12,-0.05,s*0.16);
+    pec.rotation.x=s*0.9; pec.rotation.z=-0.9; g.add(pec); g.userData.pecs.push(pec);
+  });
+  // eyes on both sides near the nose
+  var ew=new THREE.MeshStandardMaterial({color:0xffffff,roughness:.3}), eb=new THREE.MeshBasicMaterial({color:0x101010});
+  [1,-1].forEach(function(s){
+    var e=new THREE.Mesh(new THREE.SphereGeometry(0.058,10,10),ew); e.position.set(0.4,0.06,s*0.135); g.add(e);
+    var p=new THREE.Mesh(new THREE.SphereGeometry(0.028,8,8),eb); p.position.set(0.43,0.06,s*0.165); g.add(p);
+  });
+  g.scale.setScalar(THREE.MathUtils.randFloat(0.8,1.35));
   return g;
 }
 
@@ -464,7 +501,11 @@ function tick(t){
   // ambient decor always animates
   var sp = running? S.speed : 6;
   for(var ci=corals.length-1;ci>=0;ci--){ var co=corals[ci]; co.position.z+=sp*dt; if(co.position.z>8){ scene.remove(co); corals.splice(ci,1); spawnCoral(FAR_Z); } }
-  for(var fi=0;fi<fishes.length;fi++){ var f=fishes[fi]; f.userData.wob+=dt*3; f.position.x+=f.userData.dir*f.userData.sp*dt; f.position.y+=Math.sin(f.userData.wob)*0.01; if((f.userData.dir>0&&f.position.x>17)||(f.userData.dir<0&&f.position.x<-17)){ scene.remove(f); fishes.splice(fi,1); spawnFish(); } }
+  for(var fi=0;fi<fishes.length;fi++){ var f=fishes[fi]; f.userData.wob+=dt*3; f.position.x+=f.userData.dir*f.userData.sp*dt; f.position.y+=Math.sin(f.userData.wob)*0.01;
+    if(f.userData.tail) f.userData.tail.rotation.y=Math.sin(f.userData.wob*3.2)*0.5;
+    if(f.userData.pecs) for(var pi=0;pi<2;pi++) f.userData.pecs[pi].rotation.z=-0.9+Math.sin(f.userData.wob*2.4+pi*2)*0.25;
+    f.rotation.y=Math.sin(f.userData.wob*0.7)*0.12;
+    if((f.userData.dir>0&&f.position.x>17)||(f.userData.dir<0&&f.position.x<-17)){ scene.remove(f); fishes.splice(fi,1); spawnFish(); } }
   var bp=bubbles.geometry.attributes.position;
   for(var bi=0;bi<bp.count;bi++){ var y=bp.getY(bi)+ (0.8+sp*0.03)*dt; var z=bp.getZ(bi)+sp*dt*0.4; if(y>18)y=-2; if(z>6){z-=76;} bp.setY(bi,y); bp.setZ(bi,z); } bp.needsUpdate=true;
   // drifting plankton
