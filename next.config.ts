@@ -1,14 +1,35 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  serverExternalPackages: ["bcryptjs"],
   images: {
     remotePatterns: [
-      { protocol: "https", hostname: "assets.lulu.com" },
-      { protocol: "https", hostname: "payhip.com" },
-      { protocol: "https", hostname: "pe56d.s3.amazonaws.com" },
+      {
+        protocol: "https",
+        hostname: "**",
+      },
     ],
   },
-  output: "standalone",
+  headers: async () => [
+    {
+      source: "/((?!api/documents/.*/view).*)",
+      headers: [
+        { key: "X-Frame-Options", value: "DENY" },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        { key: "X-DNS-Prefetch-Control", value: "on" },
+        {
+          key: "Strict-Transport-Security",
+          value: "max-age=31536000; includeSubDomains",
+        },
+        {
+          key: "Permissions-Policy",
+          value: "camera=(), microphone=(), geolocation=()",
+        },
+      ],
+    },
+  ],
 };
 
 export default nextConfig;

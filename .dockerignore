@@ -1,8 +1,9 @@
 node_modules
 .next
 .git
-.vercel
+.gitignore
+.env
 .env.local
-README.md
-Dockerfile
-railway.toml
+uploads
+*.md
+.claude

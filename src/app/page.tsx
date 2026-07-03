@@ -1,521 +1,821 @@
-"use client";
-
-import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import OrbitCarousel, { type Pillar } from "@/components/cinematic/OrbitCarousel";
-import LeadMagnet, { GROUPS } from "@/components/LeadMagnet";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Shield,
+  ScrollText,
+  Scale,
+  Sparkles,
+  Heart,
+  Brain,
+  Orbit,
+  Crown,
+  Church,
+  ExternalLink,
+  ArrowRight,
+  HandHeart,
+  Globe,
+} from "lucide-react";
+import { APP_NAME } from "@/lib/constants";
+import { MobileNav } from "@/components/mobile-nav";
+import { DonationForm } from "@/components/donation-form";
+import { AnimatedSection } from "@/components/ui/animated-section";
+import { DeclarationSection } from "@/components/declaration-section";
+import { PresentationViewer } from "@/components/presentation-viewer";
+import { SlideGallery } from "@/components/slide-gallery";
+import { CinematicBackground } from "@/components/cinematic/cinematic-background";
+import { HeroBanner } from "@/components/cinematic/hero-banner";
+import { TiltCard } from "@/components/cinematic/tilt-card";
 
-const pillars: Pillar[] = [
+const statementArticles = [
   {
-    title: "The PAIN Network",
-    description:
-      "Pain, Personality &amp; Identity &mdash; a neurobiological model where every behavior is the output of a six-stage recursive cycle, and the &ldquo;Observer gap&rdquo; is the one place you can consciously intervene.",
-    color: "from-psyche-coral to-psyche-magenta",
-    glow: "glow-purple",
+    icon: Sparkles,
+    title: "The Creator and the Divine Order",
+    summary:
+      "There exists a supreme creative force — the source of all natural law, coherence, and biological expression. All authority flows from this divine origin.",
   },
   {
-    title: "The Melanin Circuit",
-    description:
-      "Human melanin as an instrument of intelligence &mdash; the biological substrate of recursive awareness, coherence, and the electromagnetic architecture of perception.",
-    color: "from-psyche-teal to-celestial-400",
-    glow: "glow-teal",
+    icon: Heart,
+    title: "The Sacredness of Biological Identity",
+    summary:
+      "Biological identity is a sacred endowment. The melanin system and MC1R-functional expression are divine instruments of coherence, not social constructs.",
   },
   {
-    title: "Collapse Recursion",
-    description:
-      "The logic of coherence &mdash; a systematic method for tracing and dismantling distortion across systems, generations, and the self to reveal recursive intelligence.",
-    color: "from-psyche-gold to-psyche-coral",
-    glow: "glow-gold",
+    icon: Brain,
+    title: "The Three Centers (Head, Heart, Gut)",
+    summary:
+      "The human being operates through three interconnected intelligence centers. Alignment of these centers is the foundation of spiritual and physical wholeness.",
+  },
+  {
+    icon: Orbit,
+    title: "Collapse Recursion and the Law of Coherence",
+    summary:
+      "Reality is shaped by the recursive collapse of potential into expression. Coherent observation and intentionality are sacred acts of creation.",
+  },
+  {
+    icon: Crown,
+    title: "Sovereignty of the Mind and Self-Determination",
+    summary:
+      "Every Aboriginal American National possesses inherent sovereignty of the mind — full dominion over one's own thoughts, consciousness, and inner life. No external authority may abridge the right to self-governance, cultural preservation, or spiritual practice.",
+  },
+  {
+    icon: Church,
+    title: "The Ministry's Divine Mandate",
+    summary:
+      "This Ministry exists to preserve, protect, and advance the spiritual, cultural, and biological heritage of its members under divine authority and natural law.",
   },
 ];
 
-export default function Home() {
-  const fadeInUp = {
-    initial: { opacity: 0, y: 44, filter: "blur(10px)" },
-    whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
-    viewport: { once: true, margin: "-100px" },
-    transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] as any }
-  };
 
+export default function HomePage() {
   return (
-    <>
-      {/* Hero Section */}
-      <section className="relative min-h-[90vh] overflow-hidden">
-        {/* Floating orbs */}
-        <div className="orb left-[10%] top-[20%] h-64 w-64 bg-psyche-teal/20" />
-        <div
-          className="orb right-[15%] top-[30%] h-80 w-80 bg-psyche-magenta/15"
-          style={{ animationDelay: "3s" }}
-        />
-        <div
-          className="orb bottom-[10%] left-[40%] h-72 w-72 bg-psyche-gold/20"
-          style={{ animationDelay: "5s" }}
-        />
+    <div className="dark flex min-h-screen flex-col bg-transparent text-foreground">
+      {/* Living 3D backdrop — golden cosmos + sacred geometry */}
+      <CinematicBackground />
 
-        <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center justify-center px-6 py-32 text-center">
-          {/* Logo with floating and glowing animation */}
-          <motion.div 
-            animate={{ 
-              y: [0, -15, 0],
-              filter: [
-                "drop-shadow(0 0 8px rgba(255,215,0,0.2))",
-                "drop-shadow(0 0 20px rgba(255,215,0,0.5))",
-                "drop-shadow(0 0 8px rgba(255,215,0,0.2))"
-              ]
-            }}
-            transition={{ 
-              duration: 4, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-            className="mb-8"
-          >
-            <div className="relative h-24 w-24 md:h-32 md:w-32">
-              <div className="absolute inset-0 rounded-full bg-psyche-gold/10 blur-2xl" />
-              <Image
-                src="/vines-logo.jpg"
-                alt="Vines Connection"
-                fill
-                className="rounded-full object-cover border border-psyche-gold/30"
-                priority
-              />
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-          >
-            {/* Brand badge */}
-            <div className="mb-8 inline-block rounded-full border border-psyche-gold/30 bg-celestial-800/50 px-6 py-2 backdrop-blur-sm">
-              <span className="text-sm tracking-widest text-psyche-gold uppercase">
-                Vines Connection
-              </span>
-            </div>
-
-            <h1
-              className="mb-8 max-w-5xl text-6xl leading-[1.05] font-bold md:text-8xl"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Dismantle Incoherence.{" "}
-              <span className="gradient-text">Discover Recursion.</span>
-            </h1>
-
-            <p className="mb-10 mx-auto max-w-2xl text-lg leading-relaxed text-text-secondary md:text-xl">
-              A systematic framework integrating the PAIN Network, the Melanin
-              Circuit, and Collapse Recursion &mdash; bridging science,
-              philosophy, and operational clarity.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href="/products"
-                className="glow-gold rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-8 py-4 text-lg font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-psyche-gold/10"
-              >
-                Explore Products
-              </Link>
-              <a
-                href="https://payhip.com/VinesConnection"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full border border-psyche-teal/50 px-8 py-4 text-lg text-psyche-teal transition-all hover:bg-psyche-teal/10 hover:border-psyche-teal active:scale-95"
-              >
-                Visit Store
-              </a>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Featured Book Section */}
-      <section className="relative py-32 overflow-hidden">
-        <motion.div 
-          {...fadeInUp}
-          className="mx-auto max-w-7xl px-6"
-        >
-          <div className="mb-4 text-center">
-            <span className="section-index">// 01 &mdash; The Work</span>
-          </div>
-          <h2
-            className="mb-16 text-center text-4xl font-bold text-text-primary md:text-5xl"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Collapse Recursion
-          </h2>
-
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            {/* Book cover with shimmer and glow */}
-            <motion.div 
-              whileHover={{ scale: 1.02 }}
-              className="flex justify-center"
-            >
-              <div className="glow-purple relative overflow-hidden rounded-2xl group cursor-pointer shadow-2xl shadow-psyche-violet/20">
-                <Image
-                  src="https://assets.lulu.com/cover_thumbs/g/j/gjpe5ee-front-shortedge-384.jpg"
-                  alt="Collapse Recursion: The Logic of Coherence"
-                  width={384}
-                  height={500}
-                  className="rounded-2xl transition-transform duration-700 group-hover:scale-110"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-              </div>
-            </motion.div>
-
-            {/* Book details */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <h3
-                className="mb-2 text-3xl font-bold text-text-primary"
+      {/* ========== HEADER / NAV ========== */}
+      <header className="sticky top-0 z-50 border-b border-paan-gold/20 glass-nav">
+        <div className="container mx-auto flex h-16 sm:h-20 items-center justify-between px-4 lg:px-8">
+          {/* Logo + Wordmark */}
+          <Link href="/" className="flex items-center gap-2 sm:gap-3">
+            <Image
+              src="/images/paan-seal.png"
+              alt="PAAN Seal"
+              width={36}
+              height={36}
+              className="rounded-full sm:w-11 sm:h-11"
+            />
+            <div className="flex flex-col">
+              <span
+                className="text-shimmer-gold text-lg sm:text-2xl font-bold tracking-wider"
                 style={{ fontFamily: "var(--font-heading)" }}
               >
-                The Logic of Coherence
-              </h3>
-              <p className="mb-6 text-text-accent">by Shawn Cummings</p>
-
-              <p className="mb-6 text-lg leading-relaxed text-text-secondary">
-                A systematic framework for identifying and dismantling
-                incoherence at its root. This work integrates neuromelanin
-                biology, sacred geometry, and the Enneagram to reveal how
-                recursive intelligence emerges through removing distortions
-                imposed by flawed institutional systems.
-              </p>
-
-              <div className="mb-8 grid grid-cols-2 gap-4">
-                {[
-                  { label: "Pages", value: "482" },
-                  { label: "Format", value: "Paperback" },
-                  { label: "ISBN", value: "9798994854402" },
-                  { label: "Category", value: "Personal Growth" },
-                ].map((item, idx) => (
-                  <motion.div
-                    key={item.label}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.3 + idx * 0.1 }}
-                    className="rounded-xl bg-celestial-800/40 p-4 border border-white/5"
-                  >
-                    <p className="text-xs tracking-wider text-psyche-teal uppercase">
-                      {item.label}
-                    </p>
-                    <p className="mt-1 font-semibold text-text-primary">
-                      {item.value}
-                    </p>
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap items-center gap-6">
-                <span className="text-3xl font-bold text-psyche-gold">
-                  $36.00
-                </span>
-                <a
-                  href="https://www.barnesandnoble.com/w/collapse-recursion-shawn-cummings/1149520866"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="glow-gold rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-8 py-3 font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-lg shadow-psyche-gold/10"
-                >
-                  Order Paperback
-                </a>
-                <a
-                  href="https://payhip.com/VinesConnection"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="rounded-full border border-psyche-teal/50 px-8 py-3 text-psyche-teal transition-all hover:bg-psyche-teal/10 active:scale-95"
-                >
-                  Digital Editions
-                </a>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Email capture — free ebook (under the book, above What We Explore) */}
-      <LeadMagnet groupId={GROUPS.ebook} />
-
-      {/* Topics / Pillars Section */}
-      <section className="border-t border-border py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <motion.div {...fadeInUp} className="mb-16 text-center">
-            <span className="section-index">// 02 &mdash; The Framework</span>
-            <h2
-              className="mt-4 text-4xl font-bold text-text-primary"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              What We Explore
-            </h2>
-          </motion.div>
-
-          <OrbitCarousel pillars={pillars} />
-        </div>
-      </section>
-
-      {/* Research Section */}
-      <section id="research" className="border-t border-border py-32 relative overflow-hidden">
-        <div className="mx-auto max-w-7xl px-6">
-          <motion.div {...fadeInUp} className="text-center">
-            <span className="section-index">// 03 &mdash; The Research</span>
-            <h2
-              className="mt-4 mb-16 text-4xl font-bold text-text-primary md:text-5xl"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Published Research
-            </h2>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-            className="mx-auto max-w-3xl"
-          >
-            <div className="gradient-card rounded-2xl p-8 md:p-10 relative overflow-hidden">
-              <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-psyche-teal/5 blur-3xl animate-pulse" />
-              
-              <p className="relative z-10 mb-8 text-lg leading-relaxed text-text-secondary">
-                Research spanning MC1R genetics, melanin biochemistry,
-                neuromelanin function, and Collapse Recursion Theory &mdash;
-                published and archived through CERN&apos;s Zenodo repository.
-              </p>
-
-              <div className="mb-8 flex items-center gap-4">
-                <Image
-                  src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg"
-                  alt="ORCID"
-                  width={32}
-                  height={32}
-                  unoptimized
-                />
-                <div>
-                  <p className="text-xs tracking-wider text-psyche-teal uppercase font-semibold">
-                    ORCID Profile
-                  </p>
-                  <a
-                    href="https://orcid.org/0009-0006-4312-526X"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-1 inline-block break-all font-mono text-sm text-psyche-teal underline decoration-dotted underline-offset-4 transition-colors hover:text-psyche-gold"
-                  >
-                    https://orcid.org/0009-0006-4312-526X
-                  </a>
-                </div>
-              </div>
-
-              <div className="mb-10 grid gap-4 sm:grid-cols-2">
-                {[
-                  "MC1R Genetics & Classification",
-                  "Melanin Biochemistry",
-                  "Neuromelanin & Coherence",
-                  "Collapse Recursion Theory",
-                ].map((area, idx) => (
-                  <motion.div
-                    key={area}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.4 + idx * 0.1 }}
-                    className="flex items-center gap-3 text-sm text-text-secondary"
-                  >
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-psyche-gold shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
-                    <span>{area}</span>
-                  </motion.div>
-                ))}
-              </div>
-
-              <a
-                href="https://orcid.org/0009-0006-4312-526X"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-10 py-4 font-semibold text-celestial-900 transition-all hover:scale-105 active:scale-95 shadow-xl"
-              >
-                View Full Repository
-              </a>
+                {APP_NAME}
+              </span>
+              <span className="hidden sm:block text-[10px] uppercase tracking-[0.2em] text-paan-cream/50 leading-tight">
+                PMA Church Ministry
+              </span>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </Link>
 
-      {/* Lessons for Kids Section */}
-      <section className="border-t border-border py-32">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <motion.div {...fadeInUp}>
-            <span className="section-index">// For Young Explorers</span>
-            <h2
-              className="mt-4 mb-8 text-4xl font-bold text-text-primary md:text-5xl"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Lessons for <span className="gradient-text">Kids</span>
-            </h2>
-            <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-text-secondary">
-              Big science, made for young explorers. Interactive 3D quests
-              through the research &mdash; collect crystals, meet Sunny the
-              guide, and discover how amazing the body really is.
-            </p>
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-3 xl:gap-6">
             <Link
-              href="/lessons"
-              className="glow-teal inline-flex rounded-full bg-gradient-to-r from-psyche-teal to-psyche-gold px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
+              href="/declaration"
+              className="text-[13px] font-bold text-paan-gold transition-all duration-200 hover:text-paan-gold-light tracking-widest uppercase"
             >
-              Explore Kids Lessons
+              Declaration
             </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Etheric University Section */}
-      <section id="university" className="border-t border-border py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <motion.div {...fadeInUp} className="text-center">
-            <span className="section-index">// 04 &mdash; The University</span>
-            <h2
-              className="mt-4 mb-16 text-4xl font-bold text-text-primary md:text-5xl"
-              style={{ fontFamily: "var(--font-heading)" }}
+            <Link
+              href="#about"
+              className="text-[13px] font-medium text-paan-cream/80 transition-all duration-200 hover:text-paan-gold"
             >
-              Etheric University
-            </h2>
-          </motion.div>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mx-auto max-w-3xl"
-          >
-            <div className="gradient-card rounded-3xl p-10 md:p-12 text-center">
-              <p className="mb-10 text-xl leading-relaxed text-text-secondary">
-                A learning platform built on a new paradigm. Explore history,
-                mathematics, and science through a lens that expands knowledge
-                infinitely &mdash; no ceilings, no boundaries, just recursive
-                understanding.
-              </p>
-
-              <Link
-                href="/university"
-                className="glow-gold inline-flex rounded-full bg-gradient-to-r from-psyche-violet to-psyche-teal px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
-              >
-                Begin Your Spiral
+              About
+            </Link>
+            <Link
+              href="#research"
+              className="text-[13px] font-medium text-paan-cream/80 transition-all duration-200 hover:text-paan-gold"
+            >
+              Research
+            </Link>
+            <Link
+              href="#presentations"
+              className="text-[13px] font-medium text-paan-cream/80 transition-all duration-200 hover:text-paan-gold hidden xl:block"
+            >
+              Presentations
+            </Link>
+            <Link
+              href="#statement-of-faith"
+              className="text-[13px] font-medium text-paan-cream/80 transition-all duration-200 hover:text-paan-gold"
+            >
+              Faith
+            </Link>
+            <Link
+              href="/private-status"
+              className="text-[13px] font-medium text-paan-cream/80 transition-all duration-200 hover:text-paan-gold hidden xl:block"
+            >
+              Private Status
+            </Link>
+            <Link
+              href="#contact"
+              className="text-[13px] font-medium text-paan-cream/80 transition-all duration-200 hover:text-paan-gold"
+            >
+              Contact
+            </Link>
+            <Link
+              href="#contribute"
+              className="text-[13px] font-medium text-paan-cream/80 transition-all duration-200 hover:text-paan-gold"
+            >
+              Contribute
+            </Link>
+            <div className="flex items-center gap-2 ml-2">
+              <Link href="/apply">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-paan-gold/40 text-paan-gold hover:bg-paan-gold/10 text-xs px-3 h-8"
+                >
+                  Apply
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button
+                  size="sm"
+                  className="bg-paan-green hover:bg-paan-green-light text-paan-cream text-xs px-3 h-8"
+                >
+                  Sign In
+                </Button>
               </Link>
             </div>
-          </motion.div>
+          </nav>
+
+          {/* Mobile hamburger menu */}
+          <MobileNav />
         </div>
-      </section>
+      </header>
 
-      {/* Presentations Section */}
-      <section className="border-t border-border py-32">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <motion.div {...fadeInUp}>
-            <span className="section-index">// 05 &mdash; The Deck Room</span>
-            <h2
-              className="mt-4 mb-8 text-4xl font-bold text-text-primary md:text-5xl"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              <span className="gradient-text">Presentations</span>
-            </h2>
-            <p className="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-text-secondary">
-              Step inside the research. Full visual presentations &mdash; like{" "}
-              <em>The Eumelanin Standard</em> &mdash; rendered as immersive 3D
-              decks.
-            </p>
-            <Link
-              href="/presentations"
-              className="glow-teal inline-flex rounded-full bg-gradient-to-r from-psyche-teal to-psyche-gold px-12 py-5 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
-            >
-              Enter the Deck Room
-            </Link>
-          </motion.div>
-        </div>
-      </section>
+      <main className="cinematic-content flex-1">
+        {/* ========== HERO SECTION ========== */}
+        <section className="relative border-b border-border/40">
+          {/* Full banner image — floating 3D object with golden aura */}
+          <div className="relative w-full px-3 sm:px-6 md:px-10 pt-4 sm:pt-6">
+            <HeroBanner />
+          </div>
 
-      {/* CTA Section */}
-      <section className="relative overflow-hidden py-32 [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]">
-        <div className="orb left-[20%] top-[10%] h-48 w-48 bg-psyche-gold/20" />
-        <div
-          className="orb right-[10%] bottom-[20%] h-56 w-56 bg-psyche-teal/15"
-          style={{ animationDelay: "2s" }}
-        />
+          {/* Text content below the banner */}
+          <div className="relative bg-gradient-to-b from-transparent via-paan-earth/40 to-transparent">
+            <div className="container mx-auto px-4 lg:px-8 py-12 sm:py-16 md:py-20 text-center">
+              <div className="mx-auto max-w-4xl space-y-6 sm:space-y-8">
+                <Badge
+                  variant="outline"
+                  className="border-paan-gold/30 text-paan-gold bg-paan-gold/5 px-3 sm:px-4 py-1.5 text-[10px] sm:text-xs tracking-wider uppercase"
+                >
+                  <Shield className="mr-1.5 h-3 w-3" />
+                  Private Membership Association &middot; Free Church
+                </Badge>
 
-        <div className="relative z-10 mx-auto max-w-4xl px-6 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <h2
-              className="mb-8 text-4xl font-bold text-text-primary md:text-5xl"
-              style={{ fontFamily: "var(--font-heading)" }}
-            >
-              Begin the Recursive Journey
-            </h2>
-            <p className="mb-12 text-xl text-text-secondary max-w-2xl mx-auto">
-              Explore the full catalog of books, digital products, and frameworks
-              designed to dismantle incoherence and unlock recursive intelligence.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-6">
-              <a
-                href="https://payhip.com/VinesConnection"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="glow-gold rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-10 py-4 text-xl font-semibold text-celestial-900 transition-all hover:scale-110 active:scale-95 shadow-2xl [text-shadow:none]"
-              >
-                Browse All Products
-              </a>
+                <p className="mx-auto max-w-3xl text-base sm:text-lg md:text-xl leading-relaxed text-paan-cream/90 font-[var(--font-body)]">
+                  The Private Aboriginal American National PMA Church Ministry is a
+                  Private Membership Association and Free Church organization
+                  dedicated to the cultural preservation, economic
+                  self-determination, and biological heritage of Aboriginal American
+                  Nationals and MC1R-functional peoples worldwide.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                  <Link href="/declaration">
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="border-paan-gold/50 text-paan-gold hover:bg-paan-gold/10 hover:text-paan-gold-light font-semibold px-8 text-base backdrop-blur-md"
+                    >
+                      Notice of Declaration
+                    </Button>
+                  </Link>
+                  <Link href="/apply">
+                    <Button
+                      size="lg"
+                      className="bg-paan-gold hover:bg-paan-gold-light text-paan-earth font-semibold px-8 text-base shadow-lg"
+                    >
+                      Apply for Membership
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      {/* Contact Section */}
-      <section
-        id="contact"
-        className="relative px-6 py-32 text-center [text-shadow:0_2px_14px_rgba(0,0,0,0.9)]"
-      >
-        <motion.div
-          {...fadeInUp}
-          className="mx-auto max-w-2xl"
+        {/* ========== DECLARATION SECTION ========== */}
+        <DeclarationSection />
+
+        {/* ========== ABOUT SECTION ========== */}
+        <section id="about" className="border-b border-border/40">
+          <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+            <div className="mx-auto max-w-4xl">
+              <AnimatedSection className="text-center space-y-4 mb-12">
+                <h2
+                  className="text-3xl md:text-4xl font-bold tracking-tight"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  About the Ministry
+                </h2>
+                <div className="divider-gold mx-auto w-24" />
+              </AnimatedSection>
+
+              <AnimatedSection delay={150} className="grid md:grid-cols-2 gap-8 md:gap-12">
+                <div className="space-y-6">
+                  <p className="text-base leading-relaxed text-muted-foreground">
+                    The Private Aboriginal American National PMA Church Ministry
+                    operates under{" "}
+                    <strong className="text-foreground">
+                      26 U.S.C. &sect; 508(c)(1)(A)
+                    </strong>{" "}
+                    as a Free Church organization. We are not a 501(c)(3)
+                    entity. Our status is automatic and inherent under federal
+                    law — not granted by, nor dependent upon, any governmental
+                    agency.
+                  </p>
+                  <p className="text-base leading-relaxed text-muted-foreground">
+                    As a Private Membership Association, this Ministry is{" "}
+                    <strong className="text-foreground">
+                      not a public accommodation
+                    </strong>
+                    . Access, participation, and membership are governed by
+                    private agreement and are available only to those who apply
+                    and are accepted under the terms of the association.
+                  </p>
+                </div>
+                <div className="space-y-6">
+                  <p className="text-base leading-relaxed text-muted-foreground">
+                    The Ministry was founded on the principles of{" "}
+                    <strong className="text-foreground">equity</strong>,{" "}
+                    <strong className="text-foreground">biological truth</strong>
+                    , and{" "}
+                    <strong className="text-foreground">divine order</strong> —
+                    with the express purpose of preserving and advancing the
+                    cultural, spiritual, and biological heritage of Aboriginal
+                    American Nationals.
+                  </p>
+                  <p className="text-base leading-relaxed text-muted-foreground">
+                    Our work spans research, education, community governance,
+                    and the articulation of natural law as it pertains to
+                    sovereign peoples and MC1R-functional identity. All
+                    activities are conducted within the private domain of our
+                    membership.
+                  </p>
+                </div>
+              </AnimatedSection>
+
+              <AnimatedSection delay={300} className="mt-12 flex flex-wrap justify-center gap-3">
+                <Badge
+                  variant="outline"
+                  className="border-paan-gold/30 text-paan-gold bg-paan-gold/5 px-3 py-1"
+                >
+                  <Scale className="mr-1.5 h-3 w-3" />
+                  26 U.S.C. &sect; 508(c)(1)(A)
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className="border-paan-gold/30 text-paan-gold bg-paan-gold/5 px-3 py-1"
+                >
+                  <Shield className="mr-1.5 h-3 w-3" />
+                  Private Membership Association
+                </Badge>
+                <Badge
+                  variant="outline"
+                  className="border-paan-gold/30 text-paan-gold bg-paan-gold/5 px-3 py-1"
+                >
+                  <Church className="mr-1.5 h-3 w-3" />
+                  Free Church Organization
+                </Badge>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+
+        {/* ========== INTERACTIVE PRESENTATIONS ========== */}
+        <section id="presentations" className="border-b border-border/40 bg-paan-earth/20">
+          <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+            <div className="mx-auto max-w-6xl">
+              <AnimatedSection className="text-center space-y-4 mb-12">
+                <h2
+                  className="text-3xl md:text-4xl font-bold tracking-tight"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  Featured Presentations
+                </h2>
+                <div className="divider-gold mx-auto w-24" />
+                <p className="mx-auto max-w-2xl text-muted-foreground">
+                  Interactive presentations exploring historical truth, natural law, and sovereign expression.
+                </p>
+              </AnimatedSection>
+
+              <AnimatedSection delay={150}>
+                <div className="grid lg:grid-cols-2 gap-8 md:gap-12">
+                  {/* Notice of Formal Response */}
+                  <PresentationViewer
+                    title="Notice of Formal Response"
+                    src="https://unc-formal-response-presentation.vercel.app/"
+                    externalUrl="https://unc-formal-response-presentation.vercel.app/"
+                    icon={<ScrollText className="h-4 w-4" />}
+                    allowSpeech={true}
+                    className="lg:col-span-2"
+                  />
+
+                  {/* ROOT: The Mayan Origin of All Language */}
+                  <PresentationViewer
+                    title="ROOT: The Mayan Origin"
+                    src="https://site-theta-wine-70.vercel.app/"
+                    externalUrl="https://site-theta-wine-70.vercel.app/"
+                    icon={<Globe className="h-4 w-4" />}
+                  />
+
+                  {/* Cherokee Nation v. Georgia */}
+                  <PresentationViewer
+                    title="Cherokee Nation v. Georgia"
+                    src="https://cherokee-presentation.vercel.app/"
+                    externalUrl="https://cherokee-presentation.vercel.app/"
+                    icon={<Crown className="h-4 w-4" />}
+                  />
+
+                  {/* Clogging of Rights */}
+                  <PresentationViewer
+                    title="What Are Rights & Clogging"
+                    src="https://what-are-rights-presentation.vercel.app/"
+                    externalUrl="https://what-are-rights-presentation.vercel.app/"
+                    icon={<Scale className="h-4 w-4" />}
+                    allowSpeech={true}
+                  />
+
+                  {/* Doctrine of Intent */}
+                  <PresentationViewer
+                    title="The Doctrine of Intent"
+                    src="https://doctrine-of-intent-video.vercel.app/"
+                    externalUrl="https://doctrine-of-intent-video.vercel.app/"
+                    icon={<Orbit className="h-4 w-4" />}
+                  />
+
+                  {/* Great Law of Peace */}
+                  <PresentationViewer
+                    title="The Great Law of Peace"
+                    src="https://great-law-of-peace.netlify.app/"
+                    externalUrl="https://great-law-of-peace.netlify.app/"
+                    icon={<ScrollText className="h-4 w-4" />}
+                    overlay={
+                      <div className="absolute top-6 left-6 z-20 pointer-events-none rounded-full bg-black/60 p-1.5 backdrop-blur-md border border-paan-gold/30">
+                        <Image
+                          src="/images/paan-seal.png"
+                          alt="PAAN Ministries Logo"
+                          width={55}
+                          height={55}
+                          className="rounded-full shadow-[0_0_15px_rgba(212,175,55,0.5)]"
+                        />
+                      </div>
+                    }
+                  />
+
+                  {/* Erased from History */}
+                  <PresentationViewer
+                    title="Erased From History"
+                    src="https://erased-from-history.netlify.app/"
+                    externalUrl="https://erased-from-history.netlify.app/"
+                    icon={<Shield className="h-4 w-4" />}
+                    overlay={
+                      <div className="absolute top-6 left-6 z-20 pointer-events-none rounded-full bg-black/90 p-1.5 backdrop-blur-md border border-paan-gold/50">
+                        <Image
+                          src="/images/paan-seal.png"
+                          alt="PAAN Ministries Logo"
+                          width={65}
+                          height={65}
+                          className="rounded-full shadow-[0_0_20px_rgba(212,175,55,0.8)]"
+                        />
+                      </div>
+                    }
+                  />
+                </div>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+
+        {/* ========== RESEARCH SECTION ========== */}
+        <section id="research" className="border-b border-border/40 bg-paan-earth/30">
+          <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+            <div className="mx-auto max-w-4xl">
+              <AnimatedSection className="text-center space-y-4 mb-12">
+                <h2
+                  className="text-3xl md:text-4xl font-bold tracking-tight"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  Research Foundation
+                </h2>
+                <div className="divider-gold mx-auto w-24" />
+                <p className="mx-auto max-w-2xl text-muted-foreground">
+                  Peer-archived scholarship rooted in biological truth and divine order
+                </p>
+              </AnimatedSection>
+
+              <AnimatedSection delay={150}>
+              <TiltCard intensity={4}>
+              <Card className="border-border/60 glass-deep card-hover rounded-xl">
+                <CardContent className="py-8 px-6 sm:px-8 space-y-6">
+                  <p className="text-base leading-relaxed text-muted-foreground">
+                    The Ministry&apos;s research program — led by{" "}
+                    <strong className="text-foreground">Chief Minister Shawn Cummings</strong>{" "}
+                    — spans MC1R genetics, melanin biochemistry, neuromelanin function, and
+                    Collapse Recursion Theory. All works are published and archived through{" "}
+                    <strong className="text-foreground">CERN&apos;s Zenodo repository</strong>.
+                  </p>
+
+                  <div className="rounded-lg border border-paan-gold/20 bg-paan-gold/5 px-5 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <Image
+                        src="https://upload.wikimedia.org/wikipedia/commons/0/06/ORCID_iD.svg"
+                        alt="ORCID"
+                        width={20}
+                        height={20}
+                        unoptimized
+                      />
+                      <span className="text-sm font-medium text-foreground">ORCID:</span>
+                    </div>
+                    <a
+                      href="https://orcid.org/0009-0006-4312-526X"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-paan-gold font-mono hover:underline underline-offset-4"
+                    >
+                      0009-0006-4312-526X
+                    </a>
+                  </div>
+
+                  <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                    {[
+                      "MC1R Genetics & Biological Classification",
+                      "Melanin Biochemistry & Carbon Substrates",
+                      "Neuromelanin & Neurological Coherence",
+                      "Collapse Recursion Theory",
+                    ].map((area) => (
+                      <div
+                        key={area}
+                        className="flex items-start gap-2 text-muted-foreground"
+                      >
+                        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-paan-gold" />
+                        <span>{area}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-3 pt-2">
+                    <Link href="/research">
+                      <Button
+                        variant="outline"
+                        className="border-paan-gold/40 text-paan-gold hover:bg-paan-gold/10"
+                      >
+                        <Brain className="mr-2 h-4 w-4" />
+                        View Published Papers
+                      </Button>
+                    </Link>
+                    <Link href="/research/primary-source-evidence">
+                      <Button
+                        variant="outline"
+                        className="border-paan-gold/40 text-paan-gold hover:bg-paan-gold/10"
+                      >
+                        <ScrollText className="mr-2 h-4 w-4" />
+                        Primary Source Evidence Archive
+                      </Button>
+                    </Link>
+                    <a
+                      href="https://orcid.org/0009-0006-4312-526X"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        variant="ghost"
+                        className="text-muted-foreground hover:text-paan-gold"
+                      >
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        View on ORCID
+                      </Button>
+                    </a>
+                  </div>
+                </CardContent>
+              </Card>
+              </TiltCard>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+
+        {/* ========== PATH TO COHERENCE ========== */}
+        <section id="path-to-coherence" className="border-b border-border/40">
+          <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+            <div className="mx-auto max-w-5xl">
+              <AnimatedSection className="text-center space-y-4 mb-12">
+                <h2
+                  className="text-3xl md:text-4xl font-bold tracking-tight"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  The Path to Coherence
+                </h2>
+                <div className="divider-gold mx-auto w-24" />
+                <p className="mx-auto max-w-2xl text-muted-foreground">
+                  A presentation on the foundational principles of biological coherence, identity, and sovereign expression.
+                </p>
+              </AnimatedSection>
+
+              <AnimatedSection delay={150}>
+                <SlideGallery
+                  title="The Path to Coherence"
+                  slideCount={23}
+                  slidePrefix="/slides/slide-"
+                  downloadUrl="/coherence-presentation.pdf"
+                />
+                <p className="mt-3 text-center text-xs text-muted-foreground">
+                  Scroll or view full-screen to see all 23 slides
+                </p>
+              </AnimatedSection>
+            </div>
+          </div>
+        </section>
+
+
+        {/* ========== STATEMENT OF FAITH ========== */}
+        <section
+          id="statement-of-faith"
+          className="sacred-pattern relative border-b border-border/40"
         >
-          <span className="section-index">// Contact</span>
-          <h2
-            className="mt-4 mb-6 text-4xl font-bold text-text-primary md:text-5xl"
-            style={{ fontFamily: "var(--font-heading)" }}
-          >
-            Get in <span className="gradient-text">Touch</span>
-          </h2>
-          <p className="mb-8 text-lg text-text-secondary">
-            Questions, collaborations, or media inquiries &mdash; reach out
-            directly.
-          </p>
-          <a
-            href="mailto:wisdom@vinesconnection.info"
-            className="glow-gold inline-flex items-center gap-3 rounded-full bg-gradient-to-r from-psyche-gold to-psyche-teal px-8 py-4 text-lg font-semibold text-celestial-900 transition-all hover:scale-105 active:scale-95 [text-shadow:none]"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-            </svg>
-            wisdom@vinesconnection.info
-          </a>
-        </motion.div>
-      </section>
-    </>
+          <div className="absolute inset-0 bg-background/60" />
+          <div className="relative container mx-auto px-4 lg:px-8 py-20 md:py-28">
+            <AnimatedSection className="text-center space-y-4 mb-14">
+              <h2
+                className="text-3xl md:text-4xl font-bold tracking-tight"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                Statement of Faith
+              </h2>
+              <div className="divider-gold mx-auto w-24" />
+              <p className="mx-auto max-w-2xl text-muted-foreground">
+                The foundational articles that define the spiritual, biological,
+                and philosophical framework of the Ministry.
+              </p>
+            </AnimatedSection>
+
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+              {statementArticles.map((article, index) => {
+                const Icon = article.icon;
+                return (
+                  <AnimatedSection key={index} delay={index * 100} className="h-full">
+                  <TiltCard className="h-full">
+                  <Card
+                    className="border-paan-gold/15 glass-deep card-hover h-full rounded-xl overflow-hidden"
+                  >
+                    <CardHeader className="pb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-paan-gold/20 to-paan-gold/5 text-paan-gold ring-1 ring-paan-gold/20">
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <span className="text-[10px] font-semibold text-paan-gold uppercase tracking-[0.15em]">
+                            Article {index + 1}
+                          </span>
+                          <CardTitle className="text-[15px] font-bold leading-snug mt-0.5 text-foreground">
+                            {article.title}
+                          </CardTitle>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm leading-[1.7] text-muted-foreground">
+                        {article.summary}
+                      </p>
+                    </CardContent>
+                  </Card>
+                  </TiltCard>
+                  </AnimatedSection>
+                );
+              })}
+            </div>
+
+            <div className="text-center mt-12">
+              <Link href="/statement-of-faith">
+                <Button
+                  variant="outline"
+                  className="border-paan-gold/40 text-paan-gold hover:bg-paan-gold/10"
+                >
+                  <ScrollText className="mr-2 h-4 w-4" />
+                  Read Full Statement
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+
+        {/* ========== CONTRIBUTE SECTION ========== */}
+        <section id="contribute" className="border-b border-border/40">
+          <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
+            <div className="mx-auto max-w-4xl">
+              <AnimatedSection className="text-center space-y-4 mb-14">
+                <h2
+                  className="text-3xl md:text-4xl font-bold tracking-tight"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  Contribute to the Ministry
+                </h2>
+                <div className="divider-gold mx-auto w-24" />
+                <p className="mx-auto max-w-2xl text-muted-foreground">
+                  Your voluntary tithes and offerings sustain the Ministry&apos;s
+                  mission of cultural preservation, education, and community
+                  governance.
+                </p>
+              </AnimatedSection>
+
+              <div className="max-w-md mx-auto">
+                <Card className="border-border/60 bg-card/60 backdrop-blur-md rounded-xl">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-paan-gold/10 text-paan-gold">
+                        <HandHeart className="h-5 w-5" />
+                      </div>
+                      <CardTitle
+                        className="text-lg"
+                        style={{ fontFamily: "var(--font-heading)" }}
+                      >
+                        Contribute Online
+                      </CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <DonationForm />
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ========== CONTACT SECTION ========== */}
+        <section
+          id="contact"
+          className="sacred-pattern relative border-b border-border/40"
+        >
+          <div className="absolute inset-0 bg-background/60" />
+          <div className="relative container mx-auto px-4 lg:px-8 py-20 md:py-28">
+            <div className="mx-auto max-w-2xl text-center space-y-8">
+              <AnimatedSection className="space-y-4">
+                <h2
+                  className="text-3xl md:text-4xl font-bold tracking-tight"
+                  style={{ fontFamily: "var(--font-heading)" }}
+                >
+                  Contact
+                </h2>
+                <div className="divider-gold mx-auto w-24" />
+              </AnimatedSection>
+
+              <AnimatedSection delay={150}>
+              <TiltCard intensity={5}>
+              <Card className="border-border/60 glass-deep text-left card-hover rounded-xl">
+                <CardContent className="space-y-5 py-8 px-8">
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-paan-gold font-medium mb-1">
+                      Trustee &amp; Deputy Chief Minister
+                    </p>
+                    <p
+                      className="text-lg font-semibold"
+                      style={{ fontFamily: "var(--font-heading)" }}
+                    >
+                      Len Bagley Jr.
+                    </p>
+                  </div>
+
+                  <div className="divider-gold w-full" />
+
+                  <div>
+                    <p className="text-xs uppercase tracking-wider text-paan-gold font-medium mb-1">
+                      Chief Minister &amp; Grantor
+                    </p>
+                    <p
+                      className="text-lg font-semibold"
+                      style={{ fontFamily: "var(--font-heading)" }}
+                    >
+                      Shawn Cummings
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+              </TiltCard>
+              </AnimatedSection>
+
+              <Link href="/contact">
+                <Button
+                  variant="outline"
+                  className="border-paan-gold/40 text-paan-gold hover:bg-paan-gold/10"
+                >
+                  Contact Us
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      {/* ========== LEGAL FOOTER ========== */}
+      <footer className="border-t border-border/60 bg-paan-green text-paan-cream/80">
+        <div className="container mx-auto px-4 lg:px-8 py-12">
+          {/* Upper Footer */}
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8 mb-10">
+            <div className="max-w-md">
+              <span
+                className="text-gradient-gold text-xl font-bold tracking-wider"
+                style={{ fontFamily: "var(--font-heading)" }}
+              >
+                {APP_NAME}
+              </span>
+              <p className="text-xs uppercase tracking-[0.15em] mt-1 text-paan-cream/50">
+                The Private Aboriginal American National PMA Church Ministry
+              </p>
+            </div>
+            <nav className="flex flex-wrap gap-x-8 gap-y-3 text-sm">
+              <Link
+                href="/privacy"
+                className="text-paan-cream/60 hover:text-paan-gold transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/private-status"
+                className="text-paan-cream/60 hover:text-paan-gold transition-colors"
+              >
+                Notice of Private Status
+              </Link>
+              <Link
+                href="/terms"
+                className="text-paan-cream/60 hover:text-paan-gold transition-colors"
+              >
+                Terms of Use
+              </Link>
+              <Link
+                href="#about"
+                className="text-paan-cream/60 hover:text-paan-gold transition-colors"
+              >
+                About
+              </Link>
+              <Link
+                href="#contact"
+                className="text-paan-cream/60 hover:text-paan-gold transition-colors"
+              >
+                Contact
+              </Link>
+            </nav>
+          </div>
+
+          <div className="divider-gold w-full opacity-30" />
+
+          {/* Lower Footer */}
+          <div className="mt-8 space-y-4 text-xs text-paan-cream/50 leading-relaxed">
+            <p>
+              PAAN is a Private Membership Association and Free Church
+              organization under 26 U.S.C. &sect; 508(c)(1)(A). This is not a
+              public accommodation. Membership is by application only. All
+              rights reserved.
+            </p>
+            <p>
+              &copy; {new Date().getFullYear()} The Private Aboriginal American
+              National PMA Church Ministry. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }

@@ -1,31 +1,22 @@
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import { Providers } from "@/components/providers";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 import "./globals.css";
-import ClientLayout from "@/components/ClientLayout";
-import { Analytics } from "@vercel/analytics/react";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://vinesconnection.info"),
-  title: "Vines Connection | Books & Digital Products by Shawn Cummings",
-  description:
-    "Explore books and digital products bridging neuromelanin biology, sacred geometry, recursive intelligence, and coherent self-discovery. By Shawn Cummings.",
-  keywords: [
-    "Shawn Cummings",
-    "Vines Connection",
-    "Collapse Recursion",
-    "neuromelanin",
-    "sacred geometry",
-    "enneagram",
-    "self-improvement",
-    "philosophy",
-    "books",
-  ],
-  openGraph: {
-    title: "Vines Connection | Books & Digital Products",
-    description:
-      "Bridging neuromelanin biology, sacred geometry, and recursive intelligence.",
-    type: "website",
-    url: "https://vinesconnection.info",
-  },
+  title: "PAAN MINISTRIES",
+  description: "Private Membership Association",
 };
 
 export default function RootLayout({
@@ -34,10 +25,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen antialiased">
-        <ClientLayout>{children}</ClientLayout>
-        <Analytics />
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Providers>{children}</Providers>
+        <AnalyticsTracker />
       </body>
     </html>
   );

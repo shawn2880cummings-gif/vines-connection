@@ -1,0 +1,33 @@
+User-agent: *
+Disallow: /dashboard
+Disallow: /documents
+Disallow: /events
+Disallow: /university
+Disallow: /profile
+Disallow: /finances
+Disallow: /announcements
+Disallow: /messages
+Disallow: /governance
+Disallow: /admin
+Disallow: /api
+Disallow: /login
+Disallow: /register
+Disallow: /onboarding
+Disallow: /admin/cbis
+Disallow: /admin/finances
+Disallow: /admin/hardship
+Disallow: /admin/audit
+Disallow: /admin/announcements
+Disallow: /admin/messages
+Disallow: /admin/governance
+Disallow: /admin/feedback
+
+# Public pages only
+Allow: /
+Allow: /about
+Allow: /statement-of-faith
+Allow: /research
+Allow: /contact
+Allow: /apply
+Allow: /privacy
+Allow: /terms

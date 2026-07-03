@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What Are Rights — PAAN Ministries</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+      .paan-logo-container {
+        position: absolute;
+        top: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 100;
+        animation: float 4s ease-in-out infinite;
+      }
+      .paan-logo {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+      }
+      @keyframes float {
+        0% { transform: translate(-50%, 0px); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+        50% { transform: translate(-50%, -10px); box-shadow: 0 0 35px rgba(212, 175, 55, 0.8); }
+        100% { transform: translate(-50%, 0px); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+      }
+      .slide-content.center-top {
+        margin-top: 120px;
+        text-align: center;
+      }
+    </style>
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<!-- PAAN Logo at Top -->
+<div class="paan-logo-container" id="global-logo" style="display:none;">
+    <img src="/images/paan-seal.png" alt="PAAN Ministries Logo" class="paan-logo">
+</div>
+
+<!-- Controls -->
+<div class="controls-container" id="controls">
+    <button id="btn-prev" class="control-btn" title="Previous Slide">
+        <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    </button>
+    <button id="btn-play-pause" class="control-btn" title="Play/Pause">
+        <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <button id="btn-next" class="control-btn" title="Next Slide">
+        <svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+    </button>
+    <button id="btn-fullscreen" class="control-btn" title="Full Screen">
+        <svg viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+    </button>
+</div>
+
+<!-- Slide Counter -->
+<div class="slide-counter" id="slide-counter">1 / 10</div>
+
+<!-- Overlay when paused/started -->
+<div class="start-overlay" id="start-overlay">
+    <div class="paan-logo-container" style="position:relative; transform:none; top:0; left:0; animation: float 4s ease-in-out infinite; margin-bottom: 2rem;">
+        <img src="/images/paan-seal.png" alt="PAAN Logo" class="paan-logo" style="width: 120px; height: 120px;">
+    </div>
+    <h1 class="mega cyan" style="font-family: 'Cinzel', serif;">WHAT ARE RIGHTS</h1>
+    <h3 style="color: rgba(255,255,255,0.7); font-weight:300; letter-spacing: 2px;">AND WHAT IS CLOGGING OF RIGHTS</h3>
+    <button id="btn-start" class="start-btn" style="margin-top: 3rem;">BEGIN</button>
+</div>
+
+<!-- Slides Container -->
+<div class="slides-container" id="slides-container">
+
+    <!-- SLIDE 1 -->
+    <section class="slide" data-bg="dawn" data-duration="20000">
+        <div class="slide-overlay overlay-deep"></div>
+        <div class="slide-content center-top">
+            <h2 class="slide-heading mega cyan">PART I</h2>
+            <p class="slide-label">WHAT ARE RIGHTS</p>
+            <p class="slide-text">Abstract: This paper establishes with precision and primary-source grounding the two foundational concepts identified in the title. Part I examines what a right is — beginning at the Proto-Indo-European etymological root...</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 2 -->
+    <section class="slide" data-bg="circuit" data-duration="15000">
+        <div class="slide-overlay overlay-deep"></div>
+        <div class="slide-content center-top">
+            <p class="slide-label">Section 1.1 — The Etymological Root</p>
+            <p class="slide-text">Rights Begin as Straight Lines. The forensic analysis of any legal concept requires stripping the institutional overlay and returning to the structural root of the word. 'Right' is not an invented legal term. It is among the oldest recorded structural concepts in the Indo-European language family, and its original meaning is not permission — it is geometry.</p>
+        </div>
+    </section>
+
+    <!-- SLIDE 3 -->
+    <section class="slide" data-bg="neural" data-duration="15000">
+        <div class="slide-overlay overlay-deep"></div>
+        <div class="slide-content center-top">
+            <p class="slide-label">Section 1.2 — The Jurisprudential Architecture</p>
+            <p class="slide-text">Professor Wesley Newcomb Hohfeld of Yale identified the central problem in legal discourse: the word 'right' is used to mean several distinct and non-interchangeable things, and the conflation produces logical incoherence in legal reasoning.</p>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    // Minimal script to handle UI and bypass speech if it fails
+    document.getElementById('btn-start').addEventListener('click', () => {
+        document.getElementById('start-overlay').style.display = 'none';
+        document.getElementById('global-logo').style.display = 'block';
+        playSlide(0);
+    });
+
+    let current = 0;
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('slide-counter');
+    let timer = null;
+
+    function playSlide(index) {
+        if(timer) clearTimeout(timer);
+        slides.forEach(s => s.classList.remove('active'));
+        if(index >= slides.length) index = 0;
+        if(index < 0) index = slides.length - 1;
+        
+        slides[index].classList.add('active');
+        counter.innerText = `${index + 1} / ${slides.length}`;
+        current = index;
+
+        // Auto advance after 8 seconds
+        timer = setTimeout(() => {
+            playSlide(current + 1);
+        }, 8000);
+    }
+
+    document.getElementById('btn-next').addEventListener('click', () => playSlide(current + 1));
+    document.getElementById('btn-prev').addEventListener('click', () => playSlide(current - 1));
+
+    document.getElementById('btn-fullscreen').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
