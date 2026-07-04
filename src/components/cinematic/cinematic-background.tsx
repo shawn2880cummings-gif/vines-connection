@@ -2,25 +2,25 @@
 
 import dynamic from "next/dynamic";
 
-const CosmicScene = dynamic(() => import("./cosmic-scene"), {
-  ssr: false,
-});
+const OceanScene = dynamic(
+  () => import("./ocean-scene").then((m) => m.OceanScene),
+  { ssr: false },
+);
 
 /**
- * Fixed, full-viewport 3D backdrop for the public pages.
+ * Fixed, full-viewport backdrop for the public pages: the living ocean.
+ * The page is a dive — scrolling descends from sunlit water to the trench.
  * Sits behind all content; pointer events pass through.
  */
 export function CinematicBackground() {
   return (
     <div className="pointer-events-none fixed inset-0 z-0" aria-hidden="true">
-      {/* Deep base gradient — near-black with an emerald heart */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_-10%,#122B1E_0%,#0A0F0B_45%,#050505_100%)]" />
-      {/* Living 3D layer */}
+      {/* Static deep-water base shown until the scene hydrates */}
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,#26829B_0%,#10546E_100%)]" />
+      {/* Living scroll-depth ocean */}
       <div className="absolute inset-0">
-        <CosmicScene />
+        <OceanScene />
       </div>
-      {/* Vignette to keep long-form text readable */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(5,5,5,0.55)_100%)]" />
     </div>
   );
 }

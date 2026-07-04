@@ -183,7 +183,11 @@ export default function HomePage() {
 
       <main className="cinematic-content flex-1">
         {/* ========== HERO SECTION ========== */}
-        <section className="relative border-b border-border/40">
+        <section
+          data-depth="0"
+          data-zone="Surface"
+          className="relative border-b border-border/40"
+        >
           {/* Full banner image — floating 3D object with golden aura */}
           <div className="relative w-full px-3 sm:px-6 md:px-10 pt-4 sm:pt-6">
             <HeroBanner />
@@ -238,10 +242,16 @@ export default function HomePage() {
         <DeclarationSection />
 
         {/* ========== ABOUT SECTION ========== */}
-        <section id="about" className="border-b border-border/40">
+        <section
+          id="about"
+          data-depth="150"
+          data-zone="Sunlit Zone"
+          className="border-b border-border/40"
+        >
           <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
             <div className="mx-auto max-w-4xl">
               <AnimatedSection className="text-center space-y-4 mb-12">
+                <p className="zone-tag">&minus;150 m &middot; Sunlit Zone</p>
                 <h2
                   className="text-3xl md:text-4xl font-bold tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
@@ -288,7 +298,7 @@ export default function HomePage() {
                   <p className="text-base leading-relaxed text-muted-foreground">
                     Our work spans research, education, community governance,
                     and the articulation of natural law as it pertains to
-                    sovereign peoples and MC1R-functional identity. All
+                    sovereignty of the mind and MC1R-functional identity. All
                     activities are conducted within the private domain of our
                     membership.
                   </p>
@@ -323,10 +333,16 @@ export default function HomePage() {
         </section>
 
         {/* ========== INTERACTIVE PRESENTATIONS ========== */}
-        <section id="presentations" className="border-b border-border/40 bg-paan-earth/20">
+        <section
+          id="presentations"
+          data-depth="400"
+          data-zone="Twilight Zone"
+          className="border-b border-border/40 bg-paan-earth/20"
+        >
           <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
             <div className="mx-auto max-w-6xl">
               <AnimatedSection className="text-center space-y-4 mb-12">
+                <p className="zone-tag">&minus;400 m &middot; Twilight Zone</p>
                 <h2
                   className="text-3xl md:text-4xl font-bold tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
@@ -335,7 +351,7 @@ export default function HomePage() {
                 </h2>
                 <div className="divider-gold mx-auto w-24" />
                 <p className="mx-auto max-w-2xl text-muted-foreground">
-                  Interactive presentations exploring historical truth, natural law, and sovereign expression.
+                  Interactive presentations exploring historical truth, natural law, and sovereignty of the mind.
                 </p>
               </AnimatedSection>
 
@@ -428,10 +444,16 @@ export default function HomePage() {
         </section>
 
         {/* ========== RESEARCH SECTION ========== */}
-        <section id="research" className="border-b border-border/40 bg-paan-earth/30">
+        <section
+          id="research"
+          data-depth="800"
+          data-zone="Twilight Zone"
+          className="border-b border-border/40 bg-paan-earth/30"
+        >
           <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
             <div className="mx-auto max-w-4xl">
               <AnimatedSection className="text-center space-y-4 mb-12">
+                <p className="zone-tag">&minus;800 m &middot; Twilight Zone</p>
                 <h2
                   className="text-3xl md:text-4xl font-bold tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
@@ -536,10 +558,16 @@ export default function HomePage() {
         </section>
 
         {/* ========== PATH TO COHERENCE ========== */}
-        <section id="path-to-coherence" className="border-b border-border/40">
+        <section
+          id="path-to-coherence"
+          data-depth="1400"
+          data-zone="Midnight Zone"
+          className="border-b border-border/40"
+        >
           <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
             <div className="mx-auto max-w-5xl">
               <AnimatedSection className="text-center space-y-4 mb-12">
+                <p className="zone-tag">&minus;1,400 m &middot; Midnight Zone</p>
                 <h2
                   className="text-3xl md:text-4xl font-bold tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
@@ -548,7 +576,7 @@ export default function HomePage() {
                 </h2>
                 <div className="divider-gold mx-auto w-24" />
                 <p className="mx-auto max-w-2xl text-muted-foreground">
-                  A presentation on the foundational principles of biological coherence, identity, and sovereign expression.
+                  A presentation on the foundational principles of biological coherence, identity, and sovereignty of the mind.
                 </p>
               </AnimatedSection>
 
@@ -571,11 +599,14 @@ export default function HomePage() {
         {/* ========== STATEMENT OF FAITH ========== */}
         <section
           id="statement-of-faith"
+          data-depth="2500"
+          data-zone="Midnight Zone"
           className="sacred-pattern relative border-b border-border/40"
         >
           <div className="absolute inset-0 bg-background/60" />
           <div className="relative container mx-auto px-4 lg:px-8 py-20 md:py-28">
             <AnimatedSection className="text-center space-y-4 mb-14">
+              <p className="zone-tag">&minus;2,500 m &middot; Midnight Zone</p>
               <h2
                 className="text-3xl md:text-4xl font-bold tracking-tight"
                 style={{ fontFamily: "var(--font-heading)" }}
@@ -641,10 +672,16 @@ export default function HomePage() {
 
 
         {/* ========== CONTRIBUTE SECTION ========== */}
-        <section id="contribute" className="border-b border-border/40">
+        <section
+          id="contribute"
+          data-depth="4000"
+          data-zone="The Abyss"
+          className="border-b border-border/40"
+        >
           <div className="container mx-auto px-4 lg:px-8 py-20 md:py-28">
             <div className="mx-auto max-w-4xl">
               <AnimatedSection className="text-center space-y-4 mb-14">
+                <p className="zone-tag">&minus;4,000 m &middot; The Abyss</p>
                 <h2
                   className="text-3xl md:text-4xl font-bold tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}
@@ -686,12 +723,15 @@ export default function HomePage() {
         {/* ========== CONTACT SECTION ========== */}
         <section
           id="contact"
+          data-depth="5600"
+          data-zone="The Trench"
           className="sacred-pattern relative border-b border-border/40"
         >
           <div className="absolute inset-0 bg-background/60" />
           <div className="relative container mx-auto px-4 lg:px-8 py-20 md:py-28">
             <div className="mx-auto max-w-2xl text-center space-y-8">
               <AnimatedSection className="space-y-4">
+                <p className="zone-tag">&minus;5,600 m &middot; The Trench</p>
                 <h2
                   className="text-3xl md:text-4xl font-bold tracking-tight"
                   style={{ fontFamily: "var(--font-heading)" }}

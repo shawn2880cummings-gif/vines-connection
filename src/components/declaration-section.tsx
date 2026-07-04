@@ -6,10 +6,16 @@ import { Button } from "@/components/ui/button";
 
 export function DeclarationSection() {
   return (
-    <section id="declaration-notice" className="border-b border-border/40 bg-paan-earth/10">
+    <section
+      id="declaration-notice"
+      data-depth="60"
+      data-zone="Sunlit Zone"
+      className="border-b border-border/40 bg-paan-earth/10"
+    >
       <div className="container mx-auto px-4 lg:px-8 py-16 md:py-24">
         <AnimatedSection className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-br from-[#0a1510] to-black border border-paan-gold/30 rounded-2xl p-8 sm:p-14 text-center shadow-[0_0_40px_rgba(201,168,76,0.15)] relative overflow-hidden group">
+          <p className="zone-tag text-center mb-6">&minus;60 m &middot; Sunlit Zone</p>
+          <div className="bg-gradient-to-br from-[#06192a] to-black border border-paan-gold/30 rounded-2xl p-8 sm:p-14 text-center shadow-[0_0_40px_rgba(201,168,76,0.15)] relative overflow-hidden group">
             {/* Top border highlight */}
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-paan-gold to-transparent opacity-70"></div>
             

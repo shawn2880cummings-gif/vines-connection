@@ -48,16 +48,17 @@
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  /* PAAN Brand Colors */
+  /* PAAN Brand Colors — ocean-dive theme: gold kept, grounds moved to water */
   --color-paan-gold: #C5972C;
   --color-paan-gold-light: #D4AD4E;
-  --color-paan-green: #1A3A2A;
-  --color-paan-green-light: #2D5A3F;
-  --color-paan-earth: #3D2B1F;
-  --color-paan-earth-light: #5C4033;
+  --color-paan-green: #0B3540;
+  --color-paan-green-light: #14545F;
+  --color-paan-earth: #0A2238;
+  --color-paan-earth-light: #123653;
   --color-paan-terracotta: #8B4513;
   --color-paan-cream: #F5F0E8;
   --color-paan-sand: #E8DCC8;
+  --color-paan-cyan: #6FE7D2;
 }
 
 :root {
@@ -96,19 +97,19 @@
 }
 
 .dark {
-  --background: #0A0A0A;
+  --background: #020A14;
   --foreground: #F5F0E8;
-  --card: #161210;
+  --card: #071826;
   --card-foreground: #F5F0E8;
-  --popover: #161210;
+  --popover: #071826;
   --popover-foreground: #F5F0E8;
   --primary: #C5972C;
-  --primary-foreground: #0A0A0A;
-  --secondary: #1E1A14;
+  --primary-foreground: #020A14;
+  --secondary: #0A2033;
   --secondary-foreground: #F5F0E8;
-  --muted: #1E1A14;
-  --muted-foreground: #9B8B7A;
-  --accent: #2D5A3F;
+  --muted: #0A2033;
+  --muted-foreground: #9FB9C2;
+  --accent: #0E3A44;
   --accent-foreground: #F5F0E8;
   --destructive: oklch(0.704 0.191 22.216);
   --border: rgba(197, 151, 44, 0.15);
@@ -170,12 +171,12 @@
 
 /* Glassmorphism nav */
 .glass-nav {
-  background: rgba(61, 43, 31, 0.75);
+  background: rgba(4, 18, 32, 0.7);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
 }
 .dark .glass-nav {
-  background: rgba(10, 10, 10, 0.7);
+  background: rgba(2, 12, 22, 0.65);
 }
 
 /* Flower of Life sacred geometry pattern */
@@ -268,12 +269,22 @@
   animation: gold-shimmer 5s linear infinite;
 }
 
-/* Deeper glass panels for cards floating over the cosmos */
+/* Deeper glass panels for cards floating in the water column */
 .glass-deep {
-  background: rgba(14, 12, 10, 0.55);
+  background: rgba(4, 18, 32, 0.55);
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   border: 1px solid rgba(197, 151, 44, 0.18);
+}
+
+/* Depth-zone marker eyebrow — "−300 m · Twilight Zone" */
+.zone-tag {
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-paan-cyan);
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
 }
 
 @media (prefers-reduced-motion: reduce) {
