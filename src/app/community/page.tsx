@@ -19,8 +19,8 @@ export default function CommunityPage() {
           Share the <span className="gradient-text">Awakening</span>
         </h1>
         <p className="mx-auto mt-5 max-w-md text-lg leading-relaxed text-text-secondary">
-          Spirituality meets quantum mechanics. Post a thought, a photo, a question — and see what
-          others are discovering.
+          Spirituality meets quantum mechanics. Share a thought, a photo, a video, or a 24-hour
+          story — and see what others are discovering.
         </p>
       </section>
       <CommunityFeed />

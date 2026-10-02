@@ -38,6 +38,15 @@ export async function setJSON(key: string, value: unknown): Promise<void> {
   else memory.set(key, raw);
 }
 
+// Atomically create a key only if it doesn't exist yet. Returns true if created.
+export async function setIfAbsent(key: string, value: unknown): Promise<boolean> {
+  const raw = JSON.stringify(value);
+  if (hasKV) return (await cmd(["SET", key, raw, "NX"])) === "OK";
+  if (memory.has(key)) return false;
+  memory.set(key, raw);
+  return true;
+}
+
 export async function mgetJSON<T>(keys: string[]): Promise<(T | null)[]> {
   if (!keys.length) return [];
   const raws = hasKV

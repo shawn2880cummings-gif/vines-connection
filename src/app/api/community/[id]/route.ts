@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { getJSON, setJSON, del, hit } from "@/lib/kv";
+import { getSessionUser, sameOrigin } from "@/lib/auth";
 import {
   FEED_KEY,
   LIMITS,
   postKey,
-  hashUid,
   newId,
   cleanText,
-  cleanName,
   rejectReason,
   toView,
   type Post,
@@ -15,14 +14,17 @@ import {
 
 type Ctx = { params: Promise<{ id: string }> };
 
-// POST /api/community/:id { uid, action: "like" | "comment" | "report", text?, name? }
+// POST /api/community/:id { action: "like" | "comment" | "report", text? }   (login required)
 export async function POST(req: Request, { params }: Ctx) {
   try {
+    if (!sameOrigin(req)) return NextResponse.json({ error: "Bad request." }, { status: 403 });
+    const user = await getSessionUser(req);
+    if (!user) return NextResponse.json({ error: "Please log in first." }, { status: 401 });
+
     const { id } = await params;
     const body = await req.json().catch(() => null);
-    const uid = cleanText(body?.uid, 64);
-    if (!body || uid.length < 8) return NextResponse.json({ error: "Bad request." }, { status: 400 });
-    const me = hashUid(uid);
+    if (!body) return NextResponse.json({ error: "Bad request." }, { status: 400 });
+    const me = user.username;
 
     if ((await hit(`vc_rl_act:${me}`, 60)) > LIMITS.actionsPerMinute) {
       return NextResponse.json({ error: "Slow down a little." }, { status: 429 });
@@ -43,7 +45,7 @@ export async function POST(req: Request, { params }: Ctx) {
       if (reason) return NextResponse.json({ error: reason }, { status: 400 });
       post.comments = [
         ...post.comments,
-        { id: newId(), name: cleanName(body.name), text, ts: Date.now() },
+        { id: newId(), author: me, name: user.name, text, ts: Date.now() },
       ].slice(-LIMITS.commentsKeep);
     } else if (action === "report") {
       if (!post.reports.includes(me)) post.reports.push(me);
@@ -60,19 +62,18 @@ export async function POST(req: Request, { params }: Ctx) {
   }
 }
 
-// DELETE /api/community/:id   (header x-admin-key: $COMMUNITY_ADMIN_KEY)
-// Also lets an author remove their own post when { uid } is sent.
+// DELETE /api/community/:id — the author, or an admin via header x-admin-key: $COMMUNITY_ADMIN_KEY
 export async function DELETE(req: Request, { params }: Ctx) {
   try {
+    if (!sameOrigin(req)) return NextResponse.json({ error: "Bad request." }, { status: 403 });
     const { id } = await params;
     const post = await getJSON<Post>(postKey(id));
     if (!post) return NextResponse.json({ ok: true });
 
     const adminKey = process.env.COMMUNITY_ADMIN_KEY;
     const isAdmin = Boolean(adminKey) && req.headers.get("x-admin-key") === adminKey;
-    const body = await req.json().catch(() => null);
-    const uid = cleanText(body?.uid, 64);
-    const isOwner = uid.length >= 8 && hashUid(uid) === post.uid;
+    const user = await getSessionUser(req);
+    const isOwner = Boolean(user) && user!.username === post.author;
     if (!isAdmin && !isOwner) return NextResponse.json({ error: "Not allowed." }, { status: 403 });
 
     await del(postKey(id));
