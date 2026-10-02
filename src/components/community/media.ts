@@ -42,6 +42,24 @@ export async function compressImage(file: File): Promise<string> {
   throw new Error("big");
 }
 
+// Center-crop a photo to a small square JPEG for a profile picture.
+export async function compressAvatar(file: File): Promise<string> {
+  const img = await loadImage(file);
+  const side = Math.min(img.width, img.height);
+  const sx = (img.width - side) / 2;
+  const sy = (img.height - side) / 2;
+  for (const [px, quality] of [[256, 0.8], [200, 0.7], [160, 0.6]]) {
+    const canvas = document.createElement("canvas");
+    canvas.width = canvas.height = px;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("canvas");
+    ctx.drawImage(img, sx, sy, side, side, 0, 0, px, px);
+    const out = canvas.toDataURL("image/jpeg", quality);
+    if (out.length <= LIMITS.avatarChars) return out;
+  }
+  throw new Error("big");
+}
+
 // Read a video's length and grab a cover frame for the feed.
 export function videoInfo(file: File): Promise<{ duration: number; poster?: string }> {
   return new Promise((resolve, reject) => {

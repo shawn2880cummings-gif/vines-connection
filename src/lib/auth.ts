@@ -1,6 +1,8 @@
 import { randomBytes, scrypt as scryptCb, timingSafeEqual, createHmac, createHash } from "crypto";
 import { promisify } from "util";
-import { getJSON } from "@/lib/kv";
+import { NextResponse } from "next/server";
+import { getJSON, setJSON, del } from "@/lib/kv";
+import { emailEnabled } from "@/lib/email";
 
 const scrypt = promisify(scryptCb) as (pw: string, salt: Buffer, len: number) => Promise<Buffer>;
 
@@ -9,13 +11,20 @@ export type User = {
   name: string; // display name
   pw: string; // "s1:<salt>:<hash>"
   created: number;
+  email: string;
+  emailVerified: boolean;
+  sv: number; // session version — bumped on password reset to sign out other devices
+  bio: string;
+  av: number; // avatar version (0 = no avatar)
 };
 
-export type SessionUser = { username: string; name: string };
+export type SessionUser = { username: string; name: string; emailVerified: boolean; av: number };
 
 export const COOKIE = "vc_session";
 const SESSION_DAYS = 30;
 export const userKey = (username: string) => `vc_user:${username}`;
+export const emailKey = (email: string) => `vc_email:${email}`;
+export const USERNAMES_KEY = "vc_usernames";
 
 const RESERVED = new Set([
   "admin", "administrator", "root", "support", "staff", "mod", "moderator",
@@ -28,6 +37,13 @@ export function normalizeUsername(s: unknown): string | null {
   if (!/^[a-z0-9_]{3,20}$/.test(u)) return null;
   if (RESERVED.has(u)) return null;
   return u;
+}
+
+export function normalizeEmail(s: unknown): string | null {
+  if (typeof s !== "string") return null;
+  const e = s.trim().toLowerCase();
+  if (e.length > 254 || !/^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']{2,}$/.test(e)) return null;
+  return e;
 }
 
 export async function hashPassword(pw: string): Promise<string> {
@@ -59,20 +75,20 @@ function sign(data: string): string {
   return createHmac("sha256", secret()).update(data).digest("base64url");
 }
 
-export function makeSession(username: string): { token: string; maxAge: number } {
+export function makeSession(user: Pick<User, "username" | "sv">): { token: string; maxAge: number } {
   const maxAge = SESSION_DAYS * 24 * 3600;
-  const body = Buffer.from(`${username}|${Math.floor(Date.now() / 1000) + maxAge}`).toString("base64url");
+  const body = Buffer.from(`${user.username}|${Math.floor(Date.now() / 1000) + maxAge}|${user.sv || 0}`).toString("base64url");
   return { token: `${body}.${sign(body)}`, maxAge };
 }
 
-function readSession(token: string): string | null {
+function readSession(token: string): { username: string; sv: number } | null {
   const [body, sig] = token.split(".");
   if (!body || !sig) return null;
   const want = sign(body);
   if (sig.length !== want.length || !timingSafeEqual(Buffer.from(sig), Buffer.from(want))) return null;
-  const [username, exp] = Buffer.from(body, "base64url").toString().split("|");
+  const [username, exp, sv] = Buffer.from(body, "base64url").toString().split("|");
   if (!username || !exp || Number(exp) < Date.now() / 1000) return null;
-  return username;
+  return { username, sv: Number(sv || 0) };
 }
 
 function readCookie(req: Request, name: string): string {
@@ -88,10 +104,27 @@ function readCookie(req: Request, name: string): string {
 export async function getSessionUser(req: Request): Promise<SessionUser | null> {
   const token = readCookie(req, COOKIE);
   if (!token) return null;
-  const username = readSession(token);
-  if (!username) return null;
-  const user = await getJSON<User>(userKey(username));
-  return user ? { username: user.username, name: user.name } : null;
+  const s = readSession(token);
+  if (!s) return null;
+  const user = await getJSON<User>(userKey(s.username));
+  if (!user || (user.sv || 0) !== s.sv) return null;
+  return { username: user.username, name: user.name, emailVerified: Boolean(user.emailVerified), av: user.av || 0 };
+}
+
+// For actions that create content: must be logged in, and — once email sending is
+// configured — must have confirmed their email.
+export async function requireWriter(
+  req: Request
+): Promise<{ user: SessionUser; res?: undefined } | { user?: undefined; res: NextResponse }> {
+  if (!sameOrigin(req)) return { res: NextResponse.json({ error: "Bad request." }, { status: 403 }) };
+  const user = await getSessionUser(req);
+  if (!user) return { res: NextResponse.json({ error: "Please log in first." }, { status: 401 }) };
+  if (emailEnabled() && !user.emailVerified) {
+    return {
+      res: NextResponse.json({ error: "Please confirm your email first — check your inbox.", needsVerify: true }, { status: 403 }),
+    };
+  }
+  return { user };
 }
 
 export function sessionCookie(token: string, maxAge: number): string {
@@ -117,4 +150,36 @@ export function sameOrigin(req: Request): boolean {
 
 export function clientIp(req: Request): string {
   return (req.headers.get("x-forwarded-for") || "").split(",")[0].trim() || "local";
+}
+
+// Base URL for links inside emails. Prefer SITE_URL; otherwise trust the request
+// host only if it is one of our own domains (prevents poisoned reset links).
+export function siteUrl(req: Request): string {
+  const env = process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL;
+  if (env) return env.replace(/\/$/, "");
+  const host = req.headers.get("x-forwarded-host") || req.headers.get("host") || "";
+  const ok = /(^|\.)vinesconnection\.info$/.test(host) || /\.vercel\.app$/.test(host) || /^localhost(:\d+)?$/.test(host) || /^127\.0\.0\.1(:\d+)?$/.test(host);
+  if (!ok) return "https://vinesconnection.info";
+  const proto = host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https";
+  return `${proto}://${host}`;
+}
+
+// ---- single-use email tokens (only a hash is stored) ----
+type TokenKind = "verify" | "reset";
+const tokKey = (kind: TokenKind, raw: string) => `vc_tok:${kind}:${createHash("sha256").update(raw).digest("hex")}`;
+
+export async function issueToken(kind: TokenKind, username: string, ttlSeconds: number): Promise<string> {
+  const raw = randomBytes(32).toString("hex");
+  await setJSON(tokKey(kind, raw), { u: username, exp: Date.now() + ttlSeconds * 1000 });
+  return raw;
+}
+
+// Returns the username if the token is valid, and burns it.
+export async function consumeToken(kind: TokenKind, raw: unknown): Promise<string | null> {
+  if (typeof raw !== "string" || !/^[a-f0-9]{64}$/.test(raw)) return null;
+  const key = tokKey(kind, raw);
+  const t = await getJSON<{ u: string; exp: number }>(key);
+  if (!t) return null;
+  await del(key);
+  return t.exp > Date.now() ? t.u : null;
 }

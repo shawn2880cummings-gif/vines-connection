@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
-import { getSessionUser, sameOrigin } from "@/lib/auth";
+import { requireWriter } from "@/lib/auth";
 import { LIMITS } from "@/lib/community";
 import { hit } from "@/lib/kv";
 
@@ -10,11 +10,11 @@ export async function POST(req: Request) {
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
     return NextResponse.json({ error: "Video uploads aren't switched on yet." }, { status: 501 });
   }
-  if (!sameOrigin(req)) return NextResponse.json({ error: "Bad request." }, { status: 403 });
 
   try {
-    const user = await getSessionUser(req);
-    if (!user) return NextResponse.json({ error: "Please log in to upload." }, { status: 401 });
+    const auth = await requireWriter(req);
+    if (auth.res) return auth.res;
+    const user = auth.user;
 
     const body = (await req.json()) as HandleUploadBody;
     const json = await handleUpload({

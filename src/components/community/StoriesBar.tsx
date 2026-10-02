@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { StoryView } from "@/lib/community";
-import type { Me } from "./AuthModal";
+import type { Me } from "./types";
+import AvatarImg from "./Avatar";
 import { checkVideoFile, compressImage, uploadVideo, videoInfo } from "./media";
 
 const IMAGE_MS = 5000;
 const MAX_STORY_VIDEO_S = 30;
 
-type Group = { author: string; name: string; stories: StoryView[]; latest: number };
+type Group = { author: string; name: string; avatar: string | null; stories: StoryView[]; latest: number };
 
 function ago(ts: number) {
   const m = Math.floor((Date.now() - ts) / 60000);
@@ -17,15 +18,8 @@ function ago(ts: number) {
   return `${Math.floor(m / 60)}h`;
 }
 
-function Avatar({ name, size = 56 }: { name: string; size?: number }) {
-  return (
-    <div
-      style={{ width: size, height: size, fontSize: size * 0.42 }}
-      className="flex items-center justify-center rounded-full bg-gradient-to-br from-psyche-teal to-psyche-magenta font-bold text-celestial-900"
-    >
-      {name.charAt(0).toUpperCase()}
-    </div>
-  );
+function Avatar({ name, url, size = 56 }: { name: string; url?: string | null; size?: number }) {
+  return <AvatarImg name={name} url={url} size={size} />;
 }
 
 export default function StoriesBar({
@@ -63,7 +57,7 @@ export default function StoriesBar({
   const groups: Group[] = useMemo(() => {
     const map = new Map<string, Group>();
     for (const s of [...stories].sort((a, b) => a.ts - b.ts)) {
-      const g = map.get(s.author) || { author: s.author, name: s.name, stories: [], latest: 0 };
+      const g = map.get(s.author) || { author: s.author, name: s.name, avatar: s.avatar, stories: [], latest: 0 };
       g.stories.push(s);
       g.latest = Math.max(g.latest, s.ts);
       map.set(s.author, g);
@@ -90,7 +84,7 @@ export default function StoriesBar({
           className="flex w-[68px] shrink-0 flex-col items-center gap-1.5"
         >
           <div className="relative">
-            <Avatar name={me?.name || "+"} />
+            <Avatar name={me?.name || "+"} url={me?.avatar} />
             <span className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border-2 border-[#0a0a0b] bg-psyche-teal text-base font-bold leading-none text-celestial-900">
               +
             </span>
@@ -112,7 +106,7 @@ export default function StoriesBar({
                 }`}
               >
                 <div className="rounded-full border-2 border-[#0a0a0b]">
-                  <Avatar name={g.name} size={52} />
+                  <Avatar name={g.name} url={g.avatar} size={52} />
                 </div>
               </div>
               <span className="w-full truncate text-center text-xs text-text-secondary">
@@ -254,7 +248,7 @@ function Viewer({
           ))}
         </div>
         <div className="mt-3 flex items-center gap-3">
-          <Avatar name={story.name} size={36} />
+          <Avatar name={story.name} url={story.avatar} size={36} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-white">{story.name}</p>
             <p className="text-xs text-white/70">{ago(story.ts)}</p>

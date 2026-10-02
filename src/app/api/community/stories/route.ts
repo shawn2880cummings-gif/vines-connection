@@ -1,103 +1,115 @@
 import { NextResponse } from "next/server";
-import { getJSON, setJSON, del, mgetJSON, hit } from "@/lib/kv";
-import { getSessionUser, sameOrigin } from "@/lib/auth";
+import { getJSON, setJSON, setText, del, hit, smembers, zadd, zrem, zpage, zpageMany } from "@/lib/kv";
+import { getSessionUser, requireWriter, sameOrigin } from "@/lib/auth";
 import {
   STORIES_KEY,
   LIMITS,
   storyKey,
+  imgKey,
+  userStoriesKey,
+  followingKey,
   newId,
   cleanText,
   cleanImage,
   cleanVideo,
   rejectReason,
-  toStoryView,
   type Story,
 } from "@/lib/community";
+import { hydrateStories, loadStories } from "@/lib/social";
 
 const NO_STORE = { "Cache-Control": "no-store" };
+const err = (error: string, status = 400) => NextResponse.json({ error }, { status });
 
-// GET /api/community/stories -> { stories }  (public; last 24 hours, newest first)
+// GET /api/community/stories -> { stories }  (last 24h; people you follow + you, or everyone if you follow no one)
 export async function GET(req: Request) {
   try {
     const me = (await getSessionUser(req))?.username || "";
-    const ids = (await getJSON<string[]>(STORIES_KEY)) || [];
-    const cutoff = Date.now() - LIMITS.storyTtlMs;
-    const stories = (await mgetJSON<Story>(ids.map(storyKey)))
-      .filter((s): s is Story => !!s && !s.hidden && s.ts > cutoff)
-      .map((s) => toStoryView(s, me));
-    return NextResponse.json({ stories }, { headers: NO_STORE });
+    const following = me ? (await smembers(followingKey(me))).slice(0, LIMITS.followCap) : [];
+    let ids: string[];
+    if (me && following.length) {
+      const lists = await zpageMany([...following, me].map(userStoriesKey), null, 10);
+      ids = lists.flat().map((r) => r.member);
+    } else {
+      ids = (await zpage(STORIES_KEY, null, 80)).map((r) => r.member);
+    }
+    const stories = (await loadStories(ids)).sort((a, b) => a.ts - b.ts);
+    return NextResponse.json({ stories: await hydrateStories(stories, me), scope: me && following.length ? "following" : "all" }, { headers: NO_STORE });
   } catch (error) {
     console.error("Stories read error:", error);
-    return NextResponse.json({ stories: [] }, { headers: NO_STORE });
+    return NextResponse.json({ stories: [], scope: "all" }, { headers: NO_STORE });
   }
 }
 
-// POST /api/community/stories
-//   create: { image? | video?, caption? }       report: { action: "report", id }
+async function sweepExpired() {
+  const cutoff = Date.now() - LIMITS.storyTtlMs;
+  const old = await zpage(STORIES_KEY, cutoff, 10);
+  for (const row of old) {
+    const s = await getJSON<Story>(storyKey(row.member));
+    await zrem(STORIES_KEY, row.member);
+    if (s) await zrem(userStoriesKey(s.author), row.member);
+    await del(storyKey(row.member), imgKey(row.member));
+  }
+}
+
+// POST /api/community/stories   create: { image? | video?, caption? }   report: { action: "report", id }
 export async function POST(req: Request) {
   try {
-    if (!sameOrigin(req)) return NextResponse.json({ error: "Bad request." }, { status: 403 });
-    const user = await getSessionUser(req);
-    if (!user) return NextResponse.json({ error: "Please log in to share a story." }, { status: 401 });
+    const auth = await requireWriter(req);
+    if (auth.res) return auth.res;
+    const me = auth.user.username;
     const body = await req.json().catch(() => null);
-    if (!body) return NextResponse.json({ error: "Bad request." }, { status: 400 });
+    if (!body) return err("Bad request.");
 
     if (body.action === "report") {
       const story = await getJSON<Story>(storyKey(String(body.id || "")));
       if (!story) return NextResponse.json({ ok: true });
-      if (!story.reports.includes(user.username)) story.reports.push(user.username);
+      if (!story.reports.includes(me)) story.reports.push(me);
       if (story.reports.length >= LIMITS.hideAfterReports) story.hidden = true;
       await setJSON(storyKey(story.id), story);
       return NextResponse.json({ ok: true, hidden: story.hidden });
     }
 
-    const image = cleanImage(body.image);
     const video = cleanVideo(body.video);
-    if (image === "bad" || video === "bad") {
-      return NextResponse.json({ error: "That media couldn't be used." }, { status: 400 });
-    }
-    if (!image && !video) {
-      return NextResponse.json({ error: "Add a photo or video for your story." }, { status: 400 });
-    }
+    const image = video ? undefined : cleanImage(body.image);
+    if (image === "bad" || video === "bad") return err("That media couldn't be used.");
+    if (!image && !video) return err("Add a photo or video for your story.");
     const caption = cleanText(body.caption, LIMITS.caption);
     const reason = rejectReason(caption);
-    if (reason) return NextResponse.json({ error: reason }, { status: 400 });
+    if (reason) return err(reason);
 
-    if ((await hit(`vc_rl_story:${user.username}`, 3600)) > LIMITS.storiesPerHour) {
-      return NextResponse.json({ error: "That's a lot of stories — try again later." }, { status: 429 });
-    }
+    if ((await hit(`vc_rl_story:${me}`, 3600)) > LIMITS.storiesPerHour) return err("That's a lot of stories — try again later.", 429);
 
+    const id = newId();
+    const ts = Date.now();
     const story: Story = {
-      id: newId(),
-      author: user.username,
-      name: user.name,
-      image,
-      video,
+      id,
+      author: me,
+      hasImage: Boolean(image),
+      video: video ? { url: video.url, hasPoster: Boolean(video.poster) } : undefined,
       caption,
-      ts: Date.now(),
+      ts,
       reports: [],
       hidden: false,
     };
-    await setJSON(storyKey(story.id), story);
-    const cutoff = Date.now() - LIMITS.storyTtlMs;
-    const old = (await getJSON<string[]>(STORIES_KEY)) || [];
-    const fresh = (await mgetJSON<Story>(old.map(storyKey))).map((s, i) => (s && s.ts > cutoff ? old[i] : null));
-    const ids = [story.id, ...fresh.filter((x): x is string => !!x)].slice(0, LIMITS.storiesKeep);
-    await setJSON(STORIES_KEY, ids);
-    // expired story bodies are no longer referenced; remove them
-    await Promise.all(old.filter((_, i) => !fresh[i]).slice(0, 20).map((id) => del(storyKey(id))));
+    const bytes = image || video?.poster;
+    if (bytes) await setText(imgKey(id), bytes);
+    await setJSON(storyKey(id), story);
+    await zadd(STORIES_KEY, ts, id);
+    await zadd(userStoriesKey(me), ts, id);
+    await sweepExpired();
 
-    return NextResponse.json({ ok: true, story: toStoryView(story, user.username) });
+    const [view] = await hydrateStories([story], me);
+    return NextResponse.json({ ok: true, story: view });
   } catch (error) {
     console.error("Story write error:", error);
-    return NextResponse.json({ error: "Could not share your story." }, { status: 500 });
+    return err("Could not share your story.", 500);
   }
 }
 
 // DELETE /api/community/stories?id=...  — the author or an admin (x-admin-key)
 export async function DELETE(req: Request) {
   try {
-    if (!sameOrigin(req)) return NextResponse.json({ error: "Bad request." }, { status: 403 });
+    if (!sameOrigin(req)) return err("Bad request.", 403);
     const id = new URL(req.url).searchParams.get("id") || "";
     const story = await getJSON<Story>(storyKey(id));
     if (!story) return NextResponse.json({ ok: true });
@@ -105,15 +117,14 @@ export async function DELETE(req: Request) {
     const adminKey = process.env.COMMUNITY_ADMIN_KEY;
     const isAdmin = Boolean(adminKey) && req.headers.get("x-admin-key") === adminKey;
     const user = await getSessionUser(req);
-    if (!isAdmin && user?.username !== story.author) {
-      return NextResponse.json({ error: "Not allowed." }, { status: 403 });
-    }
-    await del(storyKey(id));
-    const ids = (await getJSON<string[]>(STORIES_KEY)) || [];
-    await setJSON(STORIES_KEY, ids.filter((x) => x !== id));
+    if (!isAdmin && user?.username !== story.author) return err("Not allowed.", 403);
+
+    await zrem(STORIES_KEY, id);
+    await zrem(userStoriesKey(story.author), id);
+    await del(storyKey(id), imgKey(id));
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Story delete error:", error);
-    return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
+    return err("Something went wrong.", 500);
   }
 }
